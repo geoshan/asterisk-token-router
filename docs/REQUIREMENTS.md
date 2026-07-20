@@ -147,59 +147,47 @@ sequenceDiagram
     participant M as 后端模型
     participant D as 数据库
     
-    U->>G: POST /v1/chat/completions
+    U->>G: POST v1/chat/completions
     Note right of U: Bearer sk-xxx
     
-    rect rgb(240, 248, 255)
-        Note over G: 1. Key鉴权
-        G->>D: 查询Key哈希
-        D-->>G: 返回Key状态
-        alt Key无效或用户禁用
-            G-->>U: 401/403
-        end
+    Note over G, D: 1. Key鉴权
+    G->>D: 查询Key哈希
+    D-->>G: 返回Key状态
+    alt Key无效或用户禁用
+        G-->>U: 401/403
     end
     
-    rect rgb(255, 248, 240)
-        Note over G,R: 2. 熔断检查
-        G->>R: 查询熔断状态
-        R-->>G: 返回false
-        alt 已熔断
-            G-->>U: 429 额度用尽
-        end
+    Note over G, R: 2. 熔断检查
+    G->>R: 查询熔断状态
+    R-->>G: 返回false
+    alt 已熔断
+        G-->>U: 429 额度用尽
     end
     
-    rect rgb(240, 255, 240)
-        Note over G: 3. 内容路由
-        alt model为auto
-            Note over G: 提取消息规则分类
-            Note over G: 代码推理→advanced
-            Note over G: 办公日常→basic
-        else 指定模型名
-            Note over G: 跳过分类直通权限校验
-        end
+    Note over G: 3. 内容路由
+    alt model为auto
+        Note over G: 提取消息规则分类
+        Note over G: 代码推理to advanced
+        Note over G: 办公日常to basic
+    else 指定模型名
+        Note over G: 跳过分类直通权限校验
     end
     
-    rect rgb(255, 240, 255)
-        Note over G: 4. 渠道选择
-        Note over G: 权限过滤+权重随机+健康剔除
-        alt 无可用渠道
-            G-->>U: 403/502
-        end
+    Note over G: 4. 渠道选择
+    Note over G: 权限过滤+权重随机+健康剔除
+    alt 无可用渠道
+        G-->>U: 403 or 502
     end
     
-    rect rgb(255, 255, 240)
-        Note over G,M: 5. 转发与流式透传
-        G->>M: POST 转发请求
-        M-->>G: SSE 流式响应
-        G-->>U: SSE 流式透传
-    end
+    Note over G, M: 5. 转发与流式透传
+    G->>M: POST转发请求
+    M-->>G: SSE流式响应
+    G-->>U: SSE流式透传
     
-    rect rgb(240, 240, 240)
-        Note over G,R,D: 6. 异步后处理
-        G->>D: 写入审计日志
-        G->>R: 更新用量计数器
-        Note over G: 检查阈值 80/90/100%
-    end
+    Note over G, R, D: 6. 异步后处理
+    G->>D: 写入审计日志
+    G->>R: 更新用量计数器
+    Note over G: 检查阈值80至100
 ```
 
 **主流程**：
