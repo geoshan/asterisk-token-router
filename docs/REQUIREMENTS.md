@@ -141,53 +141,44 @@
 
 ```mermaid
 sequenceDiagram
-    participant U as 用户客户端
-    participant G as TokenRouter
+    participant U as 用户
+    participant G as 网关
     participant R as Redis
-    participant M as 后端模型
+    participant M as 模型
     participant D as 数据库
-    
+
     U->>G: POST v1/chat/completions
-    Note right of U: Bearer sk-xxx
     
-    Note over G, D: 1. Key鉴权
-    G->>D: 查询Key哈希
-    D-->>G: 返回Key状态
-    alt Key无效或用户禁用
-        G-->>U: 401/403
+    G->>D: 查询Key
+    D-->>G: Key有效
+    alt 鉴权失败
+        G-->>U: 401 or 403
     end
-    
-    Note over G, R: 2. 熔断检查
-    G->>R: 查询熔断状态
-    R-->>G: 返回false
+
+    G->>R: 检查熔断
+    R-->>G: 正常
     alt 已熔断
-        G-->>U: 429 额度用尽
+        G-->>U: 429
     end
-    
-    Note over G: 3. 内容路由
-    alt model为auto
-        Note over G: 提取消息规则分类
-        Note over G: 代码推理to advanced
-        Note over G: 办公日常to basic
-    else 指定模型名
-        Note over G: 跳过分类直通权限校验
+
+    alt auto路由
+        Note over G: 内容分类匹配模型组
+    else 指定模型
+        Note over G: 直通权限校验
     end
+
+    Note over G: 渠道选择 权重随机 健康检查
     
-    Note over G: 4. 渠道选择
-    Note over G: 权限过滤+权重随机+健康剔除
     alt 无可用渠道
-        G-->>U: 403 or 502
+        G-->>U: 502
     end
-    
-    Note over G, M: 5. 转发与流式透传
-    G->>M: POST转发请求
-    M-->>G: SSE流式响应
-    G-->>U: SSE流式透传
-    
-    Note over G, R, D: 6. 异步后处理
-    G->>D: 写入审计日志
-    G->>R: 更新用量计数器
-    Note over G: 检查阈值80至100
+
+    G->>M: 转发请求
+    M-->>G: 流式响应
+    G-->>U: 流式透传
+
+    G->>D: 写审计日志
+    G->>R: 更新用量
 ```
 
 **主流程**：
