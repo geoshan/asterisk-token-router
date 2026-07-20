@@ -48,6 +48,11 @@ const EditChannel = () => {
     system_prompt: '',
     models: [],
     groups: ['default'],
+    // asterisk-token-router: billing fields
+    billing_mode: 1,
+    price_in: 0,
+    price_out: 0,
+    call_limit: 0,
   };
   const [batch, setBatch] = useState(false);
   const [inputs, setInputs] = useState(originInputs);
@@ -675,6 +680,62 @@ const EditChannel = () => {
                   onChange={handleInputChange}
                   value={inputs.base_url}
                   autoComplete='new-password'
+                />
+              </Form.Field>
+            )}
+            {/* asterisk-token-router: billing fields */}
+            <Form.Field>
+              <Form.Dropdown
+                label='计费模式'
+                name='billing_mode'
+                fluid
+                selection
+                onChange={(e, { value }) =>
+                  handleInputChange(e, { name: 'billing_mode', value: parseInt(value) })
+                }
+                value={inputs.billing_mode}
+                options={[
+                  { key: 0, text: '包月 (Subscription)', value: 0 },
+                  { key: 1, text: '按量 (Per Token)', value: 1 },
+                  { key: 2, text: '免费 (Free)', value: 2 },
+                ]}
+              />
+            </Form.Field>
+            {inputs.billing_mode === 1 && (
+              <>
+                <Form.Field>
+                  <Form.Input
+                    label='输入单价 (元/千token)'
+                    name='price_in'
+                    type='number'
+                    step='0.001'
+                    placeholder='例如: 0.01'
+                    onChange={handleInputChange}
+                    value={inputs.price_in}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <Form.Input
+                    label='输出单价 (元/千token)'
+                    name='price_out'
+                    type='number'
+                    step='0.001'
+                    placeholder='例如: 0.02'
+                    onChange={handleInputChange}
+                    value={inputs.price_out}
+                  />
+                </Form.Field>
+              </>
+            )}
+            {inputs.billing_mode === 0 && (
+              <Form.Field>
+                <Form.Input
+                  label='调用次数上限 (0=不限)'
+                  name='call_limit'
+                  type='number'
+                  placeholder='例如: 10000'
+                  onChange={handleInputChange}
+                  value={inputs.call_limit}
                 />
               </Form.Field>
             )}
