@@ -15,6 +15,11 @@ const (
 	ChannelStatusEnabled          = 1 // don't use 0, 0 is the default value!
 	ChannelStatusManuallyDisabled = 2 // also don't use 0
 	ChannelStatusAutoDisabled     = 3
+
+	// asterisk-token-router: 计费模式常量
+	BillingModeSubscription = 0 // 包月
+	BillingModePerToken     = 1 // 按量 (默认)
+	BillingModeFree         = 2 // 免费
 )
 
 type Channel struct {
@@ -38,6 +43,12 @@ type Channel struct {
 	Priority           *int64  `json:"priority" gorm:"bigint;default:0"`
 	Config             string  `json:"config"`
 	SystemPrompt       *string `json:"system_prompt" gorm:"type:text"`
+	// asterisk-token-router: 计费相关字段
+	BillingMode        int     `json:"billing_mode" gorm:"default:1"`   // 0=包月, 1=按量, 2=免费
+	PriceIn            float64 `json:"price_in" gorm:"default:0"`       // 输入单价 元/千token
+	PriceOut           float64 `json:"price_out" gorm:"default:0"`      // 输出单价 元/千token
+	CallLimit          int64   `json:"call_limit" gorm:"default:0"`     // 包月调用上限 0=不限
+	CallCount          int64   `json:"call_count" gorm:"default:0"`     // 当月已调用次数
 }
 
 type ChannelConfig struct {

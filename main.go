@@ -62,6 +62,8 @@ func main() {
 
 	// Initialize options
 	model.InitOptionMap()
+	model.InitAlertRecorder() // asterisk-token-router
+	model.StartHealthChecker() // asterisk-token-router
 	logger.SysLog(fmt.Sprintf("using theme %s", config.Theme))
 	if common.RedisEnabled {
 		// for compatibility with old versions
