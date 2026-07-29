@@ -217,7 +217,7 @@ func trackUsageForQuota(meta *meta.Meta, usage *relaymodel.Usage, promptTokens i
 	// Calculate cost
 	var cost float64
 	if channel.BillingMode == model.BillingModePerToken {
-		cost = (float64(promptTokens)/1000)*channel.PriceIn + (float64(completionTokens)/1000)*channel.PriceOut
+		cost = (float64(promptTokens)/1000000)*channel.PriceIn + (float64(completionTokens)/1000000)*channel.PriceOut
 	} else {
 		cost = 0 // subscription/free models don't count toward quota
 	}

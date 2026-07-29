@@ -709,22 +709,22 @@ const EditChannel = () => {
               <>
                 <Form.Field>
                   <Form.Input
-                    label='输入单价 (元/千token)'
+                    label='输入单价 (元/Mtoken)'
                     name='price_in'
                     type='number'
                     step='0.001'
-                    placeholder='例如: 0.01'
+                    placeholder='例如: 1.0'
                     onChange={handleInputChange}
                     value={inputs.price_in}
                   />
                 </Form.Field>
                 <Form.Field>
                   <Form.Input
-                    label='输出单价 (元/千token)'
+                    label='输出单价 (元/Mtoken)'
                     name='price_out'
                     type='number'
                     step='0.001'
-                    placeholder='例如: 0.02'
+                    placeholder='例如: 2.0'
                     onChange={handleInputChange}
                     value={inputs.price_out}
                   />
