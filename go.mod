@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	cloud.google.com/go/iam v1.1.10
+	github.com/alicebob/miniredis/v2 v2.38.0
 	github.com/aws/aws-sdk-go-v2 v1.27.0
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.15
 	github.com/aws/aws-sdk-go-v2/service/bedrockruntime v1.8.3
@@ -39,7 +40,6 @@ require (
 	cloud.google.com/go/auth/oauth2adapt v0.2.2 // indirect
 	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/alicebob/miniredis/v2 v2.38.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.2 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.7 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.7 // indirect
