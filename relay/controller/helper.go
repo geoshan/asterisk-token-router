@@ -123,6 +123,8 @@ func postConsumeQuota(ctx context.Context, usage *relaymodel.Usage, meta *meta.M
 		logger.Error(ctx, "error update user quota cache: "+err.Error())
 	}
 	logContent := fmt.Sprintf("倍率：%.2f × %.2f × %.2f", modelRatio, groupRatio, completionRatio)
+	// asterisk-token-router: usage tracking for quota monitoring
+	go trackUsageForQuota(meta, usage, promptTokens, completionTokens)
 	model.RecordConsumeLog(ctx, &model.Log{
 		UserId:            meta.UserId,
 		ChannelId:         meta.ChannelId,
@@ -195,4 +197,47 @@ func setSystemPrompt(ctx context.Context, request *relaymodel.GeneralOpenAIReque
 	}}, request.Messages...)
 	logger.Infof(ctx, "add system prompt")
 	return true
+}
+
+
+// asterisk-token-router: track usage and check quota thresholds
+func trackUsageForQuota(meta *meta.Meta, usage *relaymodel.Usage, promptTokens int, completionTokens int) {
+	if usage == nil {
+		return
+	}
+	userId := meta.UserId
+	channelId := meta.ChannelId
+	
+	// Get channel billing info
+	channel, err := model.GetChannelById(channelId, false)
+	if err != nil || channel == nil {
+		return
+	}
+	
+	// Calculate cost
+	var cost float64
+	if channel.BillingMode == model.BillingModePerToken {
+		cost = (float64(promptTokens)/1000)*channel.PriceIn + (float64(completionTokens)/1000)*channel.PriceOut
+	} else {
+		cost = 0 // subscription/free models don't count toward quota
+	}
+	
+	// Update Redis usage counter
+	currentUsage, err := common.IncrUserQuota(userId, cost)
+	if err != nil {
+		return
+	}
+	
+	// Get user quota limit from token
+	token, err := model.GetTokenById(meta.TokenId)
+	if err != nil || token == nil {
+		return
+	}
+	quotaLimit := float64(token.RemainQuota) + float64(token.UsedQuota)
+	if token.UnlimitedQuota {
+		return // unlimited quota, skip check
+	}
+	
+	// Check thresholds
+	common.CheckAndAlert(userId, currentUsage, quotaLimit)
 }
