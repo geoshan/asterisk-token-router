@@ -626,7 +626,7 @@
         },
         "completion": {
           "title": "Completion Ratio",
-          "placeholder": "A JSON text where keys are model names and values are ratios. These ratios are the proportion of completion to prompt ratio, which can override One API's internal ratios"
+          "placeholder": "A JSON text where keys are model names and values are ratios. These ratios are the proportion of completion to prompt ratio, which can override internal ratios"
         },
         "group": {
           "title": "Group Ratio",
@@ -723,7 +723,7 @@
         }
       },
       "copyright": {
-        "notice": "Removing One API's copyright notice requires authorization. Project maintenance requires significant effort, if this project is meaningful to you, please actively support it."
+        "notice": "Asterisk Token Router is based on One API (MIT), released under Apache 2.0."
       }
     }
   },
@@ -735,8 +735,8 @@
   },
   "home": {
     "welcome": {
-      "title": "Welcome to One API",
-      "description": "One API is a LLM API management and distribution system that helps you better manage and use LLM APIs from various providers.",
+      "title": "Welcome to Asterisk Token Router",
+      "description": "Asterisk Token Router is an enterprise AI LLM API routing system with smart routing, user management, usage monitoring and cost control.",
       "login_notice": "To use the service, please login or register first."
     },
     "system_status": {
@@ -806,7 +806,7 @@
   },
   "about": {
     "title": "About",
-    "description": "One API is an open-source API management and proxy platform.",
+    "description": "Asterisk Token Router is an enterprise AI LLM API routing system, based on One API (MIT).",
     "repository": "Repository: ",
     "loading_failed": "Loading failed"
   },

@@ -133,7 +133,7 @@ const Home = () => {
                             {t('home.system_status.info.source')}
                           </span>
                           <a
-                            href='https://github.com/songquanpeng/one-api'
+                            href='https://github.com/geoshan/asterisk-token-router'
                             target='_blank'
                             style={{ color: '#2185d0' }}
                           >

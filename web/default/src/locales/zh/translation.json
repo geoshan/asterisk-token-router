@@ -624,7 +624,7 @@
         },
         "completion": {
           "title": "补全倍率",
-          "placeholder": "为一个 JSON 文本，键为模型名称，值为倍率，此处的倍率设置是模型补全倍率相较于提示倍率的比例，使用该设置可强制覆盖 One API 的内部比例"
+          "placeholder": "为一个 JSON 文本，键为模型名称，值为倍率，此处的倍率设置是模型补全倍率相较于提示倍率的比例，使用该设置可强制覆盖 系统内部比例"
         },
         "group": {
           "title": "分组倍率",
@@ -719,13 +719,13 @@
         }
       },
       "copyright": {
-        "notice": "移除 One API 的版权标识必须首先获得授权，项目维护需要花费大量精力，如果本项目对你有意义，请主动支持本项目。"
+        "notice": "Asterisk Token Router 基于 One API (MIT) 二次开发，以 Apache 2.0 许可发布。"
       }
     }
   },
   "about": {
     "title": "关于",
-    "description": "One API 是一个开源的接口管理和代理平台。",
+    "description": "Asterisk Token Router 是企业级 AI 大模型 API 统一路由管理系统，基于 One API 二次开发。",
     "repository": "项目地址：",
     "loading_failed": "加载失败"
   },
@@ -737,8 +737,8 @@
   },
   "home": {
     "welcome": {
-      "title": "欢迎使用 One API",
-      "description": "One API 是一个 LLM API 接口管理和分发系统，可以帮助您更好地管理和使用各大厂商的 LLM API。",
+      "title": "欢迎使用 Asterisk Token Router",
+      "description": "Asterisk Token Router 是企业级 AI 大模型 API 统一路由管理系统，支持智能路由、用户管理、用量监控和费用控制。",
       "login_notice": "如需使用，请先登录或注册。"
     },
     "system_status": {
