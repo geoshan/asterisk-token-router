@@ -33,6 +33,7 @@ let headerButtons = [
     name: 'header.token',
     to: '/token',
     icon: 'key',
+    admin: true,
   },
   {
     name: 'header.redemption',
