@@ -709,7 +709,7 @@ const EditChannel = () => {
               <>
                 <Form.Field>
                   <Form.Input
-                    label='输入单价 (元/Mtoken)'
+                    label='输入单价 (元/M tokens)'
                     name='price_in'
                     type='number'
                     step='0.001'
@@ -720,7 +720,7 @@ const EditChannel = () => {
                 </Form.Field>
                 <Form.Field>
                   <Form.Input
-                    label='输出单价 (元/Mtoken)'
+                    label='输出单价 (元/M tokens)'
                     name='price_out'
                     type='number'
                     step='0.001'
