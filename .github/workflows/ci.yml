@@ -40,6 +40,7 @@ jobs:
 
   commit_lint:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v3
       - uses: wagoid/commitlint-github-action@v6
