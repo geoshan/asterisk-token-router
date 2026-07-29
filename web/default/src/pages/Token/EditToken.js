@@ -24,8 +24,10 @@ const EditToken = () => {
   const tokenId = params.id;
   const isEdit = tokenId !== undefined;
   const [loading, setLoading] = useState(isEdit);
+  const [userOptions, setUserOptions] = useState([]);
   const [modelOptions, setModelOptions] = useState([]);
   const originInputs = {
+    user_id: '',
     name: '',
     remain_quota: isEdit ? 0 : 500000,
     expired_time: -1,
@@ -84,6 +86,23 @@ const EditToken = () => {
     setLoading(false);
   };
 
+  const loadUsers = async () => {
+    try {
+      let res = await API.get('/api/user/?p=0&limit=100');
+      const { success, data } = res.data || {};
+      if (success && data) {
+        let options = data.map((user) => ({
+          key: user.id,
+          text: `${user.username} (${user.display_name || user.email || ''})`,
+          value: user.id,
+        }));
+        setUserOptions(options);
+      }
+    } catch (error) {
+      // silently ignore
+    }
+  };
+
   const loadAvailableModels = async () => {
     try {
       let res = await API.get(`/api/user/available_models`);
@@ -111,6 +130,8 @@ const EditToken = () => {
         showError(error.message || 'Failed to load token');
         setLoading(false);
       });
+    } else {
+      loadUsers();
     }
     loadAvailableModels().catch((error) => {
       showError(error.message || 'Failed to load models');
@@ -160,6 +181,23 @@ const EditToken = () => {
             {isEdit ? t('token.edit.title_edit') : t('token.edit.title_create')}
           </Card.Header>
           <Form loading={loading} autoComplete='new-password'>
+            {!isEdit && userOptions.length > 0 && (
+              <Form.Field>
+                <Form.Dropdown
+                  label='所属用户'
+                  name='user_id'
+                  placeholder='选择用户'
+                  fluid
+                  selection
+                  search
+                  options={userOptions}
+                  value={inputs.user_id}
+                  onChange={(e, { value }) =>
+                    setInputs({ ...inputs, user_id: value })
+                  }
+                />
+              </Form.Field>
+            )}
             <Form.Field>
               <Form.Input
                 label={t('token.edit.name')}
