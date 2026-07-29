@@ -71,6 +71,10 @@ const EditChannel = () => {
     vertex_ai_adc: '',
   });
   const handleInputChange = (e, { name, value }) => {
+    // asterisk-token-router: convert numeric fields
+    if (['price_in', 'price_out', 'call_limit', 'billing_mode'].includes(name)) {
+      value = value === '' || value === null ? 0 : Number(value);
+    }
     setInputs((inputs) => ({ ...inputs, [name]: value }));
     if (name === 'type') {
       let localModels = getChannelModels(value);
