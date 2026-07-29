@@ -103,7 +103,7 @@ chmod +x asterisk-tr-linux
 
 # 创建环境变量文件
 cat > .env <<EOF
-SQL_DSN=asterisk:YourStrongPass123!@tcp(127.0.0.1:3306)/asterisk_token_router?charset=utf8mb4&parseTime=True&loc=Local
+SQL_DSN=asterisk:YourStrongPass123!@tcp(127.0.0.1:3307)/asterisk_token_router?charset=utf8mb4&parseTime=True&loc=Local
 REDIS_CONN_STRING=redis://127.0.0.1:6379
 SESSION_SECRET=$(openssl rand -hex 32)
 SYNC_FREQUENCY=60

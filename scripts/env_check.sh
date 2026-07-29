@@ -86,11 +86,10 @@ if command -v mysql &>/dev/null; then
     else
         fail "mysqld 服务未运行"
     fi
-    # 检查3306端口
-    if ss -tlnp | grep -q ':3306'; then
-        pass "端口 3306 已监听"
-    else
-        warn "端口 3306 未监听"
+    # 检查3306/3307端口
+    if ss -tlnp | grep -q ':3306\|:3307'; then
+        MYSQL_PORT=$(ss -tlnp | grep -oP ':\K(3306|3307)' | head -1)
+        pass "端口 ${MYSQL_PORT} 已监听"
     fi
 else
     fail "MySQL 未安装"
@@ -148,7 +147,7 @@ fi
 # --- 6. 网络端口 ---
 echo ""
 echo "【12. 关键端口占用】"
-for port in 3000 80 443 3306 6379; do
+for port in 3000 80 443 3306 3307 6379; do
     if ss -tlnp | grep -q ":${port} "; then
         info "端口 $port: $(ss -tlnp | grep ":${port} " | awk '{print $NF}')"
     else
