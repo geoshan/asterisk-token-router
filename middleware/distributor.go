@@ -45,7 +45,8 @@ func Distribute() func(c *gin.Context) {
 			requestModel = c.GetString(ctxkey.RequestModel)
 			// asterisk-token-router: content-based routing when model="auto"
 			if requestModel == "auto" || requestModel == "" {
-				requestModel = resolveAutoModel(c)
+				requestModel = resolveAutoModel(c, requestModel)
+				c.Set(ctxkey.RequestModel, requestModel)
 			}
 			var err error
 			channel, err = model.CacheGetRandomSatisfiedChannel(userGroup, requestModel, false)

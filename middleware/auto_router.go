@@ -8,6 +8,7 @@ import (
 	relaymodel "github.com/songquanpeng/one-api/relay/model"
 
 	"github.com/songquanpeng/one-api/common"
+	"github.com/songquanpeng/one-api/common/ctxkey"
 	"github.com/songquanpeng/one-api/common/logger"
 )
 
@@ -19,12 +20,28 @@ type AutoRouteRequest struct {
 
 // DefaultAutoModels 默认的 auto 路由模型映射
 var DefaultAutoModels = map[string]string{
-	"basic":    "gpt-4o-mini",
-	"advanced": "gpt-4o",
+	"basic":    "qwen-max",
+	"advanced": "qwen-max",
 }
 
-// resolveAutoModel 当 model="auto" 时，根据消息内容分类确定实际模型
-func resolveAutoModel(c *gin.Context) string {
+// resolveAutoModel wraps the auto routing logic and rewrites the request body
+func resolveAutoModel(c *gin.Context, originalModel string) string {
+	newModel := doResolveAutoModel(c)
+	if newModel == originalModel {
+		return newModel
+	}
+	// Rewrite the cached request body so downstream sees the resolved model
+	body, _ := common.GetRequestBody(c)
+	if body != nil {
+		replaced := strings.Replace(string(body), `"model":"`+originalModel+`"`, `"model":"`+newModel+`"`, 1)
+		replaced = strings.Replace(replaced, `"model": "`+originalModel+`"`, `"model": "`+newModel+`"`, 1)
+		c.Set(ctxkey.KeyRequestBody, []byte(replaced))
+	}
+	return newModel
+}
+
+// doResolveAutoModel 当 model="auto" 时，根据消息内容分类确定实际模型
+func doResolveAutoModel(c *gin.Context) string {
 	ctx := c.Request.Context()
 
 	// 读取请求体
