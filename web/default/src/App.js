@@ -121,6 +121,8 @@ function App() {
       />
       <Route
         path='/channel/add'
+        element={
+          <Suspense fallback={<Loading></Loading>}>
             <EditChannel />
           </Suspense>
         }
@@ -128,9 +130,9 @@ function App() {
       <Route
         path="/mytoken"
         element={
-          <Suspense fallback={<Loading></Loading>}>
+          <PrivateRoute>
             <MyToken />
-          </Suspense>
+          </PrivateRoute>
         }
       />
       <Route
