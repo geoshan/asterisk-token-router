@@ -95,7 +95,7 @@ const ChannelsTable = () => {
     } else {
       channel.models = channel.models.split(',');
       if (channel.models.length > 0) {
-        channel.test_model = channel.models[0];
+        /* asterisk: use last model to skip default OpenAI models */ const modelList = channel.models.split(","); channel.test_model = modelList[modelList.length-1];
       }
       channel.model_options = channel.models.map((model) => {
         return {

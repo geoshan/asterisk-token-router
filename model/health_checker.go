@@ -86,7 +86,7 @@ func checkChannelHealth(channel *Channel) bool {
 
 	// Use a lightweight chat completion for health check
 	url := baseURL + "/v1/chat/completions"
-	body := []byte(`{"model":"` + strings.Split(channel.Models, ",")[0] + `","messages":[{"role":"user","content":"ping"}],"max_tokens":1}`)
+	body := []byte(`{"model":"` + func(s string) string { parts := strings.Split(s, ","); return parts[len(parts)-1] }(channel.Models) + `","messages":[{"role":"user","content":"ping"}],"max_tokens":1}`)
 	req, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewReader(body))
 	if err != nil {
 		return false
@@ -104,7 +104,7 @@ func checkChannelHealth(channel *Channel) bool {
 
 	healthy := resp.StatusCode >= 200 && resp.StatusCode < 500
 	if !healthy {
-		logger.SysLog(fmt.Sprintf("Health check for channel #%d (%s): HTTP %d, model=%s", channel.Id, channel.Name, resp.StatusCode, strings.Split(channel.Models, ",")[0]))
+		logger.SysLog(fmt.Sprintf("Health check for channel #%d (%s): HTTP %d, model=%s", channel.Id, channel.Name, resp.StatusCode, func(s string) string { parts := strings.Split(s, ","); return parts[len(parts)-1] }(channel.Models)))
 	}
 	return healthy
 }
