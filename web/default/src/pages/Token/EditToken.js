@@ -139,17 +139,17 @@ const EditToken = () => {
   const handleGroupChange = async (group) => {
     try {
       let res = await API.get('/api/channel/?p=0&size=200');
-      const list = res.data?.data || [];
+      const list = (res.data && res.data.data) ? res.data.data : [];
       let models = [];
-      list.forEach(c => {
+      for (let c of list) {
         let cg = c.group || 'default';
         if (group === 'all' || cg === group) {
-          let cm = (c.models || '').split(',').filter(Boolean);
-          models = models.concat(cm);
+          let cm = String(c.models || '').split(',').filter(function(v){return v;});
+          for (let m of cm) models.push(m);
         }
-      });
-      models = [...new Set(models)];
-      setInputs(inputs => ({ ...inputs, models }));
+      }
+      models = models.filter(function(v,i,s){return s.indexOf(v)===i;});
+      setInputs(function(prev){ return {...prev, models: models}; });
     } catch (e) {}
   };
 

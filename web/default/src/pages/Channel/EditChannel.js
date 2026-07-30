@@ -292,6 +292,7 @@ const EditChannel = () => {
                 label={t('channel.edit.group')}
                 placeholder={t('channel.edit.group_placeholder')}
                 name='groups'
+                search
                 required
                 fluid
                 multiple
