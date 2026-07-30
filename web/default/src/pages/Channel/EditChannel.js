@@ -48,6 +48,7 @@ const EditChannel = () => {
     system_prompt: '',
     models: [],
     groups: ['default'],
+    channel_group: '',
     // asterisk-token-router: billing fields
     billing_mode: 1,
     price_in: 0,
@@ -289,24 +290,21 @@ const EditChannel = () => {
             </Form.Field>
             <Form.Field>
               <Form.Dropdown
-                {/* asterisk-token-router: 渠道组 */}
-              <Form.Field>
-                <Form.Dropdown
-                  label='渠道组'
-                  name='channel_group'
-                  placeholder='输入 basic / advanced / all 等'
-                  fluid
-                  search
-                  selection
-                  allowAdditions
-                  additionLabel='添加渠道组: '
-                  onChange={(e, { value }) => setInputs({ ...inputs, channel_group: value })}
-                  value={inputs.channel_group}
-                  clearable
-                  options={groupOptions}
-                />
-              </Form.Field>
-              {renderChannelTip(inputs.type)}
+                label='渠道组'
+                name='channel_group'
+                placeholder='输入 basic / advanced / all 等'
+                fluid
+                search
+                selection
+                allowAdditions
+                additionLabel='添加: '
+                onChange={handleInputChange}
+                value={inputs.channel_group}
+                clearable
+                options={groupOptions}
+              />
+            </Form.Field>
+            {renderChannelTip(inputs.type)}
 
             {/* Azure OpenAI specific fields */}
             {inputs.type === 3 && (
