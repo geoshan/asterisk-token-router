@@ -80,6 +80,7 @@ func checkChannelHealth(channel *Channel) bool {
 
 	baseURL := channel.GetBaseURL()
 	if baseURL == "" {
+		logger.SysLog(fmt.Sprintf("Health check for channel #%d (%s): base_url is empty, skipping", channel.Id, channel.Name))
 		return false
 	}
 
