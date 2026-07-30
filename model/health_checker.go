@@ -96,9 +96,14 @@ func checkChannelHealth(channel *Channel) bool {
 	client := &http.Client{Timeout: HealthCheckTimeout}
 	resp, err := client.Do(req)
 	if err != nil {
+		logger.SysLog(fmt.Sprintf("Health check for channel #%d (%s): request error: %v", channel.Id, channel.Name, err))
 		return false
 	}
 	defer resp.Body.Close()
 
-	return resp.StatusCode >= 200 && resp.StatusCode < 300
+	healthy := resp.StatusCode >= 200 && resp.StatusCode < 300
+	if !healthy {
+		logger.SysLog(fmt.Sprintf("Health check for channel #%d (%s): HTTP %d, model=%s", channel.Id, channel.Name, resp.StatusCode, strings.Split(channel.Models, ",")[0]))
+	}
+	return healthy
 }
