@@ -289,23 +289,24 @@ const EditChannel = () => {
             </Form.Field>
             <Form.Field>
               <Form.Dropdown
-                label={t('channel.edit.group')}
-                placeholder={t('channel.edit.group_placeholder')}
-                name='groups'
-                search
-                required
-                fluid
-                multiple
-                selection
-                allowAdditions
-                additionLabel={t('channel.edit.group_addition')}
-                onChange={handleInputChange}
-                value={inputs.groups}
-                autoComplete='new-password'
-                options={groupOptions}
-              />
-            </Form.Field>
-            {renderChannelTip(inputs.type)}
+                {/* asterisk-token-router: 渠道组 */}
+              <Form.Field>
+                <Form.Dropdown
+                  label='渠道组'
+                  name='channel_group'
+                  placeholder='输入 basic / advanced / all 等'
+                  fluid
+                  search
+                  selection
+                  allowAdditions
+                  additionLabel='添加渠道组: '
+                  onChange={(e, { value }) => setInputs({ ...inputs, channel_group: value })}
+                  value={inputs.channel_group}
+                  clearable
+                  options={groupOptions}
+                />
+              </Form.Field>
+              {renderChannelTip(inputs.type)}
 
             {/* Azure OpenAI specific fields */}
             {inputs.type === 3 && (

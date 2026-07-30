@@ -136,21 +136,22 @@ const EditToken = () => {
     } catch (error) {}
   };
 
-  const handleGroupChange = async (group) => {
-    try {
-      let res = await API.get('/api/channel/?p=0&size=200');
-      const list = (res.data && res.data.data) ? res.data.data : [];
-      let models = [];
-      for (let c of list) {
-        let cg = c.group || 'default';
+  const handleGroupChange = (group) => {
+    API.get('/api/channel/?p=0&size=200').then(function(res) {
+      var list = (res.data && res.data.data) ? res.data.data : [];
+      var models = [];
+      list.forEach(function(c) {
+        var cg = c.channel_group || 'default';
         if (group === 'all' || cg === group) {
-          let cm = String(c.models || '').split(',').filter(function(v){return v;});
-          for (let m of cm) models.push(m);
+          if (c.models) {
+            c.models.split(',').forEach(function(m) { if(m) models.push(m); });
+          }
         }
-      }
-      models = models.filter(function(v,i,s){return s.indexOf(v)===i;});
-      setInputs(function(prev){ return {...prev, models: models}; });
-    } catch (e) {}
+      });
+      var unique = [];
+      models.forEach(function(m) { if (unique.indexOf(m) === -1) unique.push(m); });
+      setInputs(function(prev) { var n = {}; for(var k in prev) n[k]=prev[k]; n.models=unique; return n; });
+    }).catch(function(){});
   };
 
   useEffect(() => {
