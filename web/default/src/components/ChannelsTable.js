@@ -251,37 +251,30 @@ const ChannelsTable = () => {
     }
   };
 
-  const renderResponseTime = (responseTime, t) => {
-    let time = responseTime / 1000;
-    time = time.toFixed(2) + 's';
-    if (responseTime === 0) {
+  const renderResponseTime = (channel, t) => {
+    let time = (channel.response_time / 1000).toFixed(2);
+    if (channel.test_time === 0) {
       return (
         <Label basic color='grey'>
           {t('channel.table.not_tested')}
         </Label>
       );
-    } else if (responseTime <= 1000) {
+    } else if (channel.response_time <= 1000) {
       return (
         <Label basic color='green'>
-          {time}
+          {time}s
         </Label>
       );
-    } else if (responseTime <= 3000) {
-      return (
-        <Label basic color='olive'>
-          {time}
-        </Label>
-      );
-    } else if (responseTime <= 5000) {
+    } else if (channel.response_time <= 3000) {
       return (
         <Label basic color='yellow'>
-          {time}
+          {time}s
         </Label>
       );
     } else {
       return (
         <Label basic color='red'>
-          {time}
+          {time}s
         </Label>
       );
     }
@@ -537,7 +530,7 @@ const ChannelsTable = () => {
                           : t('channel.table.not_tested')
                       }
                       key={channel.id}
-                      trigger={renderResponseTime(channel.response_time, t)}
+                      trigger={renderResponseTime(channel, t)}
                       basic
                     />
                   </Table.Cell>

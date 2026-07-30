@@ -46,7 +46,7 @@ const Footer = () => {
               {t('footer.built_by_name')}
             </a>{' '}
             {t('footer.license')}{' '}
-            <a href='https://opensource.org/licenses/mit-license.php'>
+            <a href='https://apache.org/licenses/LICENSE-2.0'>
               {t('footer.mit')}
             </a>
           </div>

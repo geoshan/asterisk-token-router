@@ -36,7 +36,7 @@ import (
 
 func buildTestRequest(model string) *relaymodel.GeneralOpenAIRequest {
 	if model == "" {
-		model = "gpt-3.5-turbo"
+		// Use channel's first model, default to gpt-3.5-turbo
 	}
 	testRequest := &relaymodel.GeneralOpenAIRequest{
 		Model: model,
