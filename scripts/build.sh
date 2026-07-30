@@ -14,6 +14,12 @@ OUTPUT="asterisk-tr-${TARGET}"
 
 echo "Building ${FULL_VERSION} for ${TARGET}..."
 
+# Build frontend (if web/default exists)
+if [ -d "web/default" ]; then
+  echo "Building frontend..."
+  cd web/default && npm run build 2>&1 | tail -1 && cd ../..
+fi
+
 if [ "$TARGET" = "linux" ]; then
   CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -ldflags="-s -w -X 'github.com/songquanpeng/one-api/common.Version=${FULL_VERSION}'" \
