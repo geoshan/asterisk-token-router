@@ -95,7 +95,7 @@ const ChannelsTable = () => {
     } else {
       channel.models = channel.models.split(',');
       if (channel.models.length > 0) {
-        /* asterisk: use last model to skip default OpenAI models */ const modelList = channel.models.split(","); channel.test_model = modelList[modelList.length-1];
+        /* asterisk: use last model to skip default OpenAI models */ const ml = Array.isArray(channel.models) ? channel.models : (channel.models||"").split(","); channel.test_model = ml[ml.length-1] || "gpt-3.5-turbo";
       }
       channel.model_options = channel.models.map((model) => {
         return {

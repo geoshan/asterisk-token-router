@@ -139,16 +139,18 @@ const EditToken = () => {
   const handleGroupChange = async (group) => {
     try {
       let res = await API.get('/api/channel/?p=0&size=200');
-      const d = res.data || {};
-      if (!d.success || !d.data) return;
-      const groupModels = [...new Set(
-        d.data
-          .filter(c => group === 'all' || (c.group || 'default') === group)
-          .flatMap(c => (c.models || '').split(','))
-          .filter(Boolean)
-      )];
-      setInputs(inputs => ({ ...inputs, models: groupModels }));
-    } catch (e) { console.error(e); }
+      const list = res.data?.data || [];
+      let models = [];
+      list.forEach(c => {
+        let cg = c.group || 'default';
+        if (group === 'all' || cg === group) {
+          let cm = (c.models || '').split(',').filter(Boolean);
+          models = models.concat(cm);
+        }
+      });
+      models = [...new Set(models)];
+      setInputs(inputs => ({ ...inputs, models }));
+    } catch (e) {}
   };
 
   useEffect(() => {
