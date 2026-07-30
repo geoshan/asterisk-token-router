@@ -1,9 +1,11 @@
 package model
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -81,12 +83,15 @@ func checkChannelHealth(channel *Channel) bool {
 		return false
 	}
 
-	url := baseURL + "/v1/models"
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	// Use a lightweight chat completion for health check
+	url := baseURL + "/v1/chat/completions"
+	body := []byte(`{"model":"` + strings.Split(channel.Models, ",")[0] + `","messages":[{"role":"user","content":"ping"}],"max_tokens":1}`)
+	req, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewReader(body))
 	if err != nil {
 		return false
 	}
 	req.Header.Set("Authorization", "Bearer "+channel.Key)
+	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{Timeout: HealthCheckTimeout}
 	resp, err := client.Do(req)
