@@ -38,6 +38,28 @@ type Token struct {
 	MonthlyQuota   int64   `json:"monthly_quota" gorm:"bigint;default:0"` // 月度额度，0=不限，每月1日重置
 }
 
+func GetAllTokens(startIdx int, num int, order string) ([]*Token, error) {
+	var tokens []*Token
+	var err error
+	query := DB.Table("tokens")
+	switch order {
+	case "remain_quota":
+		query = query.Order("remain_quota")
+	case "used_quota":
+		query = query.Order("used_quota")
+	case "created_time":
+		query = query.Order("created_time desc")
+	case "expired_time":
+		query = query.Order("expired_time desc")
+	case "name":
+		query = query.Order("name")
+	default:
+		query = query.Order("id desc")
+	}
+	err = query.Limit(num).Offset(startIdx).Find(&tokens).Error
+	return tokens, err
+}
+
 func GetAllUserTokens(userId int, startIdx int, num int, order string) ([]*Token, error) {
 	var tokens []*Token
 	var err error

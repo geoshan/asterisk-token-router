@@ -21,7 +21,13 @@ func GetAllTokens(c *gin.Context) {
 	}
 
 	order := c.Query("order")
-	tokens, err := model.GetAllUserTokens(userId, p*config.ItemsPerPage, config.ItemsPerPage, order)
+	var tokens []*model.Token
+	var err error
+	if c.GetInt(ctxkey.Role) >= 10 {
+		tokens, err = model.GetAllTokens(p*config.ItemsPerPage, config.ItemsPerPage, order)
+	} else {
+		tokens, err = model.GetAllUserTokens(userId, p*config.ItemsPerPage, config.ItemsPerPage, order)
+	}
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
