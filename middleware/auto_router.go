@@ -21,7 +21,7 @@ type AutoRouteRequest struct {
 // DefaultAutoModels 默认的 auto 路由模型映射
 var DefaultAutoModels = map[string]string{
 	"basic":    "qwen-max",
-	"advanced": "kimi-k3",
+	"advanced": "qwen-max",
 }
 
 // resolveAutoModel wraps the auto routing logic and rewrites the request body
