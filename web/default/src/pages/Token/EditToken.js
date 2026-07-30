@@ -26,6 +26,7 @@ const EditToken = () => {
   const [loading, setLoading] = useState(isEdit);
   const [userOptions, setUserOptions] = useState([]);
   const [modelOptions, setModelOptions] = useState([]);
+  const [groupOptions, setGroupOptions] = useState([]);
   const originInputs = {
     user_id: '',
     name: '',
@@ -124,6 +125,32 @@ const EditToken = () => {
     }
   };
 
+  const loadGroups = async () => {
+    try {
+      let res = await API.get('/api/group/');
+      const { success, data } = res.data || {};
+      if (success && data) {
+        let options = data.map((g) => ({ key: g, text: g, value: g }));
+        setGroupOptions(options);
+      }
+    } catch (error) {}
+  };
+
+  const handleGroupChange = async (group) => {
+    // Update models based on selected group
+    try {
+      let res = await API.get('/api/channel/?p=0&size=200');
+      const channels = res.data?.data || [];
+      const groupModels = [...new Set(
+        channels
+          .filter(c => c.group === group || group === 'all')
+          .flatMap(c => (c.models || '').split(','))
+          .filter(Boolean)
+      )];
+      setInputs({ ...inputs, models: groupModels });
+    } catch (e) {}
+  };
+
   useEffect(() => {
     if (isEdit) {
       loadToken().catch((error) => {
@@ -132,6 +159,7 @@ const EditToken = () => {
       });
     } else {
       loadUsers();
+      loadGroups();
     }
     loadAvailableModels().catch((error) => {
       showError(error.message || 'Failed to load models');
@@ -209,6 +237,19 @@ const EditToken = () => {
                 required={!isEdit}
               />
             </Form.Field>
+            {/* asterisk-token-router: group selection */}
+            {!isEdit && groupOptions.length > 0 && (
+              <Form.Field>
+                <Form.Dropdown
+                  label='模型分组'
+                  placeholder='选择分组自动填充模型'
+                  fluid
+                  selection
+                  options={groupOptions}
+                  onChange={(e, { value }) => handleGroupChange(value)}
+                />
+              </Form.Field>
+            )}
             <Form.Field>
               <Form.Dropdown
                 label={t('token.edit.models')}
