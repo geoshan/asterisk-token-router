@@ -196,8 +196,10 @@ const EditToken = () => {
     if (success) {
       if (isEdit) {
         showSuccess(t('token.edit.messages.update_success'));
+          setTimeout(() => navigate('/token'), 800);
       } else {
         showSuccess(t('token.edit.messages.create_success'));
+          setTimeout(() => navigate('/token'), 800);
         setInputs(originInputs);
       }
     } else {

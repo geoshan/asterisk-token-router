@@ -225,8 +225,10 @@ const EditChannel = () => {
     if (success) {
       if (isEdit) {
         showSuccess(t('channel.edit.messages.update_success'));
+          setTimeout(() => navigate('/channel'), 800);
       } else {
         showSuccess(t('channel.edit.messages.create_success'));
+          setTimeout(() => navigate('/channel'), 800);
         setInputs(originInputs);
       }
     } else {
