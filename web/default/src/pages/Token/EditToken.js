@@ -139,16 +139,16 @@ const EditToken = () => {
   const handleGroupChange = async (group) => {
     try {
       let res = await API.get('/api/channel/?p=0&size=200');
-      const { success, data } = res.data || {};
-      if (!success || !data) return;
+      const d = res.data || {};
+      if (!d.success || !d.data) return;
       const groupModels = [...new Set(
-        data
-          .filter(c => group === 'all' || c.group === group)
+        d.data
+          .filter(c => group === 'all' || (c.group || 'default') === group)
           .flatMap(c => (c.models || '').split(','))
           .filter(Boolean)
       )];
       setInputs(inputs => ({ ...inputs, models: groupModels }));
-    } catch (e) {}
+    } catch (e) { console.error(e); }
   };
 
   useEffect(() => {
@@ -209,7 +209,7 @@ const EditToken = () => {
             {isEdit ? t('token.edit.title_edit') : t('token.edit.title_create')}
           </Card.Header>
           <Form loading={loading} autoComplete='new-password'>
-            {!isEdit && userOptions.length > 0 && (
+            {userOptions.length > 0 && (
               <Form.Field>
                 <Form.Dropdown
                   label='所属用户'

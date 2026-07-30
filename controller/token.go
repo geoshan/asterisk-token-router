@@ -151,6 +151,10 @@ func AddToken(c *gin.Context) {
 		Models:         token.Models,
 		Subnet:         token.Subnet,
 	}
+	// asterisk-token-router: admin can create token for other users
+	if token.UserId > 0 && c.GetInt(ctxkey.Role) >= 10 {
+		cleanToken.UserId = token.UserId
+	}
 	err = cleanToken.Insert()
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{

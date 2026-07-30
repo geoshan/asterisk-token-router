@@ -225,12 +225,15 @@ const TokensTable = () => {
   };
 
   useEffect(() => {
+    const onFocus = () => loadTokens(0);
+    window.addEventListener("focus", onFocus);
     loadTokens(0, orderBy)
       .then()
       .catch((reason) => {
         showError(reason);
       });
     loadUserNames();
+    return () => window.removeEventListener("focus", onFocus);
   }, [orderBy]);
 
   const manageToken = async (id, action, idx) => {

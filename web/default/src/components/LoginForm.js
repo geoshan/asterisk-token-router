@@ -87,7 +87,7 @@ const LoginForm = () => {
           showSuccess(t('messages.success.login'));
           showWarning(t('messages.error.root_password'));
         } else {
-          navigate('/token');
+          navigate('/mytoken');
           showSuccess(t('messages.success.login'));
         }
       } else {

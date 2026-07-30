@@ -13,6 +13,15 @@ const Home = () => {
   const [homePageContentLoaded, setHomePageContentLoaded] = useState(false);
   const [homePageContent, setHomePageContent] = useState('');
   const [userState] = useContext(UserContext);
+  const [channels, setChannels] = useState([]);
+  const loadChannels = async () => {
+    try {
+      let res = await API.get('/api/channel/?p=0&size=50');
+      const {success,data} = res.data || {};
+      if (success&&data) setChannels(data.filter(c=>c.status===1));
+    } catch(e){}
+  };
+  useEffect(()=>{loadChannels();},[]);
 
   const displayNotice = async () => {
     const res = await API.get('/api/notice');

@@ -28,6 +28,7 @@ let headerButtons = [
     to: '/channel',
     icon: 'sitemap',
     admin: true,
+    login: true,
   },
   {
     name: 'header.token',
@@ -39,36 +40,46 @@ let headerButtons = [
     to: "/mytoken",
     icon: "key",
     admin: false,
+    login: true,
+    regular: true,
   },
   {
     name: 'header.redemption',
+    login: true,
     to: '/redemption',
     icon: 'dollar sign',
     admin: true,
   },
   {
     name: '额度申请',
-    to: '/topup', admin: false,
+    to: '/topup',
     icon: 'cart',
+    admin: false,
+    login: true,
+    regular: true,
   },
   {
     name: 'header.user',
+    login: true,
     to: '/user',
     icon: 'user',
     admin: true,
   },
   {
     name: 'header.dashboard',
+    login: true,
     to: '/dashboard',
     icon: 'chart bar',
   },
   {
     name: 'header.log',
+    login: true,
     to: '/log',
     icon: 'book',
   },
   {
     name: 'header.setting',
+    login: true,
     to: '/setting',
     icon: 'setting',
   },
@@ -110,8 +121,11 @@ const Header = () => {
   };
 
   const renderButtons = (isMobile) => {
+    let isLoggedIn = !!userState.user;
     return headerButtons.map((button) => {
       if (button.admin && !isAdmin()) return <></>;
+      if (button.regular && isAdmin()) return <></>;
+      if (button.login && !isLoggedIn) return <></>;
       if (isMobile) {
         return (
           <Menu.Item
