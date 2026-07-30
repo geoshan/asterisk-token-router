@@ -127,13 +127,12 @@ const EditToken = () => {
 
   const loadGroups = async () => {
     try {
-      let res = await API.get('/api/group/');
-      const { success, data } = res.data || {};
-      if (success && data) {
-        let options = data.map((g) => ({ key: g, text: g, value: g }));
-        setGroupOptions(options);
-      }
-    } catch (error) {}
+      let res = await API.get('/api/channel/?p=0&size=200');
+      let names = [...new Set(
+        (res.data?.data || []).map(c => c.channel_group).filter(Boolean)
+      )];
+      setGroupOptions(names.map(g => ({ key: g, text: g, value: g })));
+    } catch (e) {}
   };
 
   const handleGroupChange = (group) => {
