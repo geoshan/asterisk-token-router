@@ -87,6 +87,19 @@ const TokensTable = () => {
   const [showTopUpModal, setShowTopUpModal] = useState(false);
   const [targetTokenIdx, setTargetTokenIdx] = useState(0);
   const [orderBy, setOrderBy] = useState('');
+  const [userNames, setUserNames] = useState({});
+
+  const loadUserNames = async () => {
+    try {
+      let res = await API.get('/api/user/?p=0&limit=100');
+      const { success, data } = res.data || {};
+      if (success && data) {
+        let map = {};
+        data.forEach(u => { map[u.id] = u.username; });
+        setUserNames(map);
+      }
+    } catch (error) {}
+  };
 
   const loadTokens = async (startIdx) => {
     const res = await API.get(`/api/token/?p=${startIdx}&order=${orderBy}`);
@@ -217,6 +230,7 @@ const TokensTable = () => {
       .catch((reason) => {
         showError(reason);
       });
+    loadUserNames();
   }, [orderBy]);
 
   const manageToken = async (id, action, idx) => {
@@ -326,6 +340,7 @@ const TokensTable = () => {
             >
               {t('token.table.name')}
             </Table.HeaderCell>
+            <Table.HeaderCell>用户</Table.HeaderCell>
             <Table.HeaderCell
               style={{ cursor: 'pointer' }}
               onClick={() => {
@@ -400,6 +415,7 @@ const TokensTable = () => {
                   <Table.Cell>
                     {token.name ? token.name : t('token.table.no_name')}
                   </Table.Cell>
+                  <Table.Cell>{userNames[token.user_id] || token.user_id}</Table.Cell>
                   <Table.Cell>{renderStatus(token.status, t)}</Table.Cell>
                   <Table.Cell>{renderQuota(token.used_quota, t)}</Table.Cell>
                   <Table.Cell>
