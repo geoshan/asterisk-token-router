@@ -253,7 +253,9 @@ func UpdateToken(c *gin.Context) {
 		cleanToken.ExpiredTime = token.ExpiredTime
 		cleanToken.RemainQuota = token.RemainQuota
 		cleanToken.UnlimitedQuota = token.UnlimitedQuota
-		cleanToken.Models = token.Models
+		if token.Models != nil {
+			cleanToken.Models = token.Models
+		}
 		cleanToken.Subnet = token.Subnet
 		if token.UserId > 0 && c.GetInt(ctxkey.Role) >= 10 {
 			cleanToken.UserId = token.UserId
