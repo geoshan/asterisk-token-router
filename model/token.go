@@ -34,6 +34,8 @@ type Token struct {
 	UsedQuota      int64   `json:"used_quota" gorm:"bigint;default:0"` // used quota
 	Models         *string `json:"models" gorm:"type:text"`            // allowed models
 	Subnet         *string `json:"subnet" gorm:"default:''"`           // allowed subnet
+	// asterisk-token-router
+	MonthlyQuota   int64   `json:"monthly_quota" gorm:"bigint;default:0"` // 月度额度，0=不限，每月1日重置
 }
 
 func GetAllUserTokens(userId int, startIdx int, num int, order string) ([]*Token, error) {

@@ -33,7 +33,12 @@ let headerButtons = [
     name: 'header.token',
     to: '/token',
     icon: 'key',
-    admin: true,
+    admin: true},
+  {
+    name: "我的令牌",
+    to: "/mytoken",
+    icon: "key",
+    admin: false,
   },
   {
     name: 'header.redemption',
@@ -42,8 +47,8 @@ let headerButtons = [
     admin: true,
   },
   {
-    name: 'header.topup',
-    to: '/topup',
+    name: '额度申请',
+    to: '/topup', admin: false,
     icon: 'cart',
   },
   {

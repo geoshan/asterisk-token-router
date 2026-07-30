@@ -17,6 +17,7 @@ import { UserContext } from './context/User';
 import { StatusContext } from './context/Status';
 import Channel from './pages/Channel';
 import Token from './pages/Token';
+import MyToken from "./pages/Token/MyToken";
 import EditToken from './pages/Token/EditToken';
 import EditChannel from './pages/Channel/EditChannel';
 import Redemption from './pages/Redemption';
