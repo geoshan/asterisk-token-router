@@ -210,6 +210,9 @@ func UpdateToken(c *gin.Context) {
 		return
 	}
 	cleanToken, err := model.GetTokenByIds(token.Id, userId)
+	if err != nil && c.GetInt(ctxkey.Role) >= 10 {
+		cleanToken, err = model.GetTokenById(token.Id)
+	}
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -243,6 +246,9 @@ func UpdateToken(c *gin.Context) {
 		cleanToken.UnlimitedQuota = token.UnlimitedQuota
 		cleanToken.Models = token.Models
 		cleanToken.Subnet = token.Subnet
+		if token.UserId > 0 && c.GetInt(ctxkey.Role) >= 10 {
+			cleanToken.UserId = token.UserId
+		}
 	}
 	err = cleanToken.Update()
 	if err != nil {

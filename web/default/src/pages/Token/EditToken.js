@@ -242,7 +242,7 @@ const EditToken = () => {
               />
             </Form.Field>
             {/* asterisk-token-router: group selection */}
-            {!isEdit && groupOptions.length > 0 && (
+            {groupOptions.length > 0 && (
               <Form.Field>
                 <Form.Dropdown
                   label='模型分组'
