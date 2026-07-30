@@ -155,6 +155,8 @@ const EditToken = () => {
 
   useEffect(() => {
     if (isEdit) {
+      loadUsers();
+      loadGroups();
       loadToken().catch((error) => {
         showError(error.message || 'Failed to load token');
         setLoading(false);

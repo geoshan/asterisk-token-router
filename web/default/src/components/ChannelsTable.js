@@ -519,7 +519,7 @@ const ChannelsTable = () => {
                   <Table.Cell>
                     {channel.name ? channel.name : t('channel.table.no_name')}
                   </Table.Cell>
-                  <Table.Cell>{renderGroup(channel.group)}</Table.Cell>
+                  <Table.Cell>{channel.channel_group || "未分组"}</Table.Cell>
                   <Table.Cell>{renderType(channel.type, t)}</Table.Cell>
                   <Table.Cell>{renderStatus(channel.status, t)}</Table.Cell>
                   <Table.Cell>
