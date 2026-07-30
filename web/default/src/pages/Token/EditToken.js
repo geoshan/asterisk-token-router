@@ -140,7 +140,7 @@ const EditToken = () => {
       var list = (res.data && res.data.data) ? res.data.data : [];
       var models = [];
       list.forEach(function(c) {
-        var cg = c.channel_group || 'default';
+        var cg = c.channel_group || '';
         if (group === 'all' || cg === group) {
           if (c.models) {
             c.models.split(',').forEach(function(m) { if(m) models.push(m); });
