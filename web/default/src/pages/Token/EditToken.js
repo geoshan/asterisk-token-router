@@ -30,7 +30,7 @@ const EditToken = () => {
   const originInputs = {
     user_id: '',
     name: '',
-    remain_quota: isEdit ? 0 : 500000,
+    remain_quota: 0,
     expired_time: -1,
     unlimited_quota: false,
     models: [],
@@ -137,17 +137,17 @@ const EditToken = () => {
   };
 
   const handleGroupChange = async (group) => {
-    // Update models based on selected group
     try {
       let res = await API.get('/api/channel/?p=0&size=200');
-      const channels = res.data?.data || [];
+      const { success, data } = res.data || {};
+      if (!success || !data) return;
       const groupModels = [...new Set(
-        channels
-          .filter(c => c.group === group || group === 'all')
+        data
+          .filter(c => group === 'all' || c.group === group)
           .flatMap(c => (c.models || '').split(','))
           .filter(Boolean)
       )];
-      setInputs({ ...inputs, models: groupModels });
+      setInputs(inputs => ({ ...inputs, models: groupModels }));
     } catch (e) {}
   };
 

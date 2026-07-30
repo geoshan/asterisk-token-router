@@ -128,6 +128,14 @@ function App() {
         }
       />
       <Route
+      <Route
+        path="/mytoken"
+        element={
+          <PrivateRoute>
+            <MyToken />
+          </PrivateRoute>
+        }
+      />
         path='/token'
         element={
           <PrivateRoute>
