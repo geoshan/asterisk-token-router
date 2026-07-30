@@ -74,6 +74,9 @@ func GetToken(c *gin.Context) {
 		return
 	}
 	token, err := model.GetTokenByIds(id, userId)
+	if err != nil && c.GetInt(ctxkey.Role) >= 10 {
+		token, err = model.GetTokenById(id)
+	}
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
