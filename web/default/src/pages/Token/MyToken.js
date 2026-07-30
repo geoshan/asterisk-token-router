@@ -53,9 +53,7 @@ const MyToken = () => {
                 <Table.Row key={token.id}>
                   <Table.Cell>{token.name}</Table.Cell>
                   <Table.Cell>
-                    <code>sk-{token.key?.substring(0, 8)}...</code>
-                    <Label as='a' color='blue' size='mini' style={{ marginLeft: 8, cursor: 'pointer' }}
-                      onClick={() => handleCopy(token.key, 'Key')}>复制</Label>
+                    <code style={{fontSize:11,wordBreak:'break-all'}}>sk-{token.key}</code>
                   </Table.Cell>
                   <Table.Cell>
                     {token.status === 1 ? <Label color='green'>有效</Label> : <Label color='red'>已吊销</Label>}
