@@ -101,7 +101,7 @@ func checkChannelHealth(channel *Channel) bool {
 	}
 	defer resp.Body.Close()
 
-	healthy := resp.StatusCode >= 200 && resp.StatusCode < 300
+	healthy := resp.StatusCode >= 200 && resp.StatusCode < 500
 	if !healthy {
 		logger.SysLog(fmt.Sprintf("Health check for channel #%d (%s): HTTP %d, model=%s", channel.Id, channel.Name, resp.StatusCode, strings.Split(channel.Models, ",")[0]))
 	}
