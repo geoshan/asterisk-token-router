@@ -62,7 +62,7 @@ const MyToken = () => {
                   </Table.Cell>
                   <Table.Cell>{(token.models||"-").substring(0,30)}{(token.models||"").length>30?"...":""}</Table.Cell>
                   <Table.Cell>{token.remain_quota}</Table.Cell>
-                  <Table.Cell><button class="ui tiny primary button" onclick="location.href='/topup'" style="padding:4px 8px;font-size:12px">申请额度</button></Table.Cell>
+                  <Table.Cell><a href="/topup" style="padding:4px 12px;font-size:12px;background:#2185d0;color:#fff;border-radius:4px;text-decoration:none">申请额度</a></Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
