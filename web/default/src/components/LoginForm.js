@@ -83,7 +83,7 @@ const LoginForm = () => {
         userDispatch({ type: 'login', payload: data });
         localStorage.setItem('user', JSON.stringify(data));
         if (username === 'root' && password === '123456') {
-          navigate('/user/edit');
+          navigate('/dashboard');
           showSuccess(t('messages.success.login'));
           showWarning(t('messages.error.root_password'));
         } else {
