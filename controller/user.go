@@ -261,6 +261,9 @@ func GetUser(c *gin.Context) {
 
 func GetUserDashboard(c *gin.Context) {
 	id := c.GetInt(ctxkey.Id)
+	if c.GetInt(ctxkey.Role) >= 10 {
+		id = 0 // admin sees all users
+	}
 	now := time.Now()
 	startOfDay := now.Truncate(24*time.Hour).AddDate(0, 0, -6).Unix()
 	endOfDay := now.Truncate(24 * time.Hour).Add(24*time.Hour - time.Second).Unix()
@@ -284,6 +287,9 @@ func GetUserDashboard(c *gin.Context) {
 
 func GenerateAccessToken(c *gin.Context) {
 	id := c.GetInt(ctxkey.Id)
+	if c.GetInt(ctxkey.Role) >= 10 {
+		id = 0 // admin sees all users
+	}
 	user, err := model.GetUserById(id, true)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -320,6 +326,9 @@ func GenerateAccessToken(c *gin.Context) {
 
 func GetAffCode(c *gin.Context) {
 	id := c.GetInt(ctxkey.Id)
+	if c.GetInt(ctxkey.Role) >= 10 {
+		id = 0 // admin sees all users
+	}
 	user, err := model.GetUserById(id, true)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -348,6 +357,9 @@ func GetAffCode(c *gin.Context) {
 
 func GetSelf(c *gin.Context) {
 	id := c.GetInt(ctxkey.Id)
+	if c.GetInt(ctxkey.Role) >= 10 {
+		id = 0 // admin sees all users
+	}
 	user, err := model.GetUserById(id, false)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{

@@ -241,11 +241,11 @@ func SearchLogsByDayAndModel(userId, start, end int) (LogStatistics []*LogStatis
 		sum(completion_tokens) as completion_tokens
 		FROM logs
 		WHERE type=2
-		AND user_id= ?
+		AND (user_id= ? OR -1 = ?)
 		AND created_at BETWEEN ? AND ?
 		GROUP BY day, model_name
 		ORDER BY day, model_name
-	`, userId, start, end).Scan(&LogStatistics).Error
+	`, userId, userId, start, end).Scan(&LogStatistics).Error
 
 	return LogStatistics, err
 }
