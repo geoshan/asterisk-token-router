@@ -353,6 +353,16 @@ const EditToken = () => {
                 disabled={unlimited_quota}
               />
             </Form.Field>
+            <Form.Field>
+              <Form.Input
+                label='月度额度（0=不限）'
+                name='monthly_quota'
+                type='number'
+                placeholder='0表示不限制月度用量，每月1日重置'
+                onChange={handleInputChange}
+                value={inputs.monthly_quota || 0}
+              />
+            </Form.Field>
             <Button
               type={'button'}
               onClick={() => {

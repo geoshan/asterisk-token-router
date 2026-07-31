@@ -58,7 +58,7 @@ const MyToken = () => {
                   </Table.Cell>
                   <Table.Cell>{(token.models||'-').substring(0,30)}{(token.models||'').length>30?'...':''}</Table.Cell>
                   <Table.Cell>{token.remain_quota}</Table.Cell>
-                  <Table.Cell><a href='/request-quota?tokenId=' + token.id style={{padding:'4px 12px',fontSize:12,background:'#2185d0',color:'#fff',borderRadius:4,textDecoration:'none'}}>申请额度</a></Table.Cell>
+                  <Table.Cell><a href={'/request-quota?tokenId=' + token.id} style={{padding:'4px 12px',fontSize:12,background:'#2185d0',color:'#fff',borderRadius:4,textDecoration:'none'}}>申请额度</a></Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
