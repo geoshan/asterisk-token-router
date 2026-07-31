@@ -45,7 +45,9 @@ const MyToken = () => {
                 <Table.HeaderCell>名称</Table.HeaderCell>
                 <Table.HeaderCell>Key</Table.HeaderCell>
                 <Table.HeaderCell>状态</Table.HeaderCell>
-                <Table.HeaderCell>已用额度</Table.HeaderCell>
+                <Table.HeaderCell>模型范围</Table.HeaderCell>
+                <Table.HeaderCell>剩余额度</Table.HeaderCell>
+                <Table.HeaderCell>操作</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -58,7 +60,9 @@ const MyToken = () => {
                   <Table.Cell>
                     {token.status === 1 ? <Label color='green'>有效</Label> : <Label color='red'>已吊销</Label>}
                   </Table.Cell>
-                  <Table.Cell>{token.used_quota}</Table.Cell>
+                  <Table.Cell>{(token.models||"-").substring(0,30)}{(token.models||"").length>30?"...":""}</Table.Cell>
+                  <Table.Cell>{token.remain_quota}</Table.Cell>
+                  <Table.Cell><button class="ui tiny primary button" onclick="location.href='/topup'" style="padding:4px 8px;font-size:12px">申请额度</button></Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>

@@ -36,6 +36,7 @@ type Token struct {
 	Subnet         *string `json:"subnet" gorm:"default:''"`           // allowed subnet
 	// asterisk-token-router
 	MonthlyQuota   int64   `json:"monthly_quota" gorm:"bigint;default:0"` // 月度额度，0=不限，每月1日重置
+	UsedQuotaThisMonth int64    // 当月已用额度
 }
 
 func GetAllTokens(startIdx int, num int, order string) ([]*Token, error) {

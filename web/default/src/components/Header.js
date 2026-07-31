@@ -44,21 +44,6 @@ let headerButtons = [
     regular: true,
   },
   {
-    name: 'header.redemption',
-    login: true,
-    to: '/redemption',
-    icon: 'dollar sign',
-    admin: true,
-  },
-  {
-    name: '额度申请',
-    to: '/topup',
-    icon: 'cart',
-    admin: false,
-    login: true,
-    regular: true,
-  },
-  {
     name: 'header.user',
     login: true,
     to: '/user',
