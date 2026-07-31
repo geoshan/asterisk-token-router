@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useContext } from 'react';
+import { UserContext } from '../../context/User';
 import { Button, Form, Card } from 'semantic-ui-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { API, showError, showSuccess } from '../../helpers';
@@ -8,7 +10,8 @@ import { renderQuota, renderQuotaWithPrompt } from '../../helpers/render';
 const EditUser = () => {
   const { t } = useTranslation();
   const params = useParams();
-  const userId = params.id;
+  const { userState } = useContext(UserContext);
+  const userId = params.id || (userState?.user?.id);
   const [loading, setLoading] = useState(true);
   const [inputs, setInputs] = useState({
     username: '',
