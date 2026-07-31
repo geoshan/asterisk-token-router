@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -102,6 +103,17 @@ func main() {
 	}
 
 	// Initialize HTTP server
+	// asterisk-token-router: monthly quota auto-reset
+	go func() {
+		for {
+			now := time.Now()
+			next := time.Date(now.Year(), now.Month()+1, 1, 0, 0, 0, 0, now.Location())
+			time.Sleep(next.Sub(now))
+			affected := model.ResetMonthlyQuotas()
+			logger.SysLog(fmt.Sprintf("Monthly quota reset: %d tokens", affected))
+		}
+	}()
+
 	server := gin.New()
 	server.Use(gin.Recovery())
 	// This will cause SSE not to work!!!

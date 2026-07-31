@@ -18,6 +18,7 @@ import { StatusContext } from './context/Status';
 import Channel from './pages/Channel';
 import Token from './pages/Token';
 import MyToken from "./pages/Token/MyToken";
+import RequestQuota from "./pages/Token/RequestQuota";
 import EditToken from './pages/Token/EditToken';
 import EditChannel from './pages/Channel/EditChannel';
 import Redemption from './pages/Redemption';
@@ -125,6 +126,14 @@ function App() {
           <Suspense fallback={<Loading></Loading>}>
             <EditChannel />
           </Suspense>
+        }
+      />
+      <Route
+        path="/request-quota"
+        element={
+          <PrivateRoute>
+            <RequestQuota />
+          </PrivateRoute>
         }
       />
       <Route

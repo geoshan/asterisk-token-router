@@ -39,6 +39,12 @@ type Token struct {
 	UsedQuotaThisMonth int64    // 当月已用额度
 }
 
+// ResetMonthlyQuotas resets remain_quota to monthly_quota for all tokens on 1st of month
+func ResetMonthlyQuotas() int64 {
+	result := DB.Model(&Token{}).Where("monthly_quota > 0").Update("remain_quota", gorm.Expr("monthly_quota"))
+	return result.RowsAffected
+}
+
 func GetAllTokens(startIdx int, num int, order string) ([]*Token, error) {
 	var tokens []*Token
 	var err error

@@ -70,7 +70,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get('/api/user/dashboard');
       if (response.data.success) {
-        const dashboardData = response.data.data || [];
+        const dashboardData = (response.data && response.data.data) || [];
         setData(dashboardData);
         calculateSummary(dashboardData);
       }
