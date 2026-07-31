@@ -94,6 +94,14 @@ func SetApiRouter(router *gin.Engine) {
 			tokenRoute.PUT("/", controller.UpdateToken)
 			tokenRoute.DELETE("/:id", controller.DeleteToken)
 		}
+		// asterisk-token-router: quota request routes
+		quotaRequestRoute := apiRouter.Group("/quota-request")
+		quotaRequestRoute.Use(middleware.UserAuth())
+		{
+			quotaRequestRoute.POST("/", controller.CreateQuotaRequest)
+			quotaRequestRoute.GET("/", controller.GetQuotaRequests)
+			quotaRequestRoute.PUT("/:id", controller.HandleQuotaRequest)
+		}
 		redemptionRoute := apiRouter.Group("/redemption")
 		redemptionRoute.Use(middleware.AdminAuth())
 		{

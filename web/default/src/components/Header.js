@@ -57,6 +57,13 @@ let headerButtons = [
     icon: 'chart bar',
   },
   {
+    name: '额度审批',
+    to: '/quota-approval',
+    icon: 'check circle',
+    admin: true,
+    login: true,
+  },
+  {
     name: 'header.log',
     login: true,
     to: '/log',
