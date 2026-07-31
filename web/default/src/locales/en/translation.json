@@ -728,10 +728,12 @@
     }
   },
   "footer": {
-    "built_by": "built by",
+    "built_by": "Based on ",
     "built_by_name": "JustSong",
-    "license": ", source code is licensed under the",
-    "mit": "MIT License"
+    "license": ", under ",
+    "mit": "MIT License",
+    "one_api": "One API",
+    "and": ", by "
   },
   "home": {
     "welcome": {

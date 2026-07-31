@@ -730,10 +730,12 @@
     "loading_failed": "加载失败"
   },
   "footer": {
-    "built_by": "基于 One API 二次开发，以",
+    "built_by": "基于 ",
     "built_by_name": "asterisk-token-router",
-    "license": "构建，源代码遵循",
-    "mit": "Apache 2.0 协议"
+    "license": " 构建，源代码遵循 ",
+    "mit": "Apache 2.0 协议",
+    "one_api": "One API",
+    "and": " 二次开发，以 "
   },
   "home": {
     "welcome": {

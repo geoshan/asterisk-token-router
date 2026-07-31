@@ -11,17 +11,12 @@ const Footer = () => {
 
   const loadFooter = () => {
     let footer_html = localStorage.getItem('footer_html');
-    if (footer_html) {
-      setFooter(footer_html);
-    }
+    if (footer_html) setFooter(footer_html);
   };
 
   useEffect(() => {
     const timer = setInterval(() => {
-      if (remainCheckTimes <= 0) {
-        clearInterval(timer);
-        return;
-      }
+      if (remainCheckTimes <= 0) { clearInterval(timer); return; }
       remainCheckTimes--;
       loadFooter();
     }, 200);
@@ -32,21 +27,20 @@ const Footer = () => {
     <Segment vertical>
       <Container textAlign='center' style={{ color: '#666666' }}>
         {footer ? (
-          <div
-            className='custom-footer'
-            dangerouslySetInnerHTML={{ __html: footer }}
-          ></div>
+          <div className='custom-footer' dangerouslySetInnerHTML={{ __html: footer }}></div>
         ) : (
           <div className='custom-footer'>
-            <a href='https://github.com/geoshan/asterisk-token-router' target='_blank'>
-              {systemName} {process.env.REACT_APP_VERSION}{' '}
+            {systemName}
+            {t('footer.built_by')}
+            <a href='https://github.com/songquanpeng/one-api' target='_blank' rel='noreferrer'>
+              {t('footer.one_api')}
             </a>
-            {t('footer.built_by')}{' '}
-            <a href='https://github.com/geoshan' target='_blank'>
+            {t('footer.and')}
+            <a href='https://gitee.com/geoshan/asterisk-token-router' target='_blank' rel='noreferrer'>
               {t('footer.built_by_name')}
-            </a>{' '}
-            {t('footer.license')}{' '}
-            <a href='https://apache.org/licenses/LICENSE-2.0'>
+            </a>
+            {t('footer.license')}
+            <a href='https://www.apache.org/licenses/LICENSE-2.0' target='_blank' rel='noreferrer'>
               {t('footer.mit')}
             </a>
           </div>
