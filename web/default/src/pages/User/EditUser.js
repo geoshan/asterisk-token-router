@@ -9,6 +9,7 @@ const EditUser = () => {
   const { t } = useTranslation();
   const params = useParams();
   const userId = params.id;
+  if (!userId) return <Message error>用户ID缺失</Message>;
   const [loading, setLoading] = useState(true);
   const [inputs, setInputs] = useState({
     username: '',
