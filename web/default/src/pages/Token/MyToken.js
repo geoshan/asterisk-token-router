@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Table, Label, Message } from 'semantic-ui-react';
-import { API, showSuccess, showError, copy } from '../../helpers';
+import { API, showError } from '../../helpers';
 
 const MyToken = () => {
   const [tokens, setTokens] = useState([]);
@@ -26,10 +26,6 @@ const MyToken = () => {
   };
 
   useEffect(() => { loadTokens(); loadStatus(); }, []);
-
-  const handleCopy = (text, label) => {
-    copy(text).then(() => showSuccess(`${label} 已复制`));
-  };
 
   return (
     <div className='dashboard-container'>
@@ -60,9 +56,9 @@ const MyToken = () => {
                   <Table.Cell>
                     {token.status === 1 ? <Label color='green'>有效</Label> : <Label color='red'>已吊销</Label>}
                   </Table.Cell>
-                  <Table.Cell>{(token.models||"-").substring(0,30)}{(token.models||"").length>30?"...":""}</Table.Cell>
+                  <Table.Cell>{(token.models||'-').substring(0,30)}{(token.models||'').length>30?'...':''}</Table.Cell>
                   <Table.Cell>{token.remain_quota}</Table.Cell>
-                  <Table.Cell><a href="/topup" style="padding:4px 12px;font-size:12px;background:#2185d0;color:#fff;border-radius:4px;text-decoration:none">申请额度</a></Table.Cell>
+                  <Table.Cell><a href='/topup' style={{padding:'4px 12px',fontSize:12,background:'#2185d0',color:'#fff',borderRadius:4,textDecoration:'none'}}>申请额度</a></Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
