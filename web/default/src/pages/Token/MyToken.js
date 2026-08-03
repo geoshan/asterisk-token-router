@@ -63,11 +63,16 @@ const MyToken = () => {
               ))}
             </Table.Body>
           </Table>
-          {status.server_address && (
+          {status.server_address ? (
             <Message positive style={{ marginTop: 16 }}>
               <Message.Header>接入信息</Message.Header>
-              <p><strong>Base URL:</strong> <code>{status.server_address}</code></p>
+              <p><strong>Base URL:</strong> <code>{status.server_address || '未设置'}</code></p>
               <p><strong>端点:</strong> <code>/v1/chat/completions</code></p>
+            </Message>
+          ) : (
+            <Message warning style={{ marginTop: 16 }}>
+              <Message.Header>接入信息</Message.Header>
+              <p>请在系统设置中配置 ServerAddress</p>
             </Message>
           )}
         </Card.Content>
