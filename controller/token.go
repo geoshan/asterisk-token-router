@@ -250,7 +250,9 @@ func UpdateToken(c *gin.Context) {
 	} else {
 		// If you add more fields, please also update token.Update()
 		cleanToken.Name = token.Name
-		cleanToken.ExpiredTime = token.ExpiredTime
+		if token.ExpiredTime != 0 {
+			cleanToken.ExpiredTime = token.ExpiredTime
+		}
 		cleanToken.RemainQuota = token.RemainQuota
 		cleanToken.UnlimitedQuota = token.UnlimitedQuota
 		if token.Models != nil {

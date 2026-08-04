@@ -67,9 +67,13 @@ function App() {
           data.version !== 'v0.0.0' &&
           process.env.REACT_APP_VERSION !== ''
         ) {
-          showNotice(
-            `新版本可用：${data.version}，请使用快捷键 Shift + F5 刷新页面`
-          );
+          var dismissed = localStorage.getItem("version_dismissed");
+          if (dismissed !== data.version) {
+            showNotice(
+              `新版本可用：${data.version}，请使用快捷键 Shift + F5 刷新页面`,
+              function() { localStorage.setItem("version_dismissed", data.version); }
+            );
+          }
         }
       } else {
         showError(message || '无法正常连接至服务器！');
