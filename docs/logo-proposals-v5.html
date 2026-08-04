@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATR Logo v5 · 智能中心</title>
+<style>
+  :root {
+    --bg: #0a0e17;
+    --card-bg: #121621;
+    --border: #1e2533;
+    --text: #8896ab;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+    min-height: 100vh;
+  }
+  h1 { font-size:1.8rem; font-weight:700; color:#fff; margin-bottom:4px; }
+  .sub { color:#6b7c93; font-size:0.85rem; margin-bottom:40px; }
+  .row {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 24px; max-width: 760px; width: 100%; margin-bottom: 24px;
+  }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 48px 32px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .label { font-weight:600; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#5b8def; }
+  .logo-box { width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; }
+  .note { font-size:0.72rem; color:#5b6d8a; text-align:center; line-height:1.5; max-width:240px; }
+</style>
+</head>
+<body>
+  <h1>Asterisk Token Router · v5 智能中心</h1>
+  <p class="sub">回退 C3-A + 大脑/智能替代六边形</p>
+
+  <!-- Row 1 -->
+  <div class="row">
+    <!-- A: Neural node — interconnected dots -->
+    <div class="card">
+      <div class="label">A · 神经节点</div>
+      <div class="logo-box">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <defs>
+            <filter id="g5"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <!-- 4 thick arcs converge (same as C3-A) -->
+          <g fill="none" stroke-width="16" stroke-linecap="round">
+            <path d="M42,42 Q105,42 100,100" stroke="url(#gold5)"/>
+            <path d="M158,42 Q95,42 100,100" stroke="url(#gold5)"/>
+            <path d="M42,158 Q105,158 100,100" stroke="url(#blue5)"/>
+            <path d="M158,158 Q95,158 100,100" stroke="url(#blue5)"/>
+          </g>
+          <!-- Endpoint * -->
+          <defs>
+            <linearGradient id="gold5"><stop offset="0%" stop-color="#f0c850"/><stop offset="100%" stop-color="#d4a020"/></linearGradient>
+            <linearGradient id="blue5"><stop offset="0%" stop-color="#5b8def"/><stop offset="100%" stop-color="#3060bf"/></linearGradient>
+            <g id="ast5">
+              <line x1="0" y1="-9" x2="0" y2="9" stroke-width="3" stroke-linecap="round"/>
+              <line x1="-9" y1="0" x2="9" y2="0" stroke-width="3" stroke-linecap="round"/>
+              <line x1="-6" y1="-6" x2="6" y2="6" stroke-width="3" stroke-linecap="round"/>
+              <line x1="6" y1="-6" x2="-6" y2="6" stroke-width="3" stroke-linecap="round"/>
+            </g>
+          </defs>
+          <g stroke="url(#gold5)" filter="url(#g5)"><use href="#ast5" x="42" y="42"/><use href="#ast5" x="158" y="42"/></g>
+          <g stroke="url(#blue5)" filter="url(#g5)"><use href="#ast5" x="42" y="158"/><use href="#ast5" x="158" y="158"/></g>
+
+          <!-- Center: neural node — connected dots + curves -->
+          <g fill="#5b8def" opacity="0.6" filter="url(#g5)">
+            <circle cx="90" cy="90" r="6"/>
+            <circle cx="110" cy="88" r="6"/>
+            <circle cx="88" cy="108" r="6"/>
+            <circle cx="108" cy="110" r="6"/>
+            <circle cx="95" cy="98" r="5" fill="#f0c850" opacity="0.9"/>
+            <circle cx="105" cy="100" r="5" fill="#f0c850" opacity="0.9"/>
+          </g>
+          <g fill="none" stroke="#5b8def" stroke-width="2" opacity="0.5">
+            <line x1="90" y1="90" x2="110" y2="88"/>
+            <line x1="90" y1="90" x2="88" y2="108"/>
+            <line x1="110" y1="88" x2="108" y2="110"/>
+            <line x1="88" y1="108" x2="108" y2="110"/>
+            <line x1="95" y1="98" x2="105" y2="100"/>
+          </g>
+          <!-- Outer glow ring -->
+          <circle cx="100" cy="99" r="30" fill="none" stroke="#5b8def" stroke-width="1.5" opacity="0.3"/>
+        </svg>
+      </div>
+      <p class="note">6 个互联节点 = 神经网<br>抽象大脑，无具象形状</p>
+    </div>
+
+    <!-- B: Diamond brain — two interlocking triangles -->
+    <div class="card">
+      <div class="label">B · 双三角智慧</div>
+      <div class="logo-box">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <defs><filter id="g5b"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <!-- 4 arcs -->
+          <g fill="none" stroke-width="16" stroke-linecap="round">
+            <path d="M42,42 Q105,42 100,100" stroke="url(#gold5)"/>
+            <path d="M158,42 Q95,42 100,100" stroke="url(#gold5)"/>
+            <path d="M42,158 Q105,158 100,100" stroke="url(#blue5)"/>
+            <path d="M158,158 Q95,158 100,100" stroke="url(#blue5)"/>
+          </g>
+          <g stroke="url(#gold5)" filter="url(#g5b)"><use href="#ast5" x="42" y="42"/><use href="#ast5" x="158" y="42"/></g>
+          <g stroke="url(#blue5)" filter="url(#g5b)"><use href="#ast5" x="42" y="158"/><use href="#ast5" x="158" y="158"/></g>
+
+          <!-- Center: upward triangle (left brain) + downward triangle (right brain) -->
+          <polygon points="100,70 82,95 118,95" fill="none" stroke="#5b8def" stroke-width="3" filter="url(#g5b)"/>
+          <polygon points="100,110 82,85 118,85" fill="none" stroke="#f0c850" stroke-width="3" filter="url(#g5b)"/>
+          <!-- Small vertex dots -->
+          <circle cx="100" cy="70" r="4" fill="#5b8def"/>
+          <circle cx="82" cy="95" r="4" fill="#5b8def"/>
+          <circle cx="118" cy="95" r="4" fill="#5b8def"/>
+          <circle cx="100" cy="110" r="4" fill="#f0c850"/>
+          <circle cx="82" cy="85" r="4" fill="#f0c850"/>
+          <circle cx="118" cy="85" r="4" fill="#f0c850"/>
+        </svg>
+      </div>
+      <p class="note">两个三角叠合 = 左右脑<br>抽象智慧符号，线条极简</p>
+    </div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="row">
+    <!-- C: Circuit brain — chip/processor -->
+    <div class="card">
+      <div class="label">C · 处理器芯</div>
+      <div class="logo-box">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <defs><filter id="g5c"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <g fill="none" stroke-width="16" stroke-linecap="round">
+            <path d="M42,42 Q105,42 100,100" stroke="url(#gold5)"/>
+            <path d="M158,42 Q95,42 100,100" stroke="url(#gold5)"/>
+            <path d="M42,158 Q105,158 100,100" stroke="url(#blue5)"/>
+            <path d="M158,158 Q95,158 100,100" stroke="url(#blue5)"/>
+          </g>
+          <g stroke="url(#gold5)" filter="url(#g5c)"><use href="#ast5" x="42" y="42"/><use href="#ast5" x="158" y="42"/></g>
+          <g stroke="url(#blue5)" filter="url(#g5c)"><use href="#ast5" x="42" y="158"/><use href="#ast5" x="158" y="158"/></g>
+
+          <!-- Center: chip/processor shape — square with pins -->
+          <rect x="82" y="82" width="36" height="36" rx="4" fill="#0a0e17" stroke="#5b8def" stroke-width="3" filter="url(#g5c)"/>
+          <rect x="90" y="90" width="20" height="20" rx="2" fill="#121621" stroke="#f0c850" stroke-width="2"/>
+          <circle cx="100" cy="100" r="4" fill="#f0c850"/>
+          <!-- Pins on all 4 sides -->
+          <g fill="#5b8def" opacity="0.7">
+            <rect x="95" y="75" width="4" height="7" rx="1"/><rect x="103" y="75" width="4" height="7" rx="1"/>
+            <rect x="95" y="118" width="4" height="7" rx="1"/><rect x="103" y="118" width="4" height="7" rx="1"/>
+            <rect x="75" y="95" width="7" height="4" rx="1"/><rect x="75" y="103" width="7" height="4" rx="1"/>
+            <rect x="118" y="95" width="7" height="4" rx="1"/><rect x="118" y="103" width="7" height="4" rx="1"/>
+          </g>
+        </svg>
+      </div>
+      <p class="note">芯片处理器 = AI 引擎<br>引脚代表多模型接入</p>
+    </div>
+
+    <!-- D: Concentric — nested arcs -->
+    <div class="card">
+      <div class="label">D · 同心智慧</div>
+      <div class="logo-box">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <defs><filter id="g5d"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <g fill="none" stroke-width="16" stroke-linecap="round">
+            <path d="M42,42 Q105,42 100,100" stroke="url(#gold5)"/>
+            <path d="M158,42 Q95,42 100,100" stroke="url(#gold5)"/>
+            <path d="M42,158 Q105,158 100,100" stroke="url(#blue5)"/>
+            <path d="M158,158 Q95,158 100,100" stroke="url(#blue5)"/>
+          </g>
+          <g stroke="url(#gold5)" filter="url(#g5d)"><use href="#ast5" x="42" y="42"/><use href="#ast5" x="158" y="42"/></g>
+          <g stroke="url(#blue5)" filter="url(#g5d)"><use href="#ast5" x="42" y="158"/><use href="#ast5" x="158" y="158"/></g>
+
+          <!-- Center: concentric rounded shapes suggesting brain hemispheres -->
+          <g fill="none" filter="url(#g5d)">
+            <path d="M100,75 Q85,90 85,100 Q85,110 100,110 Q115,110 115,100 Q115,90 100,75" stroke="#5b8def" stroke-width="3" opacity="0.7"/>
+            <path d="M100,78 Q88,90 88,100 Q88,110 100,110" stroke="#f0c850" stroke-width="2.5" opacity="0.6"/>
+            <!-- midline -->
+            <line x1="100" y1="73" x2="100" y2="112" stroke="#f0c850" stroke-width="1.5" opacity="0.4"/>
+          </g>
+          <!-- Core dot -->
+          <circle cx="100" cy="99" r="5" fill="#f0c850" filter="url(#g5d)"/>
+        </svg>
+      </div>
+      <p class="note">同心弧线 = 大脑沟回<br>金色核心 = 智能中枢</p>
+    </div>
+  </div>
+</body>
+</html>
