@@ -189,9 +189,12 @@ func (t *Token) GetModels() string {
 }
 
 func DeleteTokenById(id int, userId int) (err error) {
-	// Why we need userId here? In case user want to delete other's token.
-	if id == 0 || userId == 0 {
-		return errors.New("id 或 userId 为空！")
+	if id == 0 {
+		return errors.New("id 为空！")
+	}
+	if userId == 0 {
+		// Admin: delete by id only
+		return DB.Where("id = ?", id).Delete(&Token{}).Error
 	}
 	token := Token{Id: id, UserId: userId}
 	err = DB.Where(token).First(&token).Error

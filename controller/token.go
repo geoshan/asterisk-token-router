@@ -184,6 +184,9 @@ func DeleteToken(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	userId := c.GetInt(ctxkey.Id)
 	err := model.DeleteTokenById(id, userId)
+	if err != nil && c.GetInt(ctxkey.Role) >= 10 {
+		err = model.DeleteTokenById(id, 0)
+	}
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
