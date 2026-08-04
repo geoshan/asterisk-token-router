@@ -132,6 +132,13 @@ func TokenAuth() func(c *gin.Context) {
 		c.Set(ctxkey.Id, token.UserId)
 		c.Set(ctxkey.TokenId, token.Id)
 		c.Set(ctxkey.TokenName, token.Name)
+		// asterisk-token-router: set user role for admin checks
+		var user model.User
+		if err := model.DB.Where("id = ?", token.UserId).Select("role").Find(&user).Error; err == nil {
+			c.Set(ctxkey.Role, user.Role)
+		} else {
+			c.Set(ctxkey.Role, 0)
+		}
 		if len(parts) > 1 {
 			if model.IsAdmin(token.UserId) {
 				c.Set(ctxkey.SpecificChannelId, parts[1])
