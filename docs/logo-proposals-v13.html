@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATR Logo v13 · 绿蓝大弧</title>
+<style>
+  :root { --bg:#0a0e17; --card-bg:#121621; --border:#1e2533; --text:#8896ab; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, 'Inter', sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 60px 20px; min-height: 100vh;
+  }
+  h1 { font-size:1.8rem; font-weight:700; color:#fff; margin-bottom:4px; }
+  .sub { color:#6b7c93; font-size:0.85rem; margin-bottom:40px; }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 60px 40px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    max-width: 420px; width: 100%; margin-bottom: 24px;
+  }
+  .label { font-weight:600; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#5b8def; }
+  .logo-box { width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; }
+  .note { font-size:0.75rem; color:#5b6d8a; text-align:center; line-height:1.6; max-width:320px; }
+  .icons {
+    display: flex; gap: 24px; margin-top: 48px;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px 40px; align-items: center;
+  }
+  .icon-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .icon-label { font-size:0.65rem; color:#5b6d8a; text-transform:uppercase; letter-spacing:0.06em; }
+</style>
+</head>
+<body>
+  <h1>Asterisk Token Router · v13</h1>
+  <p class="sub">大弧度 · 绿色 + 浅蓝</p>
+
+  <div class="card">
+    <div class="label">绿蓝路由</div>
+    <div class="logo-box">
+      <svg width="240" height="240" viewBox="0 0 240 240">
+        <defs>
+          <filter id="g"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+
+        <!-- 4 arcs — dramatic curvature -->
+        <g fill="none" stroke-width="17" stroke-linecap="round">
+          <path d="M56,40 Q118,78 102,94"  stroke="#4ade80" filter="url(#g)"/>
+          <path d="M184,40 Q122,78 138,94" stroke="#4ade80" filter="url(#g)"/>
+          <path d="M56,200 Q118,162 102,146" stroke="#7aa2ff" filter="url(#g)"/>
+          <path d="M184,200 Q122,162 138,146" stroke="#7aa2ff" filter="url(#g)"/>
+        </g>
+
+        <!-- Endpoint dots -->
+        <g filter="url(#g)">
+          <circle cx="56" cy="40" r="12" fill="#4ade80"/>
+          <circle cx="184" cy="40" r="12" fill="#4ade80"/>
+          <circle cx="56" cy="200" r="12" fill="#7aa2ff"/>
+          <circle cx="184" cy="200" r="12" fill="#7aa2ff"/>
+        </g>
+
+        <!-- Chip -->
+        <g filter="url(#g)">
+          <rect x="80" y="80" width="80" height="80" rx="9" fill="#0a0e17" stroke="#4ade80" stroke-width="5"/>
+          <rect x="96" y="96" width="48" height="48" rx="5" fill="#121621" stroke="#7aa2ff" stroke-width="3"/>
+          <circle cx="120" cy="120" r="10" fill="#4ade80"/>
+
+          <!-- Pins: warm gold for contrast -->
+          <g fill="#f0c850" opacity="0.85">
+            <rect x="107" y="70" width="5" height="10" rx="2"/>
+            <rect x="128" y="70" width="5" height="10" rx="2"/>
+            <rect x="107" y="160" width="5" height="10" rx="2"/>
+            <rect x="128" y="160" width="5" height="10" rx="2"/>
+            <rect x="70" y="107" width="10" height="5" rx="2"/>
+            <rect x="70" y="128" width="10" height="5" rx="2"/>
+            <rect x="160" y="107" width="10" height="5" rx="2"/>
+            <rect x="160" y="128" width="10" height="5" rx="2"/>
+          </g>
+        </g>
+
+        <!-- Junction dots -->
+        <circle cx="102" cy="94" r="3.5" fill="#4ade80"/>
+        <circle cx="138" cy="94" r="3.5" fill="#4ade80"/>
+        <circle cx="102" cy="146" r="3.5" fill="#7aa2ff"/>
+        <circle cx="138" cy="146" r="3.5" fill="#7aa2ff"/>
+      </svg>
+    </div>
+    <p class="note">
+      大弧度曲线 · 绿色 #4ade80 + 浅蓝 #7aa2ff<br>
+      金色引脚点缀 · 芯片居中
+    </p>
+  </div>
+
+  <!-- Icon sizes -->
+  <div class="icons">
+    <div class="icon-wrap">
+      <svg width="96" height="96" viewBox="0 0 240 240">
+        <g fill="none" stroke-width="22" stroke-linecap="round">
+          <path d="M56,40 Q118,78 102,94" stroke="#4ade80"/>
+          <path d="M184,40 Q122,78 138,94" stroke="#4ade80"/>
+          <path d="M56,200 Q118,162 102,146" stroke="#7aa2ff"/>
+          <path d="M184,200 Q122,162 138,146" stroke="#7aa2ff"/>
+        </g>
+        <circle cx="56" cy="40" r="14" fill="#4ade80"/>
+        <circle cx="184" cy="40" r="14" fill="#4ade80"/>
+        <circle cx="56" cy="200" r="14" fill="#7aa2ff"/>
+        <circle cx="184" cy="200" r="14" fill="#7aa2ff"/>
+        <rect x="78" y="78" width="84" height="84" rx="10" fill="#0a0e17" stroke="#4ade80" stroke-width="7"/>
+        <circle cx="120" cy="120" r="14" fill="#4ade80"/>
+        <circle cx="102" cy="94" r="5" fill="#4ade80"/>
+        <circle cx="138" cy="94" r="5" fill="#4ade80"/>
+        <circle cx="102" cy="146" r="5" fill="#7aa2ff"/>
+        <circle cx="138" cy="146" r="5" fill="#7aa2ff"/>
+      </svg>
+      <span class="icon-label">96</span>
+    </div>
+    <div class="icon-wrap">
+      <svg width="64" height="64" viewBox="0 0 240 240">
+        <g fill="none" stroke-width="24" stroke-linecap="round">
+          <path d="M56,40 Q118,78 102,94" stroke="#4ade80"/>
+          <path d="M184,40 Q122,78 138,94" stroke="#4ade80"/>
+          <path d="M56,200 Q118,162 102,146" stroke="#7aa2ff"/>
+          <path d="M184,200 Q122,162 138,146" stroke="#7aa2ff"/>
+        </g>
+        <circle cx="56" cy="40" r="15" fill="#4ade80"/>
+        <circle cx="184" cy="40" r="15" fill="#4ade80"/>
+        <circle cx="56" cy="200" r="15" fill="#7aa2ff"/>
+        <circle cx="184" cy="200" r="15" fill="#7aa2ff"/>
+        <rect x="76" y="76" width="88" height="88" rx="11" fill="#0a0e17" stroke="#4ade80" stroke-width="8"/>
+        <circle cx="120" cy="120" r="17" fill="#4ade80"/>
+      </svg>
+      <span class="icon-label">64</span>
+    </div>
+    <div class="icon-wrap">
+      <svg width="32" height="32" viewBox="0 0 240 240">
+        <g fill="none" stroke-width="28" stroke-linecap="round">
+          <path d="M56,40 Q118,78 102,94" stroke="#4ade80"/>
+          <path d="M184,40 Q122,78 138,94" stroke="#4ade80"/>
+          <path d="M56,200 Q118,162 102,146" stroke="#7aa2ff"/>
+          <path d="M184,200 Q122,162 138,146" stroke="#7aa2ff"/>
+        </g>
+        <circle cx="56" cy="40" r="17" fill="#4ade80"/>
+        <circle cx="184" cy="40" r="17" fill="#4ade80"/>
+        <circle cx="56" cy="200" r="17" fill="#7aa2ff"/>
+        <circle cx="184" cy="200" r="17" fill="#7aa2ff"/>
+        <rect x="72" y="72" width="96" height="96" rx="13" fill="#0a0e17" stroke="#4ade80" stroke-width="9"/>
+        <circle cx="120" cy="120" r="22" fill="#4ade80"/>
+      </svg>
+      <span class="icon-label">32</span>
+    </div>
+  </div>
+</body>
+</html>

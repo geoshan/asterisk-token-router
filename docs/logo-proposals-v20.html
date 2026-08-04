@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATR Logo v20 · 弧线调优</title>
+<style>
+  :root { --bg:#0a0e17; --card-bg:#121621; --border:#1e2533; --text:#8896ab; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, 'Inter', sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 60px 20px; min-height: 100vh;
+  }
+  h1 { font-size:1.8rem; font-weight:700; color:#fff; margin-bottom:4px; }
+  .sub { color:#6b7c93; font-size:0.85rem; margin-bottom:40px; }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 60px 40px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    max-width: 420px; width: 100%;
+  }
+  .label { font-weight:600; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#5b8def; }
+  .logo-box { width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; }
+  .note { font-size:0.75rem; color:#5b6d8a; text-align:center; line-height:1.6; max-width:320px; }
+</style>
+</head>
+<body>
+  <h1>Asterisk Token Router · v20</h1>
+  <p class="sub">大弧 · 触点内移 · 引脚避让</p>
+
+  <div class="card">
+    <div class="label">穿透路由</div>
+    <div class="logo-box">
+      <svg width="240" height="240" viewBox="0 0 240 240">
+        <defs>
+          <linearGradient id="cb" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#7aa2ff"/>
+            <stop offset="100%" stop-color="#4ade80"/>
+          </linearGradient>
+          <filter id="g"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+
+        <!-- ARCS — bigger curvature, endpoints deeper inside chip -->
+        <g fill="none" stroke-width="18" stroke-linecap="round">
+          <path d="M42,40 Q108,52 105,110"  stroke="#4ade80" filter="url(#g)"/>
+          <path d="M198,40 Q132,52 135,110" stroke="#4ade80" filter="url(#g)"/>
+          <path d="M42,200 Q108,188 105,130" stroke="#7aa2ff" filter="url(#g)"/>
+          <path d="M198,200 Q132,188 135,130" stroke="#7aa2ff" filter="url(#g)"/>
+        </g>
+
+        <!-- Endpoint dots -->
+        <g filter="url(#g)">
+          <circle cx="42" cy="40" r="12" fill="#4ade80"/>
+          <circle cx="198" cy="40" r="12" fill="#4ade80"/>
+          <circle cx="42" cy="200" r="12" fill="#7aa2ff"/>
+          <circle cx="198" cy="200" r="12" fill="#7aa2ff"/>
+        </g>
+
+        <!-- CHIP — on top -->
+        <g filter="url(#g)">
+          <rect x="76" y="76" width="88" height="88" rx="10" fill="#0a0e17" stroke="#0a0e17" stroke-width="5.5"/>
+          <rect x="76" y="76" width="88" height="88" rx="10" fill="none" stroke="url(#cb)" stroke-width="3" opacity="0.5"/>
+          <rect x="94" y="94" width="52" height="52" rx="6" fill="#121621" stroke="#7aa2ff" stroke-width="3"/>
+          <circle cx="120" cy="120" r="11" fill="#4ade80"/>
+
+          <!-- Pins moved inward (off arc path) -->
+          <g fill="#f0c850" opacity="0.85">
+            <rect x="103" y="68" width="5" height="8" rx="2"/><rect x="132" y="68" width="5" height="8" rx="2"/>
+            <rect x="103" y="164" width="5" height="8" rx="2"/><rect x="132" y="164" width="5" height="8" rx="2"/>
+            <rect x="68" y="103" width="8" height="5" rx="2"/><rect x="68" y="132" width="8" height="5" rx="2"/>
+            <rect x="164" y="103" width="8" height="5" rx="2"/><rect x="164" y="132" width="8" height="5" rx="2"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+    <p class="note">
+      弧线加粗 18px · Q Y=52 大弧度<br>
+      触点移至 (105,110/135,110) 更靠中心<br>
+      引脚内收不贴弧线边缘
+    </p>
+  </div>
+</body>
+</html>

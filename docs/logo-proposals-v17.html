@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATR Logo v17 · 弧度居中</title>
+<style>
+  :root { --bg:#0a0e17; --card-bg:#121621; --border:#1e2533; --text:#8896ab; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, 'Inter', sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 60px 20px; min-height: 100vh;
+  }
+  h1 { font-size:1.8rem; font-weight:700; color:#fff; margin-bottom:4px; }
+  .sub { color:#6b7c93; font-size:0.85rem; margin-bottom:40px; }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 60px 40px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    max-width: 420px; width: 100%;
+  }
+  .label { font-weight:600; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#5b8def; }
+  .logo-box { width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; }
+  .note { font-size:0.75rem; color:#5b6d8a; text-align:center; line-height:1.6; max-width:320px; }
+</style>
+</head>
+<body>
+  <h1>Asterisk Token Router · v17</h1>
+  <p class="sub">Q Y=55 · v7-v15 之间</p>
+
+  <div class="card">
+    <div class="label">适中弧线</div>
+    <div class="logo-box">
+      <svg width="240" height="240" viewBox="0 0 240 240">
+        <defs>
+          <filter id="g"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+
+        <g fill="none" stroke-width="17" stroke-linecap="round">
+          <path d="M48,46 Q120,50 96,90"  stroke="#4ade80" filter="url(#g)"/>
+          <path d="M192,46 Q120,50 144,90" stroke="#4ade80" filter="url(#g)"/>
+          <path d="M48,194 Q120,190 96,150" stroke="#7aa2ff" filter="url(#g)"/>
+          <path d="M192,194 Q120,190 144,150" stroke="#7aa2ff" filter="url(#g)"/>
+        </g>
+
+        <g filter="url(#g)">
+          <circle cx="48" cy="46" r="12" fill="#4ade80"/>
+          <circle cx="192" cy="46" r="12" fill="#4ade80"/>
+          <circle cx="48" cy="194" r="12" fill="#7aa2ff"/>
+          <circle cx="192" cy="194" r="12" fill="#7aa2ff"/>
+          <rect x="76" y="76" width="88" height="88" rx="10" fill="#0a0e17" stroke="#0a0e17" stroke-width="5.5"/>
+          <defs>
+            <linearGradient id="chipBorder" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#7aa2ff"/>
+              <stop offset="100%" stop-color="#4ade80"/>
+            </linearGradient>
+          </defs>
+          <rect x="76" y="76" width="88" height="88" rx="10" fill="none" stroke="url(#chipBorder)" stroke-width="3" opacity="0.5"/>
+          <rect x="94" y="94" width="52" height="52" rx="6" fill="#121621" stroke="#7aa2ff" stroke-width="3"/>
+          <circle cx="120" cy="120" r="11" fill="#4ade80"/>
+          <g fill="#f0c850" opacity="0.85">
+            <rect x="100" y="65" width="5" height="11" rx="2"/><rect x="135" y="65" width="5" height="11" rx="2"/>
+            <rect x="100" y="164" width="5" height="11" rx="2"/><rect x="135" y="164" width="5" height="11" rx="2"/>
+            <rect x="65" y="100" width="11" height="5" rx="2"/><rect x="65" y="135" width="11" height="5" rx="2"/>
+            <rect x="164" y="100" width="11" height="5" rx="2"/><rect x="164" y="135" width="11" height="5" rx="2"/>
+          </g>
+        </g>
+
+        <circle cx="96" cy="90" r="3.5" fill="#4ade80"/>
+        <circle cx="144" cy="90" r="3.5" fill="#4ade80"/>
+        <circle cx="96" cy="150" r="3.5" fill="#7aa2ff"/>
+        <circle cx="144" cy="150" r="3.5" fill="#7aa2ff"/>
+      </svg>
+    </div>
+    <p class="note">
+      弧线深入芯片 · 引脚间距 +35%<br>
+      微光边框 3px 上蓝下绿渐变
+    </p>
+  </div>
+</body>
+</html>

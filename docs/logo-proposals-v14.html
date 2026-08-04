@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATR Logo v14 · 适中弧线 + 大芯片</title>
+<style>
+  :root { --bg:#0a0e17; --card-bg:#121621; --border:#1e2533; --text:#8896ab; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, 'Inter', sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 60px 20px; min-height: 100vh;
+  }
+  h1 { font-size:1.8rem; font-weight:700; color:#fff; margin-bottom:4px; }
+  .sub { color:#6b7c93; font-size:0.85rem; margin-bottom:40px; }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 60px 40px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    max-width: 420px; width: 100%; margin-bottom: 24px;
+  }
+  .label { font-weight:600; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#5b8def; }
+  .logo-box { width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; }
+  .note { font-size:0.75rem; color:#5b6d8a; text-align:center; line-height:1.6; max-width:320px; }
+</style>
+</head>
+<body>
+  <h1>Asterisk Token Router · v14</h1>
+  <p class="sub">v7 弧度 + 芯片再放大</p>
+
+  <div class="card">
+    <div class="label">绿蓝 · 均衡</div>
+    <div class="logo-box">
+      <svg width="240" height="240" viewBox="0 0 240 240">
+        <defs>
+          <filter id="g"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+
+        <!-- 4 arcs — v7-level curvature, flowing into chip -->
+        <g fill="none" stroke-width="17" stroke-linecap="round">
+          <path d="M54,44 Q118,72 98,88"  stroke="#4ade80" filter="url(#g)"/>
+          <path d="M186,44 Q122,72 142,88" stroke="#4ade80" filter="url(#g)"/>
+          <path d="M54,196 Q118,168 98,152" stroke="#7aa2ff" filter="url(#g)"/>
+          <path d="M186,196 Q122,168 142,152" stroke="#7aa2ff" filter="url(#g)"/>
+        </g>
+
+        <!-- Endpoint dots -->
+        <g filter="url(#g)">
+          <circle cx="54" cy="44" r="12" fill="#4ade80"/>
+          <circle cx="186" cy="44" r="12" fill="#4ade80"/>
+          <circle cx="54" cy="196" r="12" fill="#7aa2ff"/>
+          <circle cx="186" cy="196" r="12" fill="#7aa2ff"/>
+        </g>
+
+        <!-- Chip — LARGER: 88×88 -->
+        <g filter="url(#g)">
+          <rect x="76" y="76" width="88" height="88" rx="10" fill="#0a0e17" stroke="#4ade80" stroke-width="5.5"/>
+          <rect x="94" y="94" width="52" height="52" rx="6" fill="#121621" stroke="#7aa2ff" stroke-width="3"/>
+          <circle cx="120" cy="120" r="11" fill="#4ade80"/>
+
+          <g fill="#f0c850" opacity="0.85">
+            <rect x="107" y="65" width="5" height="11" rx="2"/>
+            <rect x="128" y="65" width="5" height="11" rx="2"/>
+            <rect x="107" y="164" width="5" height="11" rx="2"/>
+            <rect x="128" y="164" width="5" height="11" rx="2"/>
+            <rect x="65" y="107" width="11" height="5" rx="2"/>
+            <rect x="65" y="128" width="11" height="5" rx="2"/>
+            <rect x="164" y="107" width="11" height="5" rx="2"/>
+            <rect x="164" y="128" width="11" height="5" rx="2"/>
+          </g>
+        </g>
+
+        <!-- Junction dots -->
+        <circle cx="98" cy="88" r="3.5" fill="#4ade80"/>
+        <circle cx="142" cy="88" r="3.5" fill="#4ade80"/>
+        <circle cx="98" cy="152" r="3.5" fill="#7aa2ff"/>
+        <circle cx="142" cy="152" r="3.5" fill="#7aa2ff"/>
+      </svg>
+    </div>
+    <p class="note">
+      弧线弧度接近 v7 · 芯片 88×88（比 v13 大 10%）<br>
+      绿色 #4ade80 + 浅蓝 #7aa2ff · 引脚金色
+    </p>
+  </div>
+</body>
+</html>
