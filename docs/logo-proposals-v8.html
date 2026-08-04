@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATR Logo v8 · 简洁芯片</title>
+<style>
+  :root { --bg:#0a0e17; --card-bg:#121621; --border:#1e2533; --text:#8896ab; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, 'Inter', sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 60px 20px; min-height: 100vh;
+  }
+  h1 { font-size:1.8rem; font-weight:700; color:#fff; margin-bottom:4px; }
+  .sub { color:#6b7c93; font-size:0.85rem; margin-bottom:40px; }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 60px 40px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    max-width: 420px; width: 100%; margin-bottom: 24px;
+  }
+  .label { font-weight:600; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#5b8def; }
+  .logo-box { width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; }
+  .note { font-size:0.75rem; color:#5b6d8a; text-align:center; line-height:1.6; max-width:320px; }
+</style>
+</head>
+<body>
+  <h1>Asterisk Token Router · v8</h1>
+  <p class="sub">弧度减小 · 芯片抽象化 · 引脚精简</p>
+
+  <div class="card">
+    <div class="label">抽象芯片核心</div>
+    <div class="logo-box">
+      <svg width="240" height="240" viewBox="0 0 240 240">
+        <defs>
+          <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f0c850"/>
+            <stop offset="100%" stop-color="#d4a020"/>
+          </linearGradient>
+          <linearGradient id="blue" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#5b8def"/>
+            <stop offset="100%" stop-color="#3060bf"/>
+          </linearGradient>
+          <filter id="g"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+
+        <!-- 4 arcs with reduced curvature — more direct -->
+        <g fill="none" stroke-width="16" stroke-linecap="round">
+          <path d="M50,50 Q100,60 96,96"  stroke="url(#gold)" filter="url(#g)"/>
+          <path d="M190,50 Q140,60 144,96" stroke="url(#gold)" filter="url(#g)"/>
+          <path d="M50,190 Q100,180 96,144" stroke="url(#blue)" filter="url(#g)"/>
+          <path d="M190,190 Q140,180 144,144" stroke="url(#blue)" filter="url(#g)"/>
+        </g>
+
+        <!-- Endpoint dots -->
+        <g filter="url(#g)">
+          <circle cx="50" cy="50" r="13" fill="url(#gold)"/>
+          <circle cx="190" cy="50" r="13" fill="url(#gold)"/>
+          <circle cx="50" cy="190" r="13" fill="url(#blue)"/>
+          <circle cx="190" cy="190" r="13" fill="url(#blue)"/>
+        </g>
+
+        <!-- Abstract chip: rounded square + inner core + 4 minimal pins -->
+        <g filter="url(#g)">
+          <!-- Outer chip body — softer, more abstract -->
+          <rect x="95" y="95" width="50" height="50" rx="8" fill="#0a0e17" stroke="url(#gold)" stroke-width="4"/>
+          <!-- Inner core — centered dot cluster -->
+          <circle cx="120" cy="120" r="16" fill="#121621" stroke="#5b8def" stroke-width="2.5"/>
+          <circle cx="120" cy="120" r="6" fill="url(#gold)"/>
+
+          <!-- Only 4 pins — one per side, minimal -->
+          <rect x="112" y="85" width="4" height="10" rx="2" fill="#5b8def" opacity="0.85"/>
+          <rect x="112" y="145" width="4" height="10" rx="2" fill="#5b8def" opacity="0.85"/>
+          <rect x="145" y="112" width="10" height="4" rx="2" fill="#5b8def" opacity="0.85"/>
+          <rect x="85" y="112" width="10" height="4" rx="2" fill="#5b8def" opacity="0.85"/>
+        </g>
+
+        <!-- Tiny junction dots where arcs meet chip -->
+        <circle cx="96" cy="96" r="2.5" fill="#f0c850" opacity="0.8"/>
+        <circle cx="144" cy="96" r="2.5" fill="#f0c850" opacity="0.8"/>
+        <circle cx="96" cy="144" r="2.5" fill="#5b8def" opacity="0.8"/>
+        <circle cx="144" cy="144" r="2.5" fill="#5b8def" opacity="0.8"/>
+      </svg>
+    </div>
+    <p class="note">
+      弧度降低 ≈ 30% · 直接触达芯片<br>
+      抽象芯片：圆角方框 + 内核 + 4 引脚<br>
+      极简：一面对应一个渠道
+    </p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATR Logo v9 · 芯片加大</title>
+<style>
+  :root { --bg:#0a0e17; --card-bg:#121621; --border:#1e2533; --text:#8896ab; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, 'Inter', sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 60px 20px; min-height: 100vh;
+  }
+  h1 { font-size:1.8rem; font-weight:700; color:#fff; margin-bottom:4px; }
+  .sub { color:#6b7c93; font-size:0.85rem; margin-bottom:40px; }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 60px 40px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    max-width: 420px; width: 100%;
+  }
+  .label { font-weight:600; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#5b8def; }
+  .logo-box { width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; }
+  .note { font-size:0.75rem; color:#5b6d8a; text-align:center; line-height:1.6; max-width:320px; }
+</style>
+</head>
+<body>
+  <h1>Asterisk Token Router · v9</h1>
+  <p class="sub">芯片放大 · 每边 2 引脚 · 弧线收束</p>
+
+  <div class="card">
+    <div class="label">均衡芯片</div>
+    <div class="logo-box">
+      <svg width="240" height="240" viewBox="0 0 240 240">
+        <defs>
+          <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f0c850"/>
+            <stop offset="100%" stop-color="#d4a020"/>
+          </linearGradient>
+          <linearGradient id="blue" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#5b8def"/>
+            <stop offset="100%" stop-color="#3060bf"/>
+          </linearGradient>
+          <filter id="g"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+
+        <!-- 4 arcs — reduced curvature, hit chip corners -->
+        <g fill="none" stroke-width="16" stroke-linecap="round">
+          <path d="M52,52 Q105,58 92,92"  stroke="url(#gold)" filter="url(#g)"/>
+          <path d="M188,52 Q135,58 148,92" stroke="url(#gold)" filter="url(#g)"/>
+          <path d="M52,188 Q105,182 92,148" stroke="url(#blue)" filter="url(#g)"/>
+          <path d="M188,188 Q135,182 148,148" stroke="url(#blue)" filter="url(#g)"/>
+        </g>
+
+        <!-- Endpoint dots -->
+        <g filter="url(#g)">
+          <circle cx="52" cy="52" r="13" fill="url(#gold)"/>
+          <circle cx="188" cy="52" r="13" fill="url(#gold)"/>
+          <circle cx="52" cy="188" r="13" fill="url(#blue)"/>
+          <circle cx="188" cy="188" r="13" fill="url(#blue)"/>
+        </g>
+
+        <!-- Chip: larger, 2 pins per side -->
+        <g filter="url(#g)">
+          <!-- Outer body -->
+          <rect x="85" y="85" width="70" height="70" rx="8" fill="#0a0e17" stroke="url(#gold)" stroke-width="4.5"/>
+          <!-- Inner core -->
+          <rect x="100" y="100" width="40" height="40" rx="4" fill="#121621" stroke="#5b8def" stroke-width="2.5"/>
+          <!-- Center dot -->
+          <circle cx="120" cy="120" r="8" fill="url(#gold)"/>
+
+          <!-- Pins: 2 per side -->
+          <g fill="#5b8def" opacity="0.85">
+            <!-- top: 2 -->
+            <rect x="108" y="75" width="5" height="10" rx="2"/>
+            <rect x="127" y="75" width="5" height="10" rx="2"/>
+            <!-- bottom: 2 -->
+            <rect x="108" y="155" width="5" height="10" rx="2"/>
+            <rect x="127" y="155" width="5" height="10" rx="2"/>
+            <!-- left: 2 -->
+            <rect x="75" y="108" width="10" height="5" rx="2"/>
+            <rect x="75" y="127" width="10" height="5" rx="2"/>
+            <!-- right: 2 -->
+            <rect x="155" y="108" width="10" height="5" rx="2"/>
+            <rect x="155" y="127" width="10" height="5" rx="2"/>
+          </g>
+        </g>
+
+        <!-- Junction dots -->
+        <circle cx="92" cy="92" r="3" fill="#f0c850" opacity="0.9"/>
+        <circle cx="148" cy="92" r="3" fill="#f0c850" opacity="0.9"/>
+        <circle cx="92" cy="148" r="3" fill="#5b8def" opacity="0.9"/>
+        <circle cx="148" cy="148" r="3" fill="#5b8def" opacity="0.9"/>
+      </svg>
+    </div>
+    <p class="note">
+      芯片 70×70 + 8 引脚（每边×2）<br>
+      弧线直接触达芯片四角<br>
+      外框金色 · 内核蓝色 · 中心金点
+    </p>
+  </div>
+</body>
+</html>
