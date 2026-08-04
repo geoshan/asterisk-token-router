@@ -82,10 +82,12 @@ const LoginForm = () => {
       if (success) {
         userDispatch({ type: 'login', payload: data });
         localStorage.setItem('user', JSON.stringify(data));
-        if (username === 'root' && password === '123456') {
+        if (data && data.role >= 10) {
           navigate('/dashboard');
           showSuccess(t('messages.success.login'));
-          showWarning(t('messages.error.root_password'));
+          if (username === 'root' && password === '123456') {
+            showWarning(t('messages.error.root_password'));
+          }
         } else {
           navigate('/mytoken');
           showSuccess(t('messages.success.login'));
