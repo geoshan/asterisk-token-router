@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useContext, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Loading from './components/Loading';
 import User from './pages/User';
-import { PrivateRoute } from './components/PrivateRoute';
+import { PrivateRoute, AdminRoute } from './components/PrivateRoute';
 import RegisterForm from './components/RegisterForm';
 import LoginForm from './components/LoginForm';
 import NotFound from './pages/NotFound';
@@ -136,9 +136,9 @@ function App() {
       <Route
         path="/quota-approval"
         element={
-          <PrivateRoute>
+          <AdminRoute>
             <QuotaApproval />
-          </PrivateRoute>
+          </AdminRoute>
         }
       />
       <Route
@@ -160,25 +160,29 @@ function App() {
       <Route
         path='/token'
         element={
-          <PrivateRoute>
+          <AdminRoute>
             <Token />
-          </PrivateRoute>
+          </AdminRoute>
         }
       />
       <Route
         path='/token/edit/:id'
         element={
-          <Suspense fallback={<Loading></Loading>}>
-            <EditToken />
-          </Suspense>
+          <AdminRoute>
+            <Suspense fallback={<Loading></Loading>}>
+              <EditToken />
+            </Suspense>
+          </AdminRoute>
         }
       />
       <Route
         path='/token/add'
         element={
-          <Suspense fallback={<Loading></Loading>}>
-            <EditToken />
-          </Suspense>
+          <AdminRoute>
+            <Suspense fallback={<Loading></Loading>}>
+              <EditToken />
+            </Suspense>
+          </AdminRoute>
         }
       />
       <Route
@@ -208,25 +212,29 @@ function App() {
       <Route
         path='/user'
         element={
-          <PrivateRoute>
+          <AdminRoute>
             <User />
-          </PrivateRoute>
+          </AdminRoute>
         }
       />
       <Route
         path='/user/edit/:id'
         element={
-          <Suspense fallback={<Loading></Loading>}>
-            <EditUser />
-          </Suspense>
+          <AdminRoute>
+            <Suspense fallback={<Loading></Loading>}>
+              <EditUser />
+            </Suspense>
+          </AdminRoute>
         }
       />
       <Route
         path='/user/edit'
         element={
-          <Suspense fallback={<Loading></Loading>}>
-            <EditUser />
-          </Suspense>
+          <AdminRoute>
+            <Suspense fallback={<Loading></Loading>}>
+              <EditUser />
+            </Suspense>
+          </AdminRoute>
         }
       />
       <Route
@@ -240,9 +248,11 @@ function App() {
       <Route
         path='/user/reset'
         element={
-          <Suspense fallback={<Loading></Loading>}>
-            <PasswordResetConfirm />
-          </Suspense>
+          <AdminRoute>
+            <Suspense fallback={<Loading></Loading>}>
+              <PasswordResetConfirm />
+            </Suspense>
+          </AdminRoute>
         }
       />
       <Route
