@@ -120,9 +120,6 @@ func validateToken(c *gin.Context, token model.Token) error {
 	if len(token.Name) > 30 {
 		return fmt.Errorf("令牌名称过长")
 	}
-	if token.Name == "" {
-		return fmt.Errorf("令牌名称不能为空")
-	}
 	if token.Subnet != nil && *token.Subnet != "" {
 		err := network.IsValidSubnets(*token.Subnet)
 		if err != nil {
@@ -139,6 +136,13 @@ func AddToken(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"message": err.Error(),
+		})
+		return
+	}
+	if token.Name == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "令牌名称不能为空",
 		})
 		return
 	}
