@@ -175,6 +175,7 @@ const EditToken = () => {
     let localInputs = inputs;
     localInputs.remain_quota = parseInt(localInputs.remain_quota);
     if (localInputs.monthly_quota) localInputs.monthly_quota = parseInt(localInputs.monthly_quota);
+    if (localInputs.user_id) localInputs.user_id = parseInt(localInputs.user_id);
     if (localInputs.expired_time !== -1) {
       let time = Date.parse(localInputs.expired_time);
       if (isNaN(time)) {
