@@ -112,25 +112,29 @@ function App() {
       <Route
         path='/channel'
         element={
-          <PrivateRoute>
+          <AdminRoute>
             <Channel />
-          </PrivateRoute>
+          </AdminRoute>
         }
       />
       <Route
         path='/channel/edit/:id'
         element={
-          <Suspense fallback={<Loading></Loading>}>
-            <EditChannel />
-          </Suspense>
+          <AdminRoute>
+            <Suspense fallback={<Loading></Loading>}>
+              <EditChannel />
+            </Suspense>
+          </AdminRoute>
         }
       />
       <Route
         path='/channel/add'
         element={
-          <Suspense fallback={<Loading></Loading>}>
-            <EditChannel />
-          </Suspense>
+          <AdminRoute>
+            <Suspense fallback={<Loading></Loading>}>
+              <EditChannel />
+            </Suspense>
+          </AdminRoute>
         }
       />
       <Route
