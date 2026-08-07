@@ -69,9 +69,9 @@ function App() {
         ) {
           var dismissed = localStorage.getItem("version_dismissed");
           if (dismissed !== data.version) {
+            localStorage.setItem("version_dismissed", data.version);
             showNotice(
-              `新版本可用：${data.version}，请使用快捷键 Shift + F5 刷新页面`,
-              function() { localStorage.setItem("version_dismissed", data.version); }
+              `新版本可用：${data.version}，请使用快捷键 Shift + F5 刷新页面`
             );
           }
         }

@@ -11,7 +11,7 @@ import (
 
 const (
 	USD2RMB   = 7
-	USD       = 500 // $0.002 = 1 -> $1 = 500
+	USD       = 7000 // $1 = 7000 → modelRatio=1 = ¥1/百万token
 	MILLI_USD = 1.0 / 1000 * USD
 	RMB       = USD / USD2RMB
 )
