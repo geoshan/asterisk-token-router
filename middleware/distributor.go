@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/songquanpeng/one-api/common"
 	"github.com/songquanpeng/one-api/common/ctxkey"
 	"github.com/songquanpeng/one-api/common/logger"
 	"github.com/songquanpeng/one-api/model"
@@ -59,6 +60,15 @@ func Distribute() func(c *gin.Context) {
 				abortWithMessage(c, http.StatusServiceUnavailable, message)
 				return
 			}
+			// asterisk-token-router: 跳过熔断渠道，最多尝试 10 次
+			if common.IsChannelBlocked(channel.Id) {
+				channel = trySkipBlockedChannel(userGroup, requestModel)
+				if channel == nil {
+					abortWithMessage(c, http.StatusServiceUnavailable,
+						fmt.Sprintf("当前分组 %s 下对于模型 %s 所有渠道均已被熔断", userGroup, requestModel))
+					return
+				}
+			}
 		}
 		logger.Debugf(ctx, "user id %d, user group: %s, request model: %s, using channel #%d", userId, userGroup, requestModel, channel.Id)
 		SetupContextForSelectedChannel(c, channel, requestModel)
@@ -104,4 +114,21 @@ func SetupContextForSelectedChannel(c *gin.Context, channel *model.Channel, mode
 		}
 	}
 	c.Set(ctxkey.Config, cfg)
+}
+
+// trySkipBlockedChannel 尝试从未熔断的渠道中选择一个
+// 最多尝试 10 次，每次随机选取并检查 Redis 熔断状态
+// 返回 nil 表示所有渠道均已被熔断
+func trySkipBlockedChannel(userGroup string, requestModel string) *model.Channel {
+	for attempt := 0; attempt < 10; attempt++ {
+		channel, err := model.CacheGetRandomSatisfiedChannel(userGroup, requestModel, true)
+		if err != nil || channel == nil {
+			return nil
+		}
+		if !common.IsChannelBlocked(channel.Id) {
+			logger.SysLog(fmt.Sprintf("跳过熔断渠道，选中渠道 #%d (第%d次尝试)", channel.Id, attempt+1))
+			return channel
+		}
+	}
+	return nil
 }
