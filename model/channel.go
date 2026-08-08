@@ -51,6 +51,13 @@ type Channel struct {
 	PriceOut           float64 `json:"price_out" gorm:"default:0"`      // 输出单价 元/千token
 	CallLimit          int64   `json:"call_limit" gorm:"default:0"`     // 包月调用上限 0=不限
 	CallCount          int64   `json:"call_count" gorm:"default:0"`     // 当月已调用次数
+	// asterisk-token-router: 预算与自动禁用
+	BillingType   string  `json:"billing_type" gorm:"type:varchar(32);default:''"`
+	MonthlyBudget float64 `json:"monthly_budget" gorm:"default:0"`
+	MonthlyUsed   float64 `json:"monthly_used" gorm:"default:0"`
+	WarningPct    float64 `json:"warning_pct" gorm:"default:0"`
+	AutoDisable   bool    `json:"auto_disable" gorm:"default:false"`
+	ModelPrices   string  `json:"model_prices" gorm:"type:text"`
 }
 
 type ChannelConfig struct {
@@ -234,4 +241,22 @@ func DeleteChannelByStatus(status int64) (int64, error) {
 func DeleteDisabledChannel() (int64, error) {
 	result := DB.Where("status = ? or status = ?", ChannelStatusAutoDisabled, ChannelStatusManuallyDisabled).Delete(&Channel{})
 	return result.RowsAffected, result.Error
+}
+
+// GetModelPrice returns per-model pricing from ModelPrices JSON, falling back to channel-level price_in/price_out.
+// ModelPrices format: {"gpt-4":{"input":0.03,"output":0.06,"cache":0.015}, ...}
+func (channel *Channel) GetModelPrice(modelName string) (inputPrice, outputPrice, cachePrice float64) {
+	if channel.ModelPrices != "" {
+		var prices map[string]struct {
+			Input  float64 `json:"input"`
+			Output float64 `json:"output"`
+			Cache  float64 `json:"cache"`
+		}
+		if err := json.Unmarshal([]byte(channel.ModelPrices), &prices); err == nil {
+			if p, ok := prices[modelName]; ok {
+				return p.Input, p.Output, p.Cache
+			}
+		}
+	}
+	return channel.PriceIn, channel.PriceOut, 0
 }
