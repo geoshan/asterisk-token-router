@@ -52,11 +52,11 @@ type Channel struct {
 	CallLimit          int64   `json:"call_limit" gorm:"default:0"`     // 包月调用上限 0=不限
 	CallCount          int64   `json:"call_count" gorm:"default:0"`     // 当月已调用次数
 	// asterisk-token-router: 预算与自动禁用
-	BillingType   string  `json:"billing_type" gorm:"type:varchar(32);default:''"`
+	BillingType   int     `json:"billing_type" gorm:"default:0"`           // 0=预充值, 1=月结, 2=包月
 	MonthlyBudget float64 `json:"monthly_budget" gorm:"default:0"`
 	MonthlyUsed   float64 `json:"monthly_used" gorm:"default:0"`
-	WarningPct    float64 `json:"warning_pct" gorm:"default:0"`
-	AutoDisable   bool    `json:"auto_disable" gorm:"default:false"`
+	WarningPct    int     `json:"warning_pct" gorm:"default:80"`            // 预警百分比
+	AutoDisable   bool    `json:"auto_disable" gorm:"default:true"`         // 超预算自动禁用
 	ModelPrices   string  `json:"model_prices" gorm:"type:text"`
 }
 
