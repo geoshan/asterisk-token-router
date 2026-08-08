@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>esgbot · ESG评级检索</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:'#0ea5e9'}}}}</script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;color:#1e293b;background:#fff}
+  .search-glow:focus-within{box-shadow:0 0 0 3px rgba(14,165,233,.2)}
+  .card{transition:all .2s}
+  .card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+</style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- nav -->
+  <nav class="border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-xl font-bold text-brand">esgbot</span><span class="text-xs text-slate-300">.cn</span></div>
+    <div class="flex gap-6 text-sm text-slate-500"><a href="#" class="hover:text-brand">企业检索</a><a href="#" class="hover:text-brand">舆情监控</a><a href="#" class="hover:text-brand">关于</a></div>
+  </nav>
+
+  <!-- hero -->
+  <div class="text-center pt-16 pb-10 px-4">
+    <h1 class="text-4xl font-bold text-slate-800 mb-2">中国上市公司 ESG 评级检索</h1>
+    <p class="text-slate-400 mb-8">聚合华证 · 商道融绿 · 万得 · 中证 · 妙盈五大评级，一站式查询</p>
+    <div class="max-w-2xl mx-auto">
+      <div class="search-glow flex items-center bg-slate-50 rounded-2xl border border-slate-200 px-5 py-3.5 transition-shadow">
+        <svg class="w-5 h-5 text-slate-300 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input id="search" class="flex-1 text-base bg-transparent outline-none placeholder:text-slate-300 text-slate-700" placeholder="输入公司名称，如 宁德时代…" autofocus autocomplete="off">
+        <button onclick="alert('跳转')" class="bg-brand hover:bg-cyan-600 text-white px-5 py-1.5 rounded-xl text-sm font-medium transition-colors">搜索</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- feature cards -->
+  <div class="max-w-5xl mx-auto px-4 pb-16 grid grid-cols-3 gap-5">
+    <div class="card bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 border border-blue-100 cursor-pointer" onclick="alert('评级检索')">
+      <div class="text-2xl mb-3">📊</div>
+      <h3 class="font-semibold text-slate-800 mb-1">多源评级聚合</h3>
+      <p class="text-sm text-slate-400">华证、商道融绿、万得、中证、妙盈 — 五家评级一站式对比</p>
+      <div class="mt-3 flex gap-2 flex-wrap">
+        <span class="text-xs bg-white rounded-full px-2 py-0.5 text-green-600 border border-green-200">AAA 级企业 48 家</span>
+        <span class="text-xs bg-white rounded-full px-2 py-0.5 text-slate-400 border border-slate-200">覆盖 5000+</span>
+      </div>
+    </div>
+    <div class="card bg-gradient-to-br from-amber-50 to-white rounded-2xl p-6 border border-amber-100 cursor-pointer" onclick="alert('舆情')">
+      <div class="text-2xl mb-3">📰</div>
+      <h3 class="font-semibold text-slate-800 mb-1">AI 舆情监控</h3>
+      <p class="text-sm text-slate-400">自动采集全网事件，分析 ESG 影响，实时告警</p>
+      <div class="mt-3"><span class="text-xs bg-white rounded-full px-2 py-0.5 text-amber-600 border border-amber-200">近 7 天 3,217 条</span></div>
+    </div>
+    <div class="card bg-gradient-to-br from-purple-50 to-white rounded-2xl p-6 border border-purple-100 cursor-pointer" onclick="alert('线索')">
+      <div class="text-2xl mb-3">🔎</div>
+      <h3 class="font-semibold text-slate-800 mb-1">线索上报平台</h3>
+      <p class="text-sm text-slate-400">公众举报 ESG 负面事件，企业回应双向透明</p>
+      <div class="mt-3"><span class="text-xs bg-white rounded-full px-2 py-0.5 text-purple-600 border border-purple-200">已公示 156 条</span></div>
+    </div>
+  </div>
+
+  <!-- recent lookups -->
+  <div class="bg-slate-50 flex-1 py-10">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">最近检索</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="bg-white rounded-xl p-4 border border-slate-100 cursor-pointer hover:border-brand transition-colors" onclick="alert('宁德时代')">
+          <div class="flex items-center justify-between"><span class="font-medium text-sm">宁德时代</span><span class="px-2 py-0.5 text-xs font-bold rounded bg-green-100 text-green-700">AAA</span></div>
+          <div class="text-xs text-slate-400 mt-1">300750 · 新能源</div>
+          <div class="text-xs text-slate-500 mt-1">综合 <span class="font-semibold text-green-600">88</span> 分</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-slate-100 cursor-pointer hover:border-brand transition-colors" onclick="alert('比亚迪')">
+          <div class="flex items-center justify-between"><span class="font-medium text-sm">比亚迪</span><span class="px-2 py-0.5 text-xs font-bold rounded bg-blue-50 text-blue-600">AA</span></div>
+          <div class="text-xs text-slate-400 mt-1">002594 · 新能源车</div>
+          <div class="text-xs text-slate-500 mt-1">综合 <span class="font-semibold text-blue-600">82</span> 分</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-slate-100 cursor-pointer hover:border-brand transition-colors" onclick="alert('隆基绿能')">
+          <div class="flex items-center justify-between"><span class="font-medium text-sm">隆基绿能</span><span class="px-2 py-0.5 text-xs font-bold rounded bg-green-100 text-green-700">AAA</span></div>
+          <div class="text-xs text-slate-400 mt-1">601012 · 光伏</div>
+          <div class="text-xs text-slate-500 mt-1">综合 <span class="font-semibold text-green-600">91</span> 分</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-slate-100 cursor-pointer hover:border-brand transition-colors" onclick="alert('贵州茅台')">
+          <div class="flex items-center justify-between"><span class="font-medium text-sm">贵州茅台</span><span class="px-2 py-0.5 text-xs font-bold rounded bg-blue-50 text-blue-600">AA</span></div>
+          <div class="text-xs text-slate-400 mt-1">600519 · 白酒</div>
+          <div class="text-xs text-slate-500 mt-1">综合 <span class="font-semibold text-blue-600">75</span> 分</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center py-6 text-xs text-slate-300 border-t">esgbot.cn · 上海锐钝信息科技 · 沪ICP备2025119352号-1</footer>
+</body>
+</html>

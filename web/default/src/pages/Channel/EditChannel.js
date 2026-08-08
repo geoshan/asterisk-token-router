@@ -54,6 +54,11 @@ const EditChannel = () => {
     price_in: 0,
     price_out: 0,
     call_limit: 0,
+    // asterisk-token-router: billing & circuit breaker fields
+    billing_type: '',
+    monthly_budget: 0,
+    warning_pct: 80,
+    auto_disable: true,
   };
   const [batch, setBatch] = useState(false);
   const [inputs, setInputs] = useState(originInputs);
@@ -71,9 +76,11 @@ const EditChannel = () => {
     vertex_ai_project_id: '',
     vertex_ai_adc: '',
   });
+  // asterisk-token-router: per-model pricing
+  const [modelPrices, setModelPrices] = useState({});
   const handleInputChange = (e, { name, value }) => {
     // asterisk-token-router: convert numeric fields
-    if (['price_in', 'price_out', 'call_limit', 'billing_mode'].includes(name)) {
+    if (['price_in', 'price_out', 'call_limit', 'billing_mode', 'monthly_budget', 'warning_pct'].includes(name)) {
       value = value === '' || value === null ? 0 : Number(value);
     }
     setInputs((inputs) => ({ ...inputs, [name]: value }));
@@ -112,6 +119,12 @@ const EditChannel = () => {
         );
       }
       setInputs(data);
+      // asterisk-token-router: backfill per-model pricing
+      if (data.model_prices && data.model_prices !== '') {
+        try {
+          setModelPrices(JSON.parse(data.model_prices));
+        } catch (e) {}
+      }
       if (data.config !== '') {
         setConfig(JSON.parse(data.config));
       }
@@ -160,6 +173,17 @@ const EditChannel = () => {
     });
     setModelOptions(localModelOptions);
   }, [originModelOptions, inputs.models]);
+
+  // asterisk-token-router: sync modelPrices with models list
+  useEffect(() => {
+    setModelPrices((prev) => {
+      const next = {};
+      inputs.models.forEach((model) => {
+        next[model] = prev[model] || { input: 0, output: 0, cache: 0 };
+      });
+      return next;
+    });
+  }, [inputs.models]);
 
   useEffect(() => {
     if (isEdit) {
@@ -213,6 +237,8 @@ const EditChannel = () => {
     localInputs.models = localInputs.models.join(',');
     localInputs.group = localInputs.groups.join(',');
     localInputs.config = JSON.stringify(config);
+    // asterisk-token-router: serialize per-model pricing
+    localInputs.model_prices = JSON.stringify(modelPrices);
     if (isEdit) {
       res = await API.put(`/api/channel/`, {
         ...localInputs,
@@ -494,6 +520,74 @@ const EditChannel = () => {
                 />
               </div>
             )}
+            {/* asterisk-token-router: per-model pricing table */}
+            {inputs.type !== 43 && inputs.models.length > 0 && (
+              <div style={{ marginBottom: '20px' }}>
+                <h4 style={{ marginBottom: '10px' }}>模型定价表 (元/M tokens)</h4>
+                <table className='ui very basic compact table'>
+                  <thead>
+                    <tr>
+                      <th>模型</th>
+                      <th>输入单价</th>
+                      <th>输出单价</th>
+                      <th>缓存价</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {inputs.models.map((model) => (
+                      <tr key={model}>
+                        <td style={{ verticalAlign: 'middle' }}>{model}</td>
+                        <td>
+                          <Input
+                            type='number'
+                            step='0.001'
+                            size='small'
+                            placeholder='0'
+                            value={modelPrices[model]?.input || 0}
+                            onChange={(e, { value }) => {
+                              setModelPrices((prev) => ({
+                                ...prev,
+                                [model]: { ...prev[model], input: Number(value) || 0 },
+                              }));
+                            }}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            type='number'
+                            step='0.001'
+                            size='small'
+                            placeholder='0'
+                            value={modelPrices[model]?.output || 0}
+                            onChange={(e, { value }) => {
+                              setModelPrices((prev) => ({
+                                ...prev,
+                                [model]: { ...prev[model], output: Number(value) || 0 },
+                              }));
+                            }}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            type='number'
+                            step='0.001'
+                            size='small'
+                            placeholder='0'
+                            value={modelPrices[model]?.cache || 0}
+                            onChange={(e, { value }) => {
+                              setModelPrices((prev) => ({
+                                ...prev,
+                                [model]: { ...prev[model], cache: Number(value) || 0 },
+                              }));
+                            }}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
             {inputs.type !== 43 && (
               <>
                 <Form.Field>
@@ -741,6 +835,59 @@ const EditChannel = () => {
                 />
               </Form.Field>
             )}
+            {/* asterisk-token-router: billing type & circuit breaker */}
+            <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+              <h4 style={{ marginBottom: '10px' }}>计费与熔断配置</h4>
+              <Form.Field>
+                <Form.Dropdown
+                  label='结算类型'
+                  name='billing_type'
+                  fluid
+                  selection
+                  onChange={handleInputChange}
+                  value={inputs.billing_type}
+                  options={[
+                    { key: 'recharge', text: '预充值 (Prepaid)', value: 'recharge' },
+                    { key: 'monthly', text: '月结 (Monthly)', value: 'monthly' },
+                    { key: 'subscription', text: '包月 (Subscription)', value: 'subscription' },
+                  ]}
+                />
+              </Form.Field>
+              {inputs.billing_type === 'monthly' && (
+                <Form.Field>
+                  <Form.Input
+                    label='月度预算 (元)'
+                    name='monthly_budget'
+                    type='number'
+                    step='0.01'
+                    placeholder='例如: 10000.00'
+                    onChange={handleInputChange}
+                    value={inputs.monthly_budget}
+                  />
+                </Form.Field>
+              )}
+              <Form.Field>
+                <Form.Input
+                  label='告警阈值 (%)'
+                  name='warning_pct'
+                  type='number'
+                  step='1'
+                  placeholder='默认 80'
+                  onChange={handleInputChange}
+                  value={inputs.warning_pct}
+                />
+              </Form.Field>
+              <Form.Field>
+                <Form.Checkbox
+                  label='超预算自动禁用'
+                  name='auto_disable'
+                  checked={inputs.auto_disable}
+                  onChange={(e, { checked }) =>
+                    handleInputChange(e, { name: 'auto_disable', value: checked })
+                  }
+                />
+              </Form.Field>
+            </div>
             <Button onClick={handleCancel}>
               {t('channel.edit.buttons.cancel')}
             </Button>

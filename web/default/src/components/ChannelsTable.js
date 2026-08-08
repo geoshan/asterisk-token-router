@@ -251,6 +251,53 @@ const ChannelsTable = () => {
     }
   };
 
+  const renderBillingType = (channel, t) => {
+    const billingType = channel.billing_type;
+    if (!billingType) return <Label basic color='grey'>{t('channel.table.billing_unknown')}</Label>;
+    switch (billingType) {
+      case 'prepaid':
+        return <Label basic color='blue'>{t('channel.table.billing_prepaid')}</Label>;
+      case 'monthly':
+        return <Label basic color='teal'>{t('channel.table.billing_monthly')}</Label>;
+      case 'subscription':
+        return <Label basic color='purple'>{t('channel.table.billing_subscription')}</Label>;
+      default:
+        return <Label basic color='grey'>{billingType}</Label>;
+    }
+  };
+
+  const renderHealthStatus = (healthStatus, t) => {
+    if (healthStatus === undefined || healthStatus === null) {
+      return <Label basic color='grey'>{t('channel.table.health_unknown')}</Label>;
+    }
+    switch (healthStatus) {
+      case 'normal':
+        return <Label basic color='green'>{t('channel.table.health_normal')}</Label>;
+      case 'warning':
+        return <Label basic color='yellow'>{t('channel.table.health_warning')}</Label>;
+      case 'critical':
+        return <Label basic color='orange'>{t('channel.table.health_critical')}</Label>;
+      case 'circuit_break':
+        return <Label basic color='red'>{t('channel.table.health_circuit_break')}</Label>;
+      default:
+        return <Label basic color='grey'>{healthStatus}</Label>;
+    }
+  };
+
+  const renderBalanceUsage = (channel, t) => {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+        <span style={{ fontSize: '0.85em', color: '#888' }}>
+          {t('channel.table.used')}: {renderNumber(channel.used_quota || 0)}
+        </span>
+        <span style={{ cursor: 'pointer' }}
+          onClick={() => updateChannelBalance(channel.id, channel.name, 0)}>
+          {t('channel.table.remaining')}: {renderBalance(channel.type, channel.balance, t)}
+        </span>
+      </div>
+    );
+  };
+
   const renderResponseTime = (channel, t) => {
     let time = (channel.response_time / 1000).toFixed(2);
     if (channel.test_time === 0) {
@@ -468,10 +515,26 @@ const ChannelsTable = () => {
             <Table.HeaderCell
               style={{ cursor: 'pointer' }}
               onClick={() => {
+                sortChannel('billing_type');
+              }}
+            >
+              {t('channel.table.billing_type')}
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
                 sortChannel('status');
               }}
             >
               {t('channel.table.status')}
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                sortChannel('health_status');
+              }}
+            >
+              {t('channel.table.health_status')}
             </Table.HeaderCell>
             <Table.HeaderCell
               style={{ cursor: 'pointer' }}
@@ -487,7 +550,7 @@ const ChannelsTable = () => {
                 sortChannel('balance');
               }}
             >
-              {t('channel.table.balance')}
+              {t('channel.table.balance_usage')}
             </Table.HeaderCell>
             <Table.HeaderCell
               style={{ cursor: 'pointer' }}
@@ -521,7 +584,9 @@ const ChannelsTable = () => {
                   </Table.Cell>
                   <Table.Cell>{channel.channel_group || "未分组"}</Table.Cell>
                   <Table.Cell>{renderType(channel.type, t)}</Table.Cell>
+                  <Table.Cell>{renderBillingType(channel, t)}</Table.Cell>
                   <Table.Cell>{renderStatus(channel.status, t)}</Table.Cell>
+                  <Table.Cell>{renderHealthStatus(channel.health_status, t)}</Table.Cell>
                   <Table.Cell>
                     <Popup
                       content={
@@ -535,20 +600,7 @@ const ChannelsTable = () => {
                     />
                   </Table.Cell>
                   <Table.Cell>
-                    <Popup
-                      trigger={
-                        <span
-                          onClick={() => {
-                            updateChannelBalance(channel.id, channel.name, idx);
-                          }}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          {renderBalance(channel.type, channel.balance, t)}
-                        </span>
-                      }
-                      content={t('channel.table.click_to_update')}
-                      basic
-                    />
+                    {renderBalanceUsage(channel, t)}
                   </Table.Cell>
                   <Table.Cell hidden={!showDetail}>
                     <Popup
@@ -657,7 +709,7 @@ const ChannelsTable = () => {
 
         <Table.Footer>
           <Table.Row>
-            <Table.HeaderCell colSpan={showDetail ? '10' : '8'}>
+            <Table.HeaderCell colSpan={showDetail ? '12' : '10'}>
               <Button size='tiny' as={Link} to='/channel/add' loading={loading}>
                 {t('channel.buttons.add')}
               </Button>
