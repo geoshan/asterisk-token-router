@@ -253,13 +253,13 @@ const ChannelsTable = () => {
 
   const renderBillingType = (channel, t) => {
     const billingType = channel.billing_type;
-    if (!billingType) return <Label basic color='grey'>{t('channel.table.billing_unknown')}</Label>;
+    if (billingType == null || billingType === undefined || billingType === '') return <Label basic color='grey'>{t('channel.table.billing_unknown')}</Label>;
     switch (billingType) {
-      case 'prepaid':
+      case 0:
         return <Label basic color='blue'>{t('channel.table.billing_prepaid')}</Label>;
-      case 'monthly':
+      case 1:
         return <Label basic color='teal'>{t('channel.table.billing_monthly')}</Label>;
-      case 'subscription':
+      case 2:
         return <Label basic color='purple'>{t('channel.table.billing_subscription')}</Label>;
       default:
         return <Label basic color='grey'>{billingType}</Label>;
