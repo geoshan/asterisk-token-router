@@ -55,7 +55,7 @@ const EditChannel = () => {
     price_out: 0,
     call_limit: 0,
     // asterisk-token-router: billing & circuit breaker fields
-    billing_type: '',
+    billing_type: 0,
     monthly_budget: 0,
     warning_pct: 80,
     auto_disable: true,
@@ -80,7 +80,7 @@ const EditChannel = () => {
   const [modelPrices, setModelPrices] = useState({});
   const handleInputChange = (e, { name, value }) => {
     // asterisk-token-router: convert numeric fields
-    if (['price_in', 'price_out', 'call_limit', 'billing_mode', 'monthly_budget', 'warning_pct'].includes(name)) {
+    if (['price_in', 'price_out', 'call_limit', 'billing_mode', 'billing_type', 'monthly_budget', 'warning_pct'].includes(name)) {
       value = value === '' || value === null ? 0 : Number(value);
     }
     setInputs((inputs) => ({ ...inputs, [name]: value }));
@@ -847,13 +847,13 @@ const EditChannel = () => {
                   onChange={handleInputChange}
                   value={inputs.billing_type}
                   options={[
-                    { key: 'recharge', text: '预充值 (Prepaid)', value: 'recharge' },
-                    { key: 'monthly', text: '月结 (Monthly)', value: 'monthly' },
-                    { key: 'subscription', text: '包月 (Subscription)', value: 'subscription' },
+                    { key: 0, text: '预充值 (Prepaid)', value: 0 },
+                    { key: 1, text: '月结 (Monthly)', value: 1 },
+                    { key: 2, text: '包月 (Subscription)', value: 2 },
                   ]}
                 />
               </Form.Field>
-              {inputs.billing_type === 'monthly' && (
+              {inputs.billing_type === 1 && (
                 <Form.Field>
                   <Form.Input
                     label='月度预算 (元)'
