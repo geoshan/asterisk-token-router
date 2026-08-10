@@ -58,7 +58,11 @@ const EditChannel = () => {
     billing_type: 0,
     monthly_budget: 0,
     warning_pct: 80,
+    breaker_pct: 90,
     auto_disable: true,
+    recharge_amount: 0,
+    recharge_time: '',
+    current_balance: 0,
   };
   const [batch, setBatch] = useState(false);
   const [inputs, setInputs] = useState(originInputs);
@@ -80,7 +84,7 @@ const EditChannel = () => {
   const [modelPrices, setModelPrices] = useState({});
   const handleInputChange = (e, { name, value }) => {
     // asterisk-token-router: convert numeric fields
-    if (['price_in', 'price_out', 'call_limit', 'billing_mode', 'billing_type', 'monthly_budget', 'warning_pct'].includes(name)) {
+    if (['price_in', 'price_out', 'call_limit', 'billing_mode', 'billing_type', 'monthly_budget', 'warning_pct', 'breaker_pct', 'recharge_amount', 'current_balance'].includes(name)) {
       value = value === '' || value === null ? 0 : Number(value);
     }
     setInputs((inputs) => ({ ...inputs, [name]: value }));
@@ -798,7 +802,7 @@ const EditChannel = () => {
               />
             </Form.Field>
             {inputs.billing_mode === 1 && (
-              <>
+              <div hidden>
                 <Form.Field>
                   <Form.Input
                     label='输入单价 (元/M tokens)'
@@ -821,7 +825,7 @@ const EditChannel = () => {
                     value={inputs.price_out}
                   />
                 </Form.Field>
-              </>
+              </div>
             )}
             {inputs.billing_mode === 0 && (
               <Form.Field>
@@ -853,6 +857,41 @@ const EditChannel = () => {
                   ]}
                 />
               </Form.Field>
+              {inputs.billing_type === 0 && (
+                <>
+                  <Form.Field>
+                    <Form.Input
+                      label='充值金额 (元)'
+                      name='recharge_amount'
+                      type='number'
+                      step='0.01'
+                      placeholder='例如: 1000.00'
+                      onChange={handleInputChange}
+                      value={inputs.recharge_amount}
+                    />
+                  </Form.Field>
+                  <Form.Field>
+                    <Form.Input
+                      label='充值时间'
+                      name='recharge_time'
+                      type='datetime-local'
+                      onChange={handleInputChange}
+                      value={inputs.recharge_time}
+                    />
+                  </Form.Field>
+                  <Form.Field>
+                    <Form.Input
+                      label='当前余额 (元)'
+                      name='current_balance'
+                      type='number'
+                      step='0.01'
+                      placeholder='例如: 500.00'
+                      onChange={handleInputChange}
+                      value={inputs.current_balance}
+                    />
+                  </Form.Field>
+                </>
+              )}
               {inputs.billing_type === 1 && (
                 <Form.Field>
                   <Form.Input
@@ -868,13 +907,28 @@ const EditChannel = () => {
               )}
               <Form.Field>
                 <Form.Input
-                  label='告警阈值 (%)'
+                  label='预警阈值 (%)'
                   name='warning_pct'
                   type='number'
                   step='1'
+                  min='0'
+                  max='100'
                   placeholder='默认 80'
                   onChange={handleInputChange}
                   value={inputs.warning_pct}
+                />
+              </Form.Field>
+              <Form.Field>
+                <Form.Input
+                  label='熔断阈值 (%)'
+                  name='breaker_pct'
+                  type='number'
+                  step='1'
+                  min='0'
+                  max='100'
+                  placeholder='默认 90'
+                  onChange={handleInputChange}
+                  value={inputs.breaker_pct}
                 />
               </Form.Field>
               <Form.Field>

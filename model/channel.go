@@ -55,9 +55,14 @@ type Channel struct {
 	BillingType   int     `json:"billing_type" gorm:"default:0"`           // 0=预充值, 1=月结, 2=包月
 	MonthlyBudget float64 `json:"monthly_budget" gorm:"default:0"`
 	MonthlyUsed   float64 `json:"monthly_used" gorm:"default:0"`
-	WarningPct    int     `json:"warning_pct" gorm:"default:80"`            // 预警百分比
-	AutoDisable   bool    `json:"auto_disable" gorm:"default:true"`         // 超预算自动禁用
-	ModelPrices   string  `json:"model_prices" gorm:"type:text"`
+	WarningPct     int     `json:"warning_pct" gorm:"default:80"`            // 预警百分比
+	BreakerPct     int     `json:"breaker_pct" gorm:"default:90"`            // 熔断百分比
+	AutoDisable    bool    `json:"auto_disable" gorm:"default:true"`         // 超预算自动禁用
+	// asterisk-token-router: 预充值字段
+	RechargeAmount float64 `json:"recharge_amount" gorm:"default:0"`
+	RechargeTime   string  `json:"recharge_time" gorm:"type:varchar(32);default:''"`
+	CurrentBalance float64 `json:"current_balance" gorm:"default:0"`
+	ModelPrices    string  `json:"model_prices" gorm:"type:text"`
 }
 
 type ChannelConfig struct {

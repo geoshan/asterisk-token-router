@@ -77,12 +77,24 @@ func checkChannelBilling(c *gin.Context, channelId int) {
 		callCount = channel.CallCount
 	}
 
-	result := common.CheckChannelAlert(
-		channel.BillingMode,
-		channel.CallLimit,
-		callCount,
-		channel.Balance,
-	)
+	var result common.ChannelAlertResult
+
+	// BillingType: 0=预充值, 1=月结, 2=包月
+	// 月结模式单独处理
+	if channel.BillingType == 1 {
+		result = common.CheckMonthlyAlert(channel.MonthlyBudget, channel.MonthlyUsed)
+	} else {
+		result = common.CheckChannelAlert(
+			channel.BillingMode,
+			channel.CallLimit,
+			callCount,
+			channel.Balance,
+			channel.RechargeAmount,
+			channel.CurrentBalance,
+			channel.MonthlyBudget,
+			channel.MonthlyUsed,
+		)
+	}
 
 	if result.Blocked {
 		logger.SysError(fmt.Sprintf("CHANNEL_BLOCKED: channel #%d, mode=%d, %s",
