@@ -222,16 +222,66 @@ type LogStatistic struct {
 	CompletionTokens int    `gorm:"column:completion_tokens"`
 }
 
-func SearchLogsByDayAndModel(userId, start, end int) (LogStatistics []*LogStatistic, err error) {
-	groupSelect := "DATE_FORMAT(FROM_UNIXTIME(created_at), '%Y-%m-%d') as day"
+// LogStatisticChannel groups by day + channel_id for trend charts
+type LogStatisticChannel struct {
+	Day              string `gorm:"column:day"`
+	ChannelId        int    `gorm:"column:channel_id"`
+	RequestCount     int    `gorm:"column:request_count"`
+	Quota            int    `gorm:"column:quota"`
+	PromptTokens     int    `gorm:"column:prompt_tokens"`
+	CompletionTokens int    `gorm:"column:completion_tokens"`
+}
 
+// LogStatisticToken groups by day + token_name for admin trend charts
+type LogStatisticToken struct {
+	Day              string `gorm:"column:day"`
+	TokenName        string `gorm:"column:token_name"`
+	RequestCount     int    `gorm:"column:request_count"`
+	Quota            int    `gorm:"column:quota"`
+	PromptTokens     int    `gorm:"column:prompt_tokens"`
+	CompletionTokens int    `gorm:"column:completion_tokens"`
+}
+
+// LogStatisticTotal groups by day only (aggregated total)
+type LogStatisticTotal struct {
+	Day              string `gorm:"column:day"`
+	RequestCount     int    `gorm:"column:request_count"`
+	Quota            int    `gorm:"column:quota"`
+	PromptTokens     int    `gorm:"column:prompt_tokens"`
+	CompletionTokens int    `gorm:"column:completion_tokens"`
+}
+
+// LogStatisticUserChannel groups by username + channel_id for admin per-user analysis
+type LogStatisticUserChannel struct {
+	Username         string `gorm:"column:username"`
+	ChannelId        int    `gorm:"column:channel_id"`
+	RequestCount     int    `gorm:"column:request_count"`
+	Quota            int    `gorm:"column:quota"`
+	PromptTokens     int    `gorm:"column:prompt_tokens"`
+	CompletionTokens int    `gorm:"column:completion_tokens"`
+}
+
+// LogStatisticUserConsumption groups by username for admin per-user consumption analysis
+type LogStatisticUserConsumption struct {
+	Username         string `gorm:"column:username"`
+	RequestCount     int    `gorm:"column:request_count"`
+	Quota            int    `gorm:"column:quota"`
+	PromptTokens     int    `gorm:"column:prompt_tokens"`
+	CompletionTokens int    `gorm:"column:completion_tokens"`
+}
+
+func getDayGroupSelect() string {
 	if common.UsingPostgreSQL {
-		groupSelect = "TO_CHAR(date_trunc('day', to_timestamp(created_at)), 'YYYY-MM-DD') as day"
+		return "TO_CHAR(date_trunc('day', to_timestamp(created_at)), 'YYYY-MM-DD') as day"
 	}
-
 	if common.UsingSQLite {
-		groupSelect = "strftime('%Y-%m-%d', datetime(created_at, 'unixepoch')) as day"
+		return "strftime('%Y-%m-%d', datetime(created_at, 'unixepoch')) as day"
 	}
+	return "DATE_FORMAT(FROM_UNIXTIME(created_at), '%Y-%m-%d') as day"
+}
+
+func SearchLogsByDayAndModel(userId, start, end int) (LogStatistics []*LogStatistic, err error) {
+	groupSelect := getDayGroupSelect()
 
 	err = LOG_DB.Raw(`
 		SELECT `+groupSelect+`,
@@ -248,4 +298,101 @@ func SearchLogsByDayAndModel(userId, start, end int) (LogStatistics []*LogStatis
 	`, userId, userId, start, end).Scan(&LogStatistics).Error
 
 	return LogStatistics, err
+}
+
+// SearchLogsByDayAndChannel groups by day + channel_id for "by channel" trend
+func SearchLogsByDayAndChannel(userId, start, end int) (results []*LogStatisticChannel, err error) {
+	groupSelect := getDayGroupSelect()
+
+	err = LOG_DB.Raw(`
+		SELECT `+groupSelect+`,
+		channel_id, count(1) as request_count,
+		sum(quota) as quota,
+		sum(prompt_tokens) as prompt_tokens,
+		sum(completion_tokens) as completion_tokens
+		FROM logs
+		WHERE type=2
+		AND (user_id= ? OR 0 = ?)
+		AND created_at BETWEEN ? AND ?
+		GROUP BY day, channel_id
+		ORDER BY day, channel_id
+	`, userId, userId, start, end).Scan(&results).Error
+
+	return results, err
+}
+
+// SearchLogsByDayAndToken groups by day + token_name for admin "by token" trend
+func SearchLogsByDayAndToken(userId, start, end int) (results []*LogStatisticToken, err error) {
+	groupSelect := getDayGroupSelect()
+
+	err = LOG_DB.Raw(`
+		SELECT `+groupSelect+`,
+		token_name, count(1) as request_count,
+		sum(quota) as quota,
+		sum(prompt_tokens) as prompt_tokens,
+		sum(completion_tokens) as completion_tokens
+		FROM logs
+		WHERE type=2
+		AND (user_id= ? OR 0 = ?)
+		AND created_at BETWEEN ? AND ?
+		GROUP BY day, token_name
+		ORDER BY day, token_name
+	`, userId, userId, start, end).Scan(&results).Error
+
+	return results, err
+}
+
+// SearchLogsByDayTotal aggregates all consumption by day (no grouping by model/channel/token)
+func SearchLogsByDayTotal(userId, start, end int) (results []*LogStatisticTotal, err error) {
+	groupSelect := getDayGroupSelect()
+
+	err = LOG_DB.Raw(`
+		SELECT `+groupSelect+`,
+		count(1) as request_count,
+		sum(quota) as quota,
+		sum(prompt_tokens) as prompt_tokens,
+		sum(completion_tokens) as completion_tokens
+		FROM logs
+		WHERE type=2
+		AND (user_id= ? OR 0 = ?)
+		AND created_at BETWEEN ? AND ?
+		GROUP BY day
+		ORDER BY day
+	`, userId, userId, start, end).Scan(&results).Error
+
+	return results, err
+}
+
+// SearchLogsByUserAndChannel groups by username + channel_id (admin only: per-user by channel)
+func SearchLogsByUserAndChannel(start, end int) (results []*LogStatisticUserChannel, err error) {
+	err = LOG_DB.Raw(`
+		SELECT username, channel_id, count(1) as request_count,
+		sum(quota) as quota,
+		sum(prompt_tokens) as prompt_tokens,
+		sum(completion_tokens) as completion_tokens
+		FROM logs
+		WHERE type=2
+		AND created_at BETWEEN ? AND ?
+		GROUP BY username, channel_id
+		ORDER BY quota DESC
+	`, start, end).Scan(&results).Error
+
+	return results, err
+}
+
+// SearchLogsByUserConsumption groups by username (admin only: per-user by consumption)
+func SearchLogsByUserConsumption(start, end int) (results []*LogStatisticUserConsumption, err error) {
+	err = LOG_DB.Raw(`
+		SELECT username, count(1) as request_count,
+		sum(quota) as quota,
+		sum(prompt_tokens) as prompt_tokens,
+		sum(completion_tokens) as completion_tokens
+		FROM logs
+		WHERE type=2
+		AND created_at BETWEEN ? AND ?
+		GROUP BY username
+		ORDER BY quota DESC
+	`, start, end).Scan(&results).Error
+
+	return results, err
 }

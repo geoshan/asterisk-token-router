@@ -427,6 +427,8 @@
     }
   },
   "dashboard": {
+    "loading": "加载中...",
+    "no_data": "暂无数据",
     "charts": {
       "requests": {
         "title": "模型请求趋势",
@@ -439,7 +441,12 @@
       "tokens": {
         "title": "Token 消费趋势",
         "tooltip": "Token 数量"
-      }
+      },
+      "model_trend": "按模型趋势",
+      "channel_trend": "按渠道趋势",
+      "token_trend": "按令牌趋势",
+      "total_consumption": "总消费趋势",
+      "all_user_total": "全用户总消费趋势"
     },
     "statistics": {
       "title": "统计",
@@ -447,6 +454,16 @@
         "date": "日期",
         "value": "数值"
       }
+    },
+    "per_user": {
+      "section_title": "分用户分析",
+      "channel_title": "按渠道维度",
+      "consumption_title": "按消费维度",
+      "username": "用户名",
+      "channel_id": "渠道ID",
+      "requests": "请求数",
+      "quota": "消费额度",
+      "tokens": "Token量"
     }
   },
   "setting": {

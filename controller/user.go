@@ -261,28 +261,101 @@ func GetUser(c *gin.Context) {
 
 func GetUserDashboard(c *gin.Context) {
 	id := c.GetInt(ctxkey.Id)
-	if c.GetInt(ctxkey.Role) >= 10 {
+	role := c.GetInt(ctxkey.Role)
+	isAdmin := role >= 10
+
+	if isAdmin {
 		id = 0 // admin sees all users
 	}
-	now := time.Now()
-	startOfDay := now.Truncate(24*time.Hour).AddDate(0, 0, -6).Unix()
-	endOfDay := now.Truncate(24 * time.Hour).Add(24*time.Hour - time.Second).Unix()
 
-	dashboards, err := model.SearchLogsByDayAndModel(id, int(startOfDay), int(endOfDay))
+	now := time.Now()
+	startOfDay := now.Truncate(24 * time.Hour).AddDate(0, 0, -6).Unix()
+	endOfDay := now.Truncate(24 * time.Hour).Add(24*time.Hour - time.Second).Unix()
+	start := int(startOfDay)
+	end := int(endOfDay)
+
+	// Base result includes role for frontend to decide rendering
+	result := gin.H{
+		"role": role,
+	}
+
+	// 1) by_model — always returned (both admin and regular users need it)
+	byModel, err := model.SearchLogsByDayAndModel(id, start, end)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": "无法获取统计信息",
+			"message": "无法获取按模型统计数据",
 			"data":    nil,
 		})
 		return
 	}
+	result["by_model"] = byModel
+
+	// 2) total_consumption — always returned (both user types)
+	totalConsumption, err := model.SearchLogsByDayTotal(id, start, end)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "无法获取总消费统计数据",
+			"data":    nil,
+		})
+		return
+	}
+	result["total_consumption"] = totalConsumption
+
+	if isAdmin {
+		// Admin: by_token + per-user analysis
+		byToken, err := model.SearchLogsByDayAndToken(id, start, end)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": "无法获取按令牌统计数据",
+				"data":    nil,
+			})
+			return
+		}
+		result["by_token"] = byToken
+
+		perUserChannel, err := model.SearchLogsByUserAndChannel(start, end)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": "无法获取分用户渠道统计数据",
+				"data":    nil,
+			})
+			return
+		}
+		result["per_user_channel"] = perUserChannel
+
+		perUserConsumption, err := model.SearchLogsByUserConsumption(start, end)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": "无法获取分用户消费统计数据",
+				"data":    nil,
+			})
+			return
+		}
+		result["per_user_consumption"] = perUserConsumption
+	} else {
+		// Regular user: by_channel
+		byChannel, err := model.SearchLogsByDayAndChannel(id, start, end)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": "无法获取按渠道统计数据",
+				"data":    nil,
+			})
+			return
+		}
+		result["by_channel"] = byChannel
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "",
-		"data":    dashboards,
+		"data":    result,
 	})
-	return
 }
 
 func GenerateAccessToken(c *gin.Context) {

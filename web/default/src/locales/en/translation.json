@@ -427,6 +427,8 @@
     }
   },
   "dashboard": {
+    "loading": "Loading...",
+    "no_data": "No data available",
     "charts": {
       "requests": {
         "title": "Model Request Trend",
@@ -439,7 +441,12 @@
       "tokens": {
         "title": "Token Usage Trend",
         "tooltip": "Token Count"
-      }
+      },
+      "model_trend": "By Model Trend",
+      "channel_trend": "By Channel Trend",
+      "token_trend": "By Token Trend",
+      "total_consumption": "Total Consumption Trend",
+      "all_user_total": "All-User Total Consumption"
     },
     "statistics": {
       "title": "Statistics",
@@ -447,6 +454,16 @@
         "date": "Date",
         "value": "Value"
       }
+    },
+    "per_user": {
+      "section_title": "Per-User Analysis",
+      "channel_title": "By Channel Dimension",
+      "consumption_title": "By Consumption Dimension",
+      "username": "Username",
+      "channel_id": "Channel ID",
+      "requests": "Requests",
+      "quota": "Quota",
+      "tokens": "Tokens"
     }
   },
   "setting": {
