@@ -129,6 +129,16 @@ function App() {
         }
       />
       <Route
+        path='/channel/edit'
+        element={
+          <AdminRoute>
+            <Suspense fallback={<Loading></Loading>}>
+              <EditChannel />
+            </Suspense>
+          </AdminRoute>
+        }
+      />
+      <Route
         path='/channel/add'
         element={
           <AdminRoute>
@@ -172,6 +182,16 @@ function App() {
       />
       <Route
         path='/token/edit/:id'
+        element={
+          <AdminRoute>
+            <Suspense fallback={<Loading></Loading>}>
+              <EditToken />
+            </Suspense>
+          </AdminRoute>
+        }
+      />
+      <Route
+        path='/token/edit'
         element={
           <AdminRoute>
             <Suspense fallback={<Loading></Loading>}>
@@ -245,9 +265,11 @@ function App() {
       <Route
         path='/user/add'
         element={
-          <Suspense fallback={<Loading></Loading>}>
-            <AddUser />
-          </Suspense>
+          <AdminRoute>
+            <Suspense fallback={<Loading></Loading>}>
+              <AddUser />
+            </Suspense>
+          </AdminRoute>
         }
       />
       <Route

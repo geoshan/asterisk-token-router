@@ -2,9 +2,9 @@
 
 > **基于项目**: One API (songquanpeng/one-api, MIT)  
 > **目标许可**: Apache 2.0（便于后续出商业版）  
-> **版本**: v2.1  
-> **日期**: 2026-07-08  
-> **状态**: 需求已对齐  
+> **版本**: v2.2  
+> **日期**: 2026-08-12  
+> **状态**: v1.1.19 迭代完成，文档已补充 v1.1.x 全部功能变更  
 > **说明**: 本文档忽略用户原始 PRD 的第 6 章（数据结构）和第 7 章（API 设计），采用 One API 原生数据模型和 API 规范。
 
 ---
@@ -726,3 +726,114 @@ gantt
 | 8 | **Key 前缀** | 沿用 One API 默认 **`sk-`**。 |
 
 > 第 5-8 项为低优先级决策，可在开发启动前最后确认，不影响架构设计。
+
+---
+
+## 9. v1.1.x 迭代功能变更记录
+
+> 以下记录 v1.1.0 ~ v1.1.19 期间实际实现的全部功能变更，与原始需求规格的差异及新增能力。
+
+### 9.1 v1.1.0 — 渠道熔断与按模型定价
+
+**渠道级熔断与计费告警（Phase2）**：
+- 渠道表新增计费类型（`billing_type`）：0=预充值、1=月结、2=订阅
+- 渠道表新增熔断配置：`warning_pct`（预警百分比）、`breaker_pct`（熔断百分比）
+- 渠道表新增预充值字段：`recharge_amount`（充值金额）、`recharge_time`（充值时间）、`current_balance`（当前余额）
+- 渠道列表新增列：渠道组、计费类型、健康状态、余额/用量
+- 预警逻辑：预充值余额不足时告警；月结达98%熔断
+
+**按模型定价表**：
+- 渠道编辑页嵌入按模型定价表格（price_in/price_out 字段隐藏，定价表为唯一价格入口）
+- `model/ability.go` 新增 `PromptTokensDetails`、`GetModelPrice`
+- `UpdateAbilities` 使用事务防竞态 + 1062 重复键处理
+
+### 9.2 v1.1.1 — 前端路由权限检查
+
+**AdminRoute 路由守卫**：
+- 新增 `AdminRoute` 组件，检查 `userState.user.role >= 10`
+- 所有管理员路由包裹 AdminRoute：`/channel`, `/channel/*`, `/token`, `/token/*`, `/user`, `/user/*`, `/redemption`, `/log`, `/quota`
+- 普通用户直接 URL 访问管理员路由 → 重定向到 `/mytoken`
+
+**前端修复**：
+- 登录页隐藏"忘记密码"和"注册"链接
+- root 登录跳转改为按角色（`role >= 10`）而非硬编码密码
+
+### 9.3 v1.1.2 — 总览仪表盘按角色区分
+
+**多查询架构**：
+- `GetUserDashboard` 返回结构化 JSON：`by_model`, `by_channel`/`by_token`, `total_consumption`
+- 管理员附加：`per_user_channel`, `per_user_consumption`
+- 前端 Dashboard 根据 `userState.user.role` 条件渲染不同视图
+- 6 个 SQL 查询函数：`SearchLogsByDayAndModel/Channel/Token/Total` + `SearchLogsByUserAndChannel/Consumption`
+
+### 9.4 v1.1.3 ~ v1.1.4 — 前端嵌入修复 + 用户额度双字段
+
+**前端嵌入修复（最大坑）**：
+- `build.sh` 修复：用 temp 目录先保存前端产物，再 `cp` 到 `web/build/default/`
+- `go:embed` 从 `web/build/*` 改为 `web/build`（递归嵌入子目录）
+- 修复后二进制大小：~37MB（有前端），<30MB 表示前端缺失
+
+**用户额度双字段模型（v1.1.4）**：
+- `model/user.go`：`quota` 重命名为 `remain_quota`，新增 `monthly_quota` 字段
+- `AddUser.js`：新增额度字段（总额度 + 月度额度）
+- `PreConsumeTokenQuota`：新增用户月度额度检查
+- 与令牌逻辑镜像：`monthly_quota > 0` 时每月 1 日自动重置 `remain_quota`
+
+### 9.5 v1.1.5 ~ v1.1.7 — 配额计费链重构
+
+**v1.1.5 金额制改革**：
+- `QuotaPerUnit = 1,000,000`：每百万 token = ¥1
+- `PreConsumedQuota = 0`：金额制下不预扣
+- 前端输入换算：用户输入 ¥ 金额 `× 1,000,000` 提交，显示时 `÷ 1,000,000`
+
+**v1.1.6 QuotaPerUnit 陷阱**：
+- 严禁将 `QuotaPerUnit` 改为 1 — 会导致预消费/定价/显示三处崩塌
+- `model_ratio` 直接对应 ¥/M tokens
+
+**v1.1.7 计费链清洗**：
+- 放弃 One API 默认值，统一使用 `QuotaPerUnit=1,000,000 + PreConsumedQuota=0`
+- `model_ratio` 基准：deepseek-chat = 1.0（¥1/M 输入 token）
+
+### 9.6 v1.1.8 ~ v1.1.9 — 前端渲染统一
+
+**v1.1.8**：
+- `renderQuota` 和 `renderQuotaWithPrompt` 统一改为直接 `¥{amount}` 格式
+- 不再依赖 `localStorage.display_in_currency`
+- `MyToken.js` 配额显示修复（独立组件，不用 `TokensTable.js` 的 `renderQuota`）
+
+**v1.1.9**：
+- 去掉配额显示中的 "等价金额" 冗余文本
+- 模型名称显示不截断（`substring(0,30)` → `maxWidth:300, wordBreak`）
+
+### 9.7 v1.1.10 ~ v1.1.11 — 权限完善
+
+**v1.1.10**：
+- `PersonalSetting.js` 中 "更新用户信息" 按钮包裹 `isAdmin()` 检查
+- 修复 `isAdmin` 缺失导入导致 npm build 静默失败
+
+**v1.1.11**：
+- 登录页彻底隐藏 "忘记密码" 和 "注册" 链接
+- 总览图表添加 Legend
+
+### 9.8 v1.1.12 ~ v1.1.19 — 帮助页重建 + 部署修复
+
+**帮助页重建（v1.1.12-17）**：
+- SVG 截图方案废弃，改为 Semantic UI 组件重建
+- 帮助页内容：令牌使用指南、API 文档、脱敏截图
+- SVG 点击放大、清空历史日志
+- 令牌列表移除 "复制聊天" 按钮
+
+**路由守卫补全（v1.1.19）**：
+- `/channel` 路由也加上 AdminRoute（之前遗漏）
+- 确保所有 10 个管理员子路由全部受保护
+
+### 9.9 基础设施变更汇总
+
+| 类别 | 变更内容 |
+|------|---------|
+| **数据模型** | Channel 新增 billing_type/warning_pct/breaker_pct/recharge_*/current_balance；User 新增 monthly_quota，quota→remain_quota；新增 quota_requests 表 |
+| **中间件** | `ctxkey.Role` 注入（`UserAuth` 查 DB 后 `c.Set`）；`AdminRoute` React 路由守卫 |
+| **前端组件** | 三个独立令牌组件（`TokensTable.js`/`MyToken.js`/`EditToken.js`）；按角色 Dashboard |
+| **计费** | `QuotaPerUnit=1,000,000` + `PreConsumedQuota=0` 金额制；`model_ratio` 直接 ¥/M tokens |
+| **会话** | `SESSION_SECRET` 环境变量固定，防止重启掉线 |
+| **部署** | `build.sh` 三步 temp 复制 + `go:embed` 递归；版本号 `A.B.C build MMDD.HHMM`
