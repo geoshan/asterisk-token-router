@@ -25,8 +25,8 @@ const AddUser = () => {
     if (inputs.username === '' || inputs.password === '') return;
     const res = await API.post(`/api/user/`, {
       ...inputs,
-      quota: parseInt(inputs.quota) || 0,
-      monthly_quota: parseInt(inputs.monthly_quota) || 0,
+      quota: (parseInt(inputs.quota) || 0) * 1000000,
+      monthly_quota: (parseInt(inputs.monthly_quota) || 0) * 1000000,
     });
     const { success, message } = res.data;
     if (success) {

@@ -65,18 +65,8 @@ export function renderQuota(quota, t, precision = 2) {
 }
 
 export function renderQuotaWithPrompt(quota, t) {
-  const displayInCurrency =
-    localStorage.getItem('display_in_currency') === 'true';
-  const quotaPerUnit = parseFloat(
-    localStorage.getItem('quota_per_unit') || '1'
-  );
-
-  if (displayInCurrency) {
-    const amount = (quota / quotaPerUnit).toFixed(2);
-    return ` (${t('common.quota.display', { amount })})`;
-  }
-
-  return '';
+  const amount = (quota / 1000000).toFixed(2);
+  return `¥${amount}`;
 }
 
 const colors = [

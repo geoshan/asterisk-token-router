@@ -67,6 +67,8 @@ const EditUser = () => {
     const { success, message, data } = res.data;
     if (success) {
       data.password = '';
+      if (data.quota) data.quota = data.quota / 1000000;
+      if (data.monthly_quota) data.monthly_quota = data.monthly_quota / 1000000;
       setInputs(data);
     } else {
       showError(message);
@@ -87,9 +89,11 @@ const EditUser = () => {
       if (typeof data.quota === 'string') {
         data.quota = parseInt(data.quota);
       }
+      data.quota = data.quota * 1000000;
       if (typeof data.monthly_quota === 'string') {
         data.monthly_quota = parseInt(data.monthly_quota);
       }
+      data.monthly_quota = data.monthly_quota * 1000000;
       res = await API.put(`/api/user/`, data);
     } else {
       res = await API.put(`/api/user/self`, inputs);
