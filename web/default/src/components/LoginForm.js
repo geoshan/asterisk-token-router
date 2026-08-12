@@ -165,12 +165,6 @@ const LoginForm = () => {
               >
                 <div>
                   {t('auth.login.forgot_password')}
-                  <Link
-                    to='/reset'
-                    style={{ color: '#2185d0', marginLeft: '2px' }}
-                  >
-                    {t('auth.login.reset_password')}
-                  </Link>
                 </div>
                 <div>
                   {t('auth.login.no_account')}
