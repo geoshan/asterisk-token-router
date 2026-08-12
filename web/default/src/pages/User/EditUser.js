@@ -21,6 +21,7 @@ const EditUser = () => {
     wechat_id: '',
     email: '',
     quota: 0,
+    monthly_quota: 0,
     group: 'default',
   });
   const [groupOptions, setGroupOptions] = useState([]);
@@ -32,6 +33,7 @@ const EditUser = () => {
     wechat_id,
     email,
     quota,
+    monthly_quota,
     group,
   } = inputs;
   const handleInputChange = (e, { name, value }) => {
@@ -84,6 +86,9 @@ const EditUser = () => {
       let data = { ...inputs, id: parseInt(userId) };
       if (typeof data.quota === 'string') {
         data.quota = parseInt(data.quota);
+      }
+      if (typeof data.monthly_quota === 'string') {
+        data.monthly_quota = parseInt(data.monthly_quota);
       }
       res = await API.put(`/api/user/`, data);
     } else {
@@ -144,6 +149,17 @@ const EditUser = () => {
                 placeholder={t('user.edit.quota_placeholder')}
                 onChange={handleInputChange}
                 value={quota}
+                type={'number'}
+                autoComplete='new-password'
+              />
+            </Form.Field>
+            <Form.Field>
+              <Form.Input
+                label='月度额度（0=不限）'
+                name='monthly_quota'
+                placeholder='0 表示不限制月度额度'
+                onChange={handleInputChange}
+                value={monthly_quota}
                 type={'number'}
                 autoComplete='new-password'
               />

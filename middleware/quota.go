@@ -13,7 +13,7 @@ import (
 )
 
 // QuotaCheck 熔断检查中间件 - 在 TokenAuth 之后、Distribute 之前
-// 检查用户级熔断 + 指定渠道的渠道级熔断
+// 检查用户级熔断 + 用户总额度/月度额度 + 指定渠道的渠道级熔断
 func QuotaCheck() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		userId := c.GetInt(ctxkey.Id)
@@ -22,7 +22,7 @@ func QuotaCheck() func(c *gin.Context) {
 			return
 		}
 
-		// 用户级熔断检查
+		// 用户级熔断检查（Redis 标记的熔断）
 		if common.IsUserBlocked(userId) {
 			currentUsage, _ := common.GetUserQuota(userId)
 			c.JSON(http.StatusTooManyRequests, gin.H{
@@ -34,6 +34,40 @@ func QuotaCheck() func(c *gin.Context) {
 			})
 			c.Abort()
 			return
+		}
+
+		// 用户总额度检查：used_quota >= quota → 限流
+		userQuota, userQuotaErr := model.GetUserQuota(userId)
+		userUsedQuota, userUsedErr := model.GetUserUsedQuota(userId)
+		if userQuotaErr == nil && userUsedErr == nil && userQuota > 0 && userUsedQuota >= userQuota {
+			c.JSON(http.StatusTooManyRequests, gin.H{
+				"error": gin.H{
+					"message": fmt.Sprintf("用户总额度已用尽（已使用 %s / 总额 %s），请联系管理员",
+						common.LogQuota(userUsedQuota), common.LogQuota(userQuota)),
+					"type": "user_quota_exceeded",
+					"code": "user_quota_exceeded",
+				},
+			})
+			c.Abort()
+			return
+		}
+
+		// 用户月度额度检查：月消费 >= monthly_quota（monthly_quota=0 不限）
+		monthlyQuota, monthlyQuotaErr := model.GetUserMonthlyQuota(userId)
+		if monthlyQuotaErr == nil && monthlyQuota > 0 {
+			monthlyUsage, _ := common.GetUserQuota(userId)
+			if monthlyUsage >= float64(monthlyQuota) {
+				c.JSON(http.StatusTooManyRequests, gin.H{
+					"error": gin.H{
+						"message": fmt.Sprintf("用户月度额度已用尽（本月已使用 %.2f 元 / 月度额度 %s），请联系管理员",
+							monthlyUsage, common.LogQuota(monthlyQuota)),
+						"type": "user_monthly_quota_exceeded",
+						"code": "user_monthly_quota_exceeded",
+					},
+				})
+				c.Abort()
+				return
+			}
 		}
 
 		// 渠道级熔断检查：仅当指定了具体渠道时

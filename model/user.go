@@ -46,6 +46,7 @@ type User struct {
 	AccessToken      string `json:"access_token" gorm:"type:char(32);column:access_token;uniqueIndex"` // this token is for system management
 	Quota            int64  `json:"quota" gorm:"bigint;default:0"`
 	UsedQuota        int64  `json:"used_quota" gorm:"bigint;default:0;column:used_quota"` // used quota
+	MonthlyQuota     int64  `json:"monthly_quota" gorm:"bigint;default:0"`                // 月度额度，0=不限，每月1日重置
 	RequestCount     int    `json:"request_count" gorm:"type:int;default:0;"`             // request number
 	Group            string `json:"group" gorm:"type:varchar(32);default:'default'"`
 	AffCode          string `json:"aff_code" gorm:"type:varchar(32);column:aff_code;uniqueIndex"`
@@ -124,7 +125,11 @@ func (user *User) Insert(ctx context.Context, inviterId int) error {
 			return err
 		}
 	}
-	user.Quota = config.QuotaForNewUser
+	// asterisk-token-router: preserve admin-set quota, default to config value
+	if user.Quota == 0 {
+		user.Quota = config.QuotaForNewUser
+	}
+	// monthly_quota is preserved as-is from the request
 	user.AccessToken = random.GetUUID()
 	user.AffCode = random.GetRandomString(4)
 	result := DB.Create(user)
@@ -338,6 +343,11 @@ func GetUserQuota(id int) (quota int64, err error) {
 
 func GetUserUsedQuota(id int) (quota int64, err error) {
 	err = DB.Model(&User{}).Where("id = ?", id).Select("used_quota").Find(&quota).Error
+	return quota, err
+}
+
+func GetUserMonthlyQuota(id int) (quota int64, err error) {
+	err = DB.Model(&User{}).Where("id = ?", id).Select("monthly_quota").Find(&quota).Error
 	return quota, err
 }
 

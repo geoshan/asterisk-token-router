@@ -507,6 +507,9 @@ func UpdateUser(c *gin.Context) {
 	if originUser.Quota != updatedUser.Quota {
 		model.RecordLog(ctx, originUser.Id, model.LogTypeManage, fmt.Sprintf("管理员将用户额度从 %s修改为 %s", common.LogQuota(originUser.Quota), common.LogQuota(updatedUser.Quota)))
 	}
+	if originUser.MonthlyQuota != updatedUser.MonthlyQuota {
+		model.RecordLog(ctx, originUser.Id, model.LogTypeManage, fmt.Sprintf("管理员将用户月度额度从 %s修改为 %s", common.LogQuota(originUser.MonthlyQuota), common.LogQuota(updatedUser.MonthlyQuota)))
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "",
@@ -654,9 +657,11 @@ func CreateUser(c *gin.Context) {
 	}
 	// Even for admin users, we cannot fully trust them!
 	cleanUser := model.User{
-		Username:    user.Username,
-		Password:    user.Password,
-		DisplayName: user.DisplayName,
+		Username:     user.Username,
+		Password:     user.Password,
+		DisplayName:  user.DisplayName,
+		Quota:        user.Quota,
+		MonthlyQuota: user.MonthlyQuota,
 	}
 	if err := cleanUser.Insert(ctx, 0); err != nil {
 		c.JSON(http.StatusOK, gin.H{
