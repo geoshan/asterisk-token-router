@@ -1,9 +1,0 @@
-@@ -94,7 +94,7 @@
- 
- var QuotaRemindThreshold int64 = 1000
- 
--var PreConsumedQuota int64 = 5
-+var PreConsumedQuota int64 = 0
- 
- var UserId2QuotaCacheSeconds = config2.GetEnvInt("USER_ID_QUOTA_CACHE_SECONDS", 3600)
- 

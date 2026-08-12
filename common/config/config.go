@@ -101,7 +101,7 @@ var ChannelDisableThreshold = 5.0
 var AutomaticDisableChannelEnabled = false
 var AutomaticEnableChannelEnabled = false
 var QuotaRemindThreshold int64 = 1000
-var PreConsumedQuota int64 = 5
+var PreConsumedQuota int64 = 0 // 金额制下预扣为0
 var ApproximateTokenEnabled = false
 var RetryTimes = 0
 
