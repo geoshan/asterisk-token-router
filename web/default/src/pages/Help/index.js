@@ -1,15 +1,15 @@
-import React from 'react';
-import { Card, Header, Message, Segment } from 'semantic-ui-react';
+import React, { useState } from 'react';
+import { Card, Header, Message, Modal, Segment } from 'semantic-ui-react';
 import '../../pages/Dashboard/Dashboard.css';
 
 /* ── Inline SVG illustrations (testuser view, sanitized data) ── */
 
 // 1. MyToken page screenshot — token list with desensitized key
-const MyTokenSvg = () => (
+const MyTokenSvg = ({ fullScreen }) => (
   <svg
     viewBox="0 0 720 260"
     xmlns="http://www.w3.org/2000/svg"
-    style={{ width: '100%', maxWidth: 720, borderRadius: 8, border: '1px solid #e2e8f0' }}
+    style={{ width: '100%', maxWidth: fullScreen ? '100%' : 720, borderRadius: 8, border: '1px solid #e2e8f0' }}
     role="img"
     aria-label="我的令牌页面 - 令牌列表"
   >
@@ -52,11 +52,11 @@ const MyTokenSvg = () => (
 );
 
 // 2. API usage illustration — curl command in a terminal window
-const ApiUsageSvg = () => (
+const ApiUsageSvg = ({ fullScreen }) => (
   <svg
     viewBox="0 0 720 340"
     xmlns="http://www.w3.org/2000/svg"
-    style={{ width: '100%', maxWidth: 720, borderRadius: 8, border: '1px solid #e2e8f0' }}
+    style={{ width: '100%', maxWidth: fullScreen ? '100%' : 720, borderRadius: 8, border: '1px solid #e2e8f0' }}
     role="img"
     aria-label="API 调用示例 - 终端窗口"
   >
@@ -92,11 +92,11 @@ const ApiUsageSvg = () => (
 );
 
 // 3. Request Quota page screenshot
-const RequestQuotaSvg = () => (
+const RequestQuotaSvg = ({ fullScreen }) => (
   <svg
     viewBox="0 0 720 260"
     xmlns="http://www.w3.org/2000/svg"
-    style={{ width: '100%', maxWidth: 720, borderRadius: 8, border: '1px solid #e2e8f0' }}
+    style={{ width: '100%', maxWidth: fullScreen ? '100%' : 720, borderRadius: 8, border: '1px solid #e2e8f0' }}
     role="img"
     aria-label="申请额度页面"
   >
@@ -129,11 +129,11 @@ const RequestQuotaSvg = () => (
 );
 
 // 4. Base URL + endpoints reference card
-const EndpointsSvg = () => (
+const EndpointsSvg = ({ fullScreen }) => (
   <svg
     viewBox="0 0 720 280"
     xmlns="http://www.w3.org/2000/svg"
-    style={{ width: '100%', maxWidth: 720, borderRadius: 8, border: '1px solid #e2e8f0' }}
+    style={{ width: '100%', maxWidth: fullScreen ? '100%' : 720, borderRadius: 8, border: '1px solid #e2e8f0' }}
     role="img"
     aria-label="Base URL 和端点说明"
   >
@@ -192,8 +192,31 @@ const Section = ({ icon, title, children, svg }) => (
   </Card>
 );
 
+/* ── SVG key-to-component map for modal ── */
+const SVG_MODAL_MAP = {
+  mytoken: MyTokenSvg,
+  apiusage: ApiUsageSvg,
+  requestquota: RequestQuotaSvg,
+  endpoints: EndpointsSvg,
+};
+
 /* ── Help Page ── */
 const Help = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedSvg, setSelectedSvg] = useState(null);
+
+  const openModal = (key) => {
+    setSelectedSvg(key);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedSvg(null);
+  };
+
+  const SvgModalContent = selectedSvg ? SVG_MODAL_MAP[selectedSvg] : null;
+
   return (
     <div className="dashboard-container">
       <Header as="h2" style={{ marginBottom: 24, fontWeight: 700, color: '#1e293b' }}>
@@ -212,7 +235,7 @@ const Help = () => {
       <Section
         icon="🔑"
         title="1. 如何获取令牌"
-        svg={<MyTokenSvg />}
+        svg={<div onClick={() => openModal('mytoken')} style={{ cursor: 'pointer' }} title="点击放大"><MyTokenSvg /></div>}
       >
         <p><strong>步骤 1：登录系统</strong></p>
         <p>打开 ATR 控制台并登录。如无账号，请联系管理员创建。</p>
@@ -236,7 +259,7 @@ const Help = () => {
       <Section
         icon="🚀"
         title="2. 如何使用 API"
-        svg={<ApiUsageSvg />}
+        svg={<div onClick={() => openModal('apiusage')} style={{ cursor: 'pointer' }} title="点击放大"><ApiUsageSvg /></div>}
       >
         <p>
           ATR 提供与 OpenAI API 完全兼容的接口，你只需将 Base URL 替换为 ATR 的地址即可。
@@ -282,7 +305,7 @@ print(response.choices[0].message.content)`}
       <Section
         icon="💰"
         title="3. 如何申请额度"
-        svg={<RequestQuotaSvg />}
+        svg={<div onClick={() => openModal('requestquota')} style={{ cursor: 'pointer' }} title="点击放大"><RequestQuotaSvg /></div>}
       >
         <p><strong>步骤 1：进入申请页面</strong></p>
         <p>登录后，在导航菜单中找到「申请额度」入口，点击进入。</p>
@@ -305,7 +328,7 @@ print(response.choices[0].message.content)`}
       <Section
         icon="🌐"
         title="4. Base URL 与端点说明"
-        svg={<EndpointsSvg />}
+        svg={<div onClick={() => openModal('endpoints')} style={{ cursor: 'pointer' }} title="点击放大"><EndpointsSvg /></div>}
       >
         <p>
           ATR 以 <strong>OpenAI 兼容模式</strong>运行，支持标准 OpenAI 客户端直接接入。
@@ -378,6 +401,20 @@ print(response.choices[0].message.content)`}
       <div style={{ textAlign: 'center', padding: '32px 0 16px', color: '#94a3b8', fontSize: 13, borderTop: '1px solid #e2e8f0', marginTop: 16 }}>
         <p>ATR Token Router — 如有问题请联系系统管理员</p>
       </div>
+
+      {/* ── SVG 全屏放大 Modal ── */}
+      <Modal
+        open={modalOpen}
+        onClose={closeModal}
+        closeIcon
+        style={{ maxWidth: '90vw', width: '90vw' }}
+      >
+        <Modal.Content>
+          <div style={{ textAlign: 'center', padding: 16 }}>
+            {SvgModalContent && <SvgModalContent fullScreen />}
+          </div>
+        </Modal.Content>
+      </Modal>
     </div>
   );
 };
