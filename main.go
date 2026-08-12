@@ -24,7 +24,7 @@ import (
 	"github.com/songquanpeng/one-api/router"
 )
 
-//go:embed web/build/*
+//go:embed web/build
 var buildFS embed.FS
 
 func main() {

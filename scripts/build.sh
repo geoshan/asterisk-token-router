@@ -19,8 +19,13 @@ if [ -d "web/default" ]; then
   echo "Building frontend..."
   cd web/default && npm run build 2>&1 | tail -1 && cd ../..
   rm -rf web/build
-  mkdir -p web
-  cp -r web/default/build web/build
+  mkdir -p web/build
+  # CRA postbuild may mv to web/build/default, check both locations
+  if [ -d "web/default/build" ]; then
+    cp -r web/default/build/* web/build/
+  elif [ -d "web/build/default" ]; then
+    cp -r web/build/default/* web/build/
+  fi
   echo "Frontend build copied to web/build/"
 fi
 
