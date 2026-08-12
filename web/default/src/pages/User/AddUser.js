@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Button, Form, Card } from 'semantic-ui-react';
 import { API, showError, showSuccess } from '../../helpers';
 
 const AddUser = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const originInputs = {
     username: '',
     display_name: '',
@@ -29,7 +31,7 @@ const AddUser = () => {
     const { success, message } = res.data;
     if (success) {
       showSuccess(t('user.messages.create_success'));
-      setInputs(originInputs);
+      navigate('/user');
     } else {
       showError(message);
     }
