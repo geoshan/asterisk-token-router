@@ -27,10 +27,11 @@ if [ -d "web/default" ]; then
     cp -r web/build/default/* "$TEMP_DIR"/
   fi
   rm -rf web/build
-  mkdir -p web/build
-  cp -r "$TEMP_DIR"/* web/build/
+  # Router expects files under web/build/default/
+  mkdir -p web/build/default
+  cp -r "$TEMP_DIR"/* web/build/default/
   rm -rf "$TEMP_DIR"
-  echo "Frontend build copied to web/build/"
+  echo "Frontend build copied to web/build/default/"
 fi
 
 if [ "$TARGET" = "linux" ]; then
