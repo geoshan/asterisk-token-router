@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Table, Label, Message } from 'semantic-ui-react';
 import { API, showError } from '../../helpers';
+import { renderQuota } from '../../helpers/render';
 
 const MyToken = () => {
   const [tokens, setTokens] = useState([]);
@@ -56,8 +57,8 @@ const MyToken = () => {
                   <Table.Cell>
                     {token.status === 1 ? <Label color='green'>有效</Label> : <Label color='red'>已吊销</Label>}
                   </Table.Cell>
-                  <Table.Cell>{(token.models||'-').substring(0,30)}{(token.models||'').length>30?'...':''}</Table.Cell>
-                  <Table.Cell>{token.remain_quota}</Table.Cell>
+                  <Table.Cell style={{maxWidth:300,wordBreak:'break-word'}}>{token.models}</Table.Cell>
+                  <Table.Cell>{renderQuota(token.remain_quota)}</Table.Cell>
                   <Table.Cell><a href={'/request-quota?tokenId=' + token.id} style={{padding:'4px 12px',fontSize:12,background:'#2185d0',color:'#fff',borderRadius:4,textDecoration:'none'}}>申请额度</a></Table.Cell>
                 </Table.Row>
               ))}
