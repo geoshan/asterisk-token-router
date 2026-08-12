@@ -18,14 +18,18 @@ echo "Building ${FULL_VERSION} for ${TARGET}..."
 if [ -d "web/default" ]; then
   echo "Building frontend..."
   cd web/default && npm run build 2>&1 | tail -1 && cd ../..
+  # CRA postbuild may mv to web/build/default
+  # Copy files to temp before wiping web/build
+  TEMP_DIR=$(mktemp -d)
+  if [ -d "web/default/build" ]; then
+    cp -r web/default/build/* "$TEMP_DIR"/
+  elif [ -d "web/build/default" ]; then
+    cp -r web/build/default/* "$TEMP_DIR"/
+  fi
   rm -rf web/build
   mkdir -p web/build
-  # CRA postbuild may mv to web/build/default, check both locations
-  if [ -d "web/default/build" ]; then
-    cp -r web/default/build/* web/build/
-  elif [ -d "web/build/default" ]; then
-    cp -r web/build/default/* web/build/
-  fi
+  cp -r "$TEMP_DIR"/* web/build/
+  rm -rf "$TEMP_DIR"
   echo "Frontend build copied to web/build/"
 fi
 
