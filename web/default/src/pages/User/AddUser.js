@@ -9,9 +9,10 @@ const AddUser = () => {
     username: '',
     display_name: '',
     password: '',
+    quota: 0,
   };
   const [inputs, setInputs] = useState(originInputs);
-  const { username, display_name, password } = inputs;
+  const { username, display_name, password, quota } = inputs;
 
   const handleInputChange = (e, { name, value }) => {
     setInputs((inputs) => ({ ...inputs, [name]: value }));
@@ -64,6 +65,18 @@ const AddUser = () => {
                 placeholder={t('user.edit.password_placeholder')}
                 onChange={handleInputChange}
                 value={password}
+                autoComplete='off'
+                required
+              />
+            </Form.Field>
+            <Form.Field>
+              <Form.Input
+                label='额度'
+                name='quota'
+                type='number'
+                placeholder='请输入额度'
+                onChange={handleInputChange}
+                value={quota}
                 autoComplete='off'
                 required
               />
