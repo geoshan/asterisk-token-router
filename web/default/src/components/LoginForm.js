@@ -154,29 +154,6 @@ const LoginForm = () => {
             </Form>
 
             <Divider />
-            <Message style={{ background: 'transparent', boxShadow: 'none' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  fontSize: '0.9em',
-                  color: '#666',
-                }}
-              >
-                <div>
-                  {t('auth.login.forgot_password')}
-                </div>
-                <div>
-                  {t('auth.login.no_account')}
-                  <Link
-                    to='/register'
-                    style={{ color: '#2185d0', marginLeft: '2px' }}
-                  >
-                    {t('auth.login.register')}
-                  </Link>
-                </div>
-              </div>
-            </Message>
 
             {(status.github_oauth ||
               status.wechat_login ||

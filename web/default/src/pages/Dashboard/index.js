@@ -261,6 +261,7 @@ const Dashboard = () => {
                   formatter={(value) => [valueFormatter ? valueFormatter(value) : value, valueName || '']}
                   labelFormatter={(label) => `${t('dashboard.statistics.tooltip.date')}: ${formatDate(label)}`}
                 />
+                <Legend />
                 {trendData.groups.map((group, index) => (
                   <Line key={group} type='monotone' dataKey={String(group)} stroke={chartConfig.barColors[index % chartConfig.barColors.length]}
                     strokeWidth={chartConfig.lineChart.line.strokeWidth}
