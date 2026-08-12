@@ -188,9 +188,11 @@ const PersonalSetting = () => {
     <div style={{ lineHeight: '40px' }}>
       <Header as='h3'>{t('setting.personal.general.title')}</Header>
       <Message>{t('setting.personal.general.system_token_notice')}</Message>
+      {isAdmin() && (
       <Button as={Link} to={`/user/edit/${userState.user?.id || ''}`}>
         {t('setting.personal.general.buttons.update_profile')}
       </Button>
+      )}
       <Button onClick={generateAccessToken}>
         {t('setting.personal.general.buttons.generate_token')}
       </Button>
