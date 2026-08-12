@@ -434,36 +434,6 @@ const TokensTable = () => {
                   </Table.Cell>
                   <Table.Cell>
                     <div>
-                      <Button.Group color='green' size={'tiny'}>
-                        <Button
-                          size={'tiny'}
-                          positive
-                          onClick={async () => await onCopy('', token.key)}
-                        >
-                          {t('token.buttons.copy')}
-                        </Button>
-                        <Dropdown
-                          className='button icon'
-                          floating
-                          options={copyOptionsWithHandlers}
-                          trigger={<></>}
-                        />
-                      </Button.Group>{' '}
-                      <Button.Group color='olive' size={'tiny'}>
-                        <Button
-                          size={'tiny'}
-                          positive
-                          onClick={() => onOpenLink('', token.key)}
-                        >
-                          {t('token.buttons.chat')}
-                        </Button>
-                        <Dropdown
-                          className='button icon'
-                          floating
-                          options={openLinkOptionsWithHandlers}
-                          trigger={<></>}
-                        />
-                      </Button.Group>{' '}
                       <Popup
                         trigger={
                           <Button size='mini' negative>
