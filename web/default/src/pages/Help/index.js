@@ -2,173 +2,410 @@ import React, { useState } from 'react';
 import { Card, Header, Message, Modal, Segment } from 'semantic-ui-react';
 import '../../pages/Dashboard/Dashboard.css';
 
-/* ── Inline SVG illustrations (testuser view, sanitized data) ── */
+/* ── Inline HTML mock screenshots (testuser view, sanitized data, Semantic UI style) ── */
 
-// 1. MyToken page screenshot — token list with desensitized key
-const MyTokenSvg = ({ fullScreen }) => (
-  <svg
-    viewBox="0 0 720 260"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ width: '100%', maxWidth: fullScreen ? '100%' : 720, borderRadius: 8, border: '1px solid #e2e8f0' }}
-    role="img"
-    aria-label="我的令牌页面 - 令牌列表"
-  >
-    <rect width="720" height="260" rx="8" fill="#f8fafc" />
-    {/* Header bar */}
-    <rect x="0" y="0" width="720" height="44" rx="8" fill="#1a56db" />
-    <rect x="0" y="36" width="720" height="8" fill="#1a56db" />
-    <text x="24" y="28" fill="#fff" fontFamily="sans-serif" fontSize="15" fontWeight="600">🪙 ATR 令牌管理</text>
-    {/* Breadcrumb */}
-    <text x="24" y="70" fill="#64748b" fontFamily="sans-serif" fontSize="12">🏠 首页 &gt; 我的令牌</text>
-    {/* Table header */}
-    <rect x="24" y="88" width="672" height="36" rx="6" fill="#f1f5f9" />
-    <text x="40" y="111" fill="#475569" fontFamily="sans-serif" fontSize="12" fontWeight="600">名称</text>
-    <text x="160" y="111" fill="#475569" fontFamily="sans-serif" fontSize="12" fontWeight="600">密钥 (脱敏)</text>
-    <text x="380" y="111" fill="#475569" fontFamily="sans-serif" fontSize="12" fontWeight="600">状态</text>
-    <text x="480" y="111" fill="#475569" fontFamily="sans-serif" fontSize="12" fontWeight="600">剩余额度</text>
-    <text x="600" y="111" fill="#475569" fontFamily="sans-serif" fontSize="12" fontWeight="600">过期时间</text>
-    {/* Row 1 */}
-    <rect x="24" y="130" width="672" height="36" rx="4" fill="#ffffff" stroke="#e2e8f0" />
-    <text x="40" y="153" fill="#1e293b" fontFamily="monospace" fontSize="12">default-key</text>
-    <text x="160" y="153" fill="#64748b" fontFamily="monospace" fontSize="12">sk-ab****-cd12</text>
-    <circle cx="430" cy="148" r="5" fill="#22c55e" />
-    <text x="442" y="153" fill="#22c55e" fontFamily="sans-serif" fontSize="11">启用</text>
-    <text x="480" y="153" fill="#1e293b" fontFamily="monospace" fontSize="12">$4.85</text>
-    <text x="600" y="153" fill="#94a3b8" fontFamily="monospace" fontSize="11">2025-12-31</text>
-    {/* Row 2 */}
-    <rect x="24" y="172" width="672" height="36" rx="4" fill="#f8fafc" stroke="#e2e8f0" />
-    <text x="40" y="195" fill="#1e293b" fontFamily="monospace" fontSize="12">gpt-key</text>
-    <text x="160" y="195" fill="#64748b" fontFamily="monospace" fontSize="12">sk-xy****-ef78</text>
-    <circle cx="430" cy="190" r="5" fill="#22c55e" />
-    <text x="442" y="195" fill="#22c55e" fontFamily="sans-serif" fontSize="11">启用</text>
-    <text x="480" y="195" fill="#1e293b" fontFamily="monospace" fontSize="12">$1.20</text>
-    <text x="600" y="195" fill="#94a3b8" fontFamily="monospace" fontSize="11">2025-11-15</text>
-    {/* Copy tooltip */}
-    <rect x="152" y="215" width="130" height="24" rx="4" fill="#1e293b" />
-    <text x="217" y="232" fill="#fff" fontFamily="sans-serif" fontSize="11" textAnchor="middle">已复制到剪贴板 ✓</text>
-    {/* Footer note */}
-    <text x="360" y="252" fill="#94a3b8" fontFamily="sans-serif" fontSize="11" textAnchor="middle">密钥仅显示前4后4位，点击可复制完整密钥</text>
-  </svg>
+// 1. MyToken page mock — token list with desensitized key (Semantic UI style)
+const MyTokenMock = ({ fullScreen }) => (
+  <div style={{
+    border: '1px solid rgba(34,36,38,.15)',
+    borderRadius: 8,
+    overflow: 'hidden',
+    background: '#fff',
+    boxShadow: '0 1px 4px rgba(0,0,0,.06)',
+    maxWidth: fullScreen ? '100%' : 720,
+    fontSize: 13,
+    fontFamily: 'Lato, "Helvetica Neue", Arial, Helvetica, sans-serif'
+  }}>
+    {/* Page header — blue bar like ATR menu */}
+    <div style={{
+      background: 'linear-gradient(135deg, #1a56db, #2563eb)',
+      color: '#fff',
+      padding: '10px 18px',
+      fontWeight: 700,
+      fontSize: 15,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8
+    }}>
+      🪙 我的令牌
+    </div>
+    <div style={{ padding: '16px 18px' }}>
+      {/* Breadcrumb */}
+      <div style={{ color: 'rgba(0,0,0,.4)', fontSize: 12, marginBottom: 14 }}>
+        🏠 首页 <span style={{margin: '0 4px',color:'rgba(0,0,0,.25)'}}>›</span> 我的令牌
+      </div>
+      {/* Semantic UI basic='very' Table */}
+      <table style={{
+        width: '100%',
+        borderCollapse: 'separate',
+        borderSpacing: 0,
+        border: '1px solid rgba(34,36,38,.15)',
+        borderRadius: 4,
+        fontSize: 12
+      }}>
+        <thead>
+          <tr>
+            <th style={{ padding: '9px 14px', textAlign: 'left', fontWeight: 700, color: 'rgba(0,0,0,.87)', background: '#f9fafb', borderBottom: '2px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>名称</th>
+            <th style={{ padding: '9px 14px', textAlign: 'left', fontWeight: 700, color: 'rgba(0,0,0,.87)', background: '#f9fafb', borderBottom: '2px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>密钥 (脱敏)</th>
+            <th style={{ padding: '9px 14px', textAlign: 'left', fontWeight: 700, color: 'rgba(0,0,0,.87)', background: '#f9fafb', borderBottom: '2px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>状态</th>
+            <th style={{ padding: '9px 14px', textAlign: 'left', fontWeight: 700, color: 'rgba(0,0,0,.87)', background: '#f9fafb', borderBottom: '2px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>剩余额度</th>
+            <th style={{ padding: '9px 14px', textAlign: 'left', fontWeight: 700, color: 'rgba(0,0,0,.87)', background: '#f9fafb', borderBottom: '2px solid rgba(34,36,38,.1)' }}>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style={{ padding: '10px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              <strong>default-key</strong>
+            </td>
+            <td style={{ padding: '10px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              <code style={{ fontSize: 11, background: 'rgba(0,0,0,.05)', padding: '3px 8px', borderRadius: 3, fontFamily: 'Menlo, Monaco, monospace', color: '#333', cursor: 'pointer' }}>sk-ab****-cd12</code>
+            </td>
+            <td style={{ padding: '10px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              <span style={{ display: 'inline-block', padding: '3px 10px', borderRadius: 3, background: '#21ba45', color: '#fff', fontSize: 11, fontWeight: 600 }}>有效</span>
+            </td>
+            <td style={{ padding: '10px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              ¥4.85
+            </td>
+            <td style={{ padding: '10px 14px', borderBottom: '1px solid rgba(34,36,38,.1)' }}>
+              <span style={{ display: 'inline-block', padding: '5px 14px', borderRadius: 3, background: '#2185d0', color: '#fff', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>申请额度</span>
+            </td>
+          </tr>
+          <tr>
+            <td style={{ padding: '10px 14px', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              <strong>gpt-key</strong>
+            </td>
+            <td style={{ padding: '10px 14px', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              <code style={{ fontSize: 11, background: 'rgba(0,0,0,.05)', padding: '3px 8px', borderRadius: 3, fontFamily: 'Menlo, Monaco, monospace', color: '#333', cursor: 'pointer' }}>sk-xy****-ef78</code>
+            </td>
+            <td style={{ padding: '10px 14px', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              <span style={{ display: 'inline-block', padding: '3px 10px', borderRadius: 3, background: '#21ba45', color: '#fff', fontSize: 11, fontWeight: 600 }}>有效</span>
+            </td>
+            <td style={{ padding: '10px 14px', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              ¥1.20
+            </td>
+            <td style={{ padding: '10px 14px' }}>
+              <span style={{ display: 'inline-block', padding: '5px 14px', borderRadius: 3, background: '#2185d0', color: '#fff', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>申请额度</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      {/* Bottom info — like MyToken.js Message positive */}
+      <div style={{ marginTop: 14, padding: '12px 18px', background: '#fcfff5', border: '1px solid #a3c293', borderRadius: 5, color: '#2c662d', fontSize: 12, lineHeight: 1.6 }}>
+        <div style={{ fontWeight: 700, marginBottom: 4 }}>💡 接入信息</div>
+        <div><strong>Base URL:</strong> <code style={{ background: 'rgba(0,0,0,.05)', padding: '1px 6px', borderRadius: 3, fontFamily: 'monospace' }}>https://api.example.com</code></div>
+        <div><strong>端点:</strong> <code style={{ background: 'rgba(0,0,0,.05)', padding: '1px 6px', borderRadius: 3, fontFamily: 'monospace' }}>/v1/chat/completions</code></div>
+      </div>
+    </div>
+  </div>
 );
 
-// 2. API usage illustration — curl command in a terminal window
-const ApiUsageSvg = ({ fullScreen }) => (
-  <svg
-    viewBox="0 0 720 340"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ width: '100%', maxWidth: fullScreen ? '100%' : 720, borderRadius: 8, border: '1px solid #e2e8f0' }}
-    role="img"
-    aria-label="API 调用示例 - 终端窗口"
-  >
-    {/* Terminal window */}
-    <rect width="720" height="340" rx="8" fill="#1e293b" />
-    {/* Title bar */}
-    <rect x="0" y="0" width="720" height="32" rx="8" fill="#334155" />
-    <rect x="0" y="24" width="720" height="8" fill="#334155" />
-    <circle cx="20" cy="16" r="6" fill="#ef4444" />
-    <circle cx="40" cy="16" r="6" fill="#f59e0b" />
-    <circle cx="60" cy="16" r="6" fill="#22c55e" />
-    <text x="360" y="21" fill="#94a3b8" fontFamily="monospace" fontSize="11" textAnchor="middle">testuser@atr — bash — 80×24</text>
-    {/* Prompt 1 */}
-    <text x="20" y="58" fill="#22c55e" fontFamily="monospace" fontSize="13">testuser@atr:~$ </text>
-    <text x="195" y="58" fill="#f8fafc" fontFamily="monospace" fontSize="13">curl https://api.example.com/v1/models \</text>
-    {/* Prompt 1 cont */}
-    <text x="36" y="80" fill="#f8fafc" fontFamily="monospace" fontSize="13">-H "Authorization: Bearer sk-ab****-cd12" \</text>
-    <text x="36" y="102" fill="#f8fafc" fontFamily="monospace" fontSize="13">-H "Content-Type: application/json"</text>
-    {/* Response */}
-    <text x="20" y="132" fill="#94a3b8" fontFamily="monospace" fontSize="12">{'{'}</text>
-    <text x="36" y="152" fill="#94a3b8" fontFamily="monospace" fontSize="12">"object": "list",</text>
-    <text x="36" y="172" fill="#94a3b8" fontFamily="monospace" fontSize="12">"data": [</text>
-    <text x="52" y="192" fill="#f8fafc" fontFamily="monospace" fontSize="12">{'{'}</text>
-    <text x="68" y="212" fill="#f8fafc" fontFamily="monospace" fontSize="12">"id": "gpt-4o",</text>
-    <text x="68" y="232" fill="#f8fafc" fontFamily="monospace" fontSize="12">"object": "model",</text>
-    <text x="68" y="252" fill="#f8fafc" fontFamily="monospace" fontSize="12">"owned_by": "openai"</text>
-    <text x="52" y="272" fill="#f8fafc" fontFamily="monospace" fontSize="12">{'}'}</text>
-    <text x="36" y="292" fill="#94a3b8" fontFamily="monospace" fontSize="12">]</text>
-    <text x="20" y="312" fill="#94a3b8" fontFamily="monospace" fontSize="12">{'}'}</text>
-    {/* Cursor */}
-    <rect x="20" y="324" width="8" height="14" fill="#f8fafc" />
-  </svg>
+// 2. API usage mock — curl command in a terminal window
+const ApiUsageMock = ({ fullScreen }) => (
+  <div style={{
+    border: '1px solid rgba(34,36,38,.25)',
+    borderRadius: 8,
+    overflow: 'hidden',
+    background: '#1e293b',
+    maxWidth: fullScreen ? '100%' : 720,
+    fontSize: 13,
+    fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+    boxShadow: '0 4px 12px rgba(0,0,0,.2)'
+  }}>
+    {/* Terminal title bar */}
+    <div style={{
+      background: '#334155',
+      color: '#94a3b8',
+      padding: '8px 16px',
+      fontSize: 11,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8
+    }}>
+      <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444', display: 'inline-block' }}></span>
+      <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b', display: 'inline-block' }}></span>
+      <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}></span>
+      <span style={{ marginLeft: 12 }}>testuser@atr — bash — 80×24</span>
+    </div>
+    {/* Terminal body */}
+    <div style={{ padding: '14px 20px', fontSize: 12, lineHeight: 1.9 }}>
+      {/* Curl command */}
+      <div><span style={{ color: '#22c55e', fontWeight: 600 }}>$ </span><span style={{ color: '#f8fafc' }}>curl https://api.example.com/v1/models \</span></div>
+      <div><span style={{ color: '#f8fafc' }}>  -H "Authorization: Bearer sk-ab****-cd12" \</span></div>
+      <div><span style={{ color: '#f8fafc' }}>  -H "Content-Type: application/json"</span></div>
+      {/* JSON response */}
+      <div style={{ color: '#94a3b8', marginTop: 8 }}>{'{'}</div>
+      <div style={{ color: '#94a3b8', paddingLeft: 16 }}>"object": "list",</div>
+      <div style={{ color: '#94a3b8', paddingLeft: 16 }}>"data": [</div>
+      <div style={{ paddingLeft: 32, color: '#f8fafc' }}>{'{'}</div>
+      <div style={{ paddingLeft: 48, color: '#f8fafc' }}>"id": "gpt-4o",</div>
+      <div style={{ paddingLeft: 48, color: '#f8fafc' }}>"object": "model",</div>
+      <div style={{ paddingLeft: 48, color: '#f8fafc' }}>"owned_by": "openai"</div>
+      <div style={{ paddingLeft: 32, color: '#f8fafc' }}>{'}'}</div>
+      <div style={{ paddingLeft: 16, color: '#94a3b8' }}>]</div>
+      <div style={{ color: '#94a3b8' }}>{'}'}</div>
+      {/* Cursor */}
+      <div style={{ marginTop: 6 }}>
+        <span style={{ color: '#22c55e', fontWeight: 600 }}>$ </span>
+        <span style={{ display: 'inline-block', width: 8, height: 14, background: '#f8fafc', verticalAlign: 'middle', animation: 'none' }}></span>
+      </div>
+    </div>
+  </div>
 );
 
-// 3. Request Quota page screenshot
-const RequestQuotaSvg = ({ fullScreen }) => (
-  <svg
-    viewBox="0 0 720 260"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ width: '100%', maxWidth: fullScreen ? '100%' : 720, borderRadius: 8, border: '1px solid #e2e8f0' }}
-    role="img"
-    aria-label="申请额度页面"
-  >
-    <rect width="720" height="260" rx="8" fill="#f8fafc" />
-    {/* Header bar */}
-    <rect x="0" y="0" width="720" height="44" rx="8" fill="#1a56db" />
-    <rect x="0" y="36" width="720" height="8" fill="#1a56db" />
-    <text x="24" y="28" fill="#fff" fontFamily="sans-serif" fontSize="15" fontWeight="600">📝 申请额度</text>
-    {/* Breadcrumb */}
-    <text x="24" y="70" fill="#64748b" fontFamily="sans-serif" fontSize="12">🏠 首页 &gt; 申请额度</text>
-    {/* Form card */}
-    <rect x="24" y="88" width="672" height="158" rx="8" fill="#ffffff" stroke="#e2e8f0" />
-    {/* Label: amount */}
-    <text x="48" y="120" fill="#1e293b" fontFamily="sans-serif" fontSize="13" fontWeight="600">申请额度 (USD)</text>
-    {/* Input field */}
-    <rect x="48" y="130" width="624" height="36" rx="6" fill="#f1f5f9" stroke="#cbd5e1" />
-    <text x="60" y="153" fill="#94a3b8" fontFamily="monospace" fontSize="13">50.00</text>
-    {/* Label: reason */}
-    <text x="48" y="188" fill="#1e293b" fontFamily="sans-serif" fontSize="13" fontWeight="600">申请原因</text>
-    {/* Textarea */}
-    <rect x="48" y="198" width="624" height="36" rx="6" fill="#f1f5f9" stroke="#cbd5e1" />
-    <text x="60" y="221" fill="#94a3b8" fontFamily="monospace" fontSize="13">用于 GPT-4o API 调用测试</text>
-    {/* Submit button */}
-    <rect x="48" y="252" width="120" height="32" rx="6" fill="#1a56db" />
-    <text x="108" y="273" fill="#fff" fontFamily="sans-serif" fontSize="13" fontWeight="600" textAnchor="middle">提交申请</text>
-    {/* Status badge */}
-    <rect x="200" y="252" width="100" height="24" rx="12" fill="#fef3c7" />
-    <text x="250" y="269" fill="#d97706" fontFamily="sans-serif" fontSize="11" textAnchor="middle" fontWeight="500">待审批</text>
-  </svg>
+// 3. Request Quota page mock — Form with Semantic UI style
+const RequestQuotaMock = ({ fullScreen }) => (
+  <div style={{
+    border: '1px solid rgba(34,36,38,.15)',
+    borderRadius: 8,
+    overflow: 'hidden',
+    background: '#fff',
+    boxShadow: '0 1px 4px rgba(0,0,0,.06)',
+    maxWidth: fullScreen ? '100%' : 720,
+    fontSize: 13,
+    fontFamily: 'Lato, "Helvetica Neue", Arial, Helvetica, sans-serif'
+  }}>
+    {/* Page header */}
+    <div style={{
+      background: 'linear-gradient(135deg, #1a56db, #2563eb)',
+      color: '#fff',
+      padding: '10px 18px',
+      fontWeight: 700,
+      fontSize: 15,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8
+    }}>
+      📝 申请额度
+    </div>
+    <div style={{ padding: '16px 18px' }}>
+      {/* Breadcrumb */}
+      <div style={{ color: 'rgba(0,0,0,.4)', fontSize: 12, marginBottom: 14 }}>
+        🏠 首页 <span style={{margin: '0 4px',color:'rgba(0,0,0,.25)'}}>›</span> 申请额度
+      </div>
+      {/* Form card — Semantic UI Card style */}
+      <div style={{
+        border: '1px solid rgba(34,36,38,.15)',
+        borderRadius: 5,
+        padding: '20px 22px',
+        background: '#fff',
+        boxShadow: '0 1px 2px rgba(0,0,0,.05)'
+      }}>
+        {/* Amount field */}
+        <div style={{ marginBottom: 18 }}>
+          <label style={{ display: 'block', fontWeight: 700, marginBottom: 6, color: 'rgba(0,0,0,.87)', fontSize: 13 }}>
+            申请额度 (元)
+          </label>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            border: '1px solid rgba(34,36,38,.15)',
+            borderRadius: 4,
+            padding: '9px 14px',
+            background: '#fff',
+            color: 'rgba(0,0,0,.87)',
+            fontSize: 13
+          }}>
+            ¥ <span style={{ marginLeft: 8, fontFamily: 'Menlo, Monaco, monospace', color: '#555' }}>50.00</span>
+          </div>
+        </div>
+        {/* Reason field */}
+        <div style={{ marginBottom: 20 }}>
+          <label style={{ display: 'block', fontWeight: 700, marginBottom: 6, color: 'rgba(0,0,0,.87)', fontSize: 13 }}>
+            申请原因
+          </label>
+          <div style={{
+            border: '1px solid rgba(34,36,38,.15)',
+            borderRadius: 4,
+            padding: '9px 14px',
+            background: '#fff',
+            color: 'rgba(0,0,0,.55)',
+            fontSize: 13,
+            minHeight: 32
+          }}>
+            用于 GPT-4o API 调用测试
+          </div>
+        </div>
+        {/* Submit button + status badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button style={{
+            padding: '10px 24px',
+            background: '#2185d0',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 4,
+            fontWeight: 700,
+            fontSize: 13,
+            cursor: 'pointer',
+            fontFamily: 'inherit'
+          }}>
+            提交申请
+          </button>
+          <span style={{
+            display: 'inline-block',
+            padding: '4px 14px',
+            borderRadius: 12,
+            background: '#fff8e1',
+            color: '#f57c00',
+            fontSize: 12,
+            fontWeight: 600,
+            border: '1px solid #ffe082'
+          }}>
+            ⏳ 待审批
+          </span>
+        </div>
+      </div>
+      {/* Hint segment */}
+      <div style={{
+        marginTop: 14,
+        padding: '12px 18px',
+        background: '#fff8e1',
+        border: '1px solid #ffe082',
+        borderRadius: 5,
+        color: '#795548',
+        fontSize: 12,
+        lineHeight: 1.5
+      }}>
+        💡 <strong>提示：</strong>审批状态可实时查看。如长时间未审批，请联系管理员。
+      </div>
+    </div>
+  </div>
 );
 
-// 4. Base URL + endpoints reference card
-const EndpointsSvg = ({ fullScreen }) => (
-  <svg
-    viewBox="0 0 720 280"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ width: '100%', maxWidth: fullScreen ? '100%' : 720, borderRadius: 8, border: '1px solid #e2e8f0' }}
-    role="img"
-    aria-label="Base URL 和端点说明"
-  >
-    <rect width="720" height="280" rx="8" fill="#f8fafc" />
+// 4. Base URL + endpoints reference card — Semantic UI table style
+const EndpointsMock = ({ fullScreen }) => (
+  <div style={{
+    border: '1px solid rgba(34,36,38,.15)',
+    borderRadius: 8,
+    overflow: 'hidden',
+    background: '#fff',
+    boxShadow: '0 1px 4px rgba(0,0,0,.06)',
+    maxWidth: fullScreen ? '100%' : 720,
+    fontSize: 13,
+    fontFamily: 'Lato, "Helvetica Neue", Arial, Helvetica, sans-serif'
+  }}>
     {/* Title */}
-    <text x="24" y="36" fill="#1e293b" fontFamily="sans-serif" fontSize="16" fontWeight="700">🌐 Base URL 与端点</text>
-    {/* Base URL card */}
-    <rect x="24" y="54" width="672" height="50" rx="6" fill="#eff6ff" stroke="#bfdbfe" />
-    <text x="44" y="72" fill="#3b82f6" fontFamily="sans-serif" fontSize="12" fontWeight="600">Base URL</text>
-    <text x="44" y="93" fill="#1e40af" fontFamily="monospace" fontSize="13" fontWeight="600">https://api.example.com</text>
-    {/* Endpoints table */}
-    <rect x="24" y="116" width="672" height="24" rx="4" fill="#f1f5f9" />
-    <text x="44" y="133" fill="#475569" fontFamily="sans-serif" fontSize="11" fontWeight="600">方法</text>
-    <text x="120" y="133" fill="#475569" fontFamily="sans-serif" fontSize="11" fontWeight="600">端点</text>
-    <text x="400" y="133" fill="#475569" fontFamily="sans-serif" fontSize="11" fontWeight="600">说明</text>
-    {/* /v1/models */}
-    <text x="44" y="156" fill="#22c55e" fontFamily="monospace" fontSize="11" fontWeight="600">GET</text>
-    <text x="120" y="156" fill="#1e293b" fontFamily="monospace" fontSize="11">/v1/models</text>
-    <text x="400" y="156" fill="#64748b" fontFamily="sans-serif" fontSize="11">列出可用模型</text>
-    {/* /v1/chat/completions */}
-    <text x="44" y="176" fill="#3b82f6" fontFamily="monospace" fontSize="11" fontWeight="600">POST</text>
-    <text x="120" y="176" fill="#1e293b" fontFamily="monospace" fontSize="11">/v1/chat/completions</text>
-    <text x="400" y="176" fill="#64748b" fontFamily="sans-serif" fontSize="11">Chat 对话补全 (兼容 OpenAI)</text>
-    {/* /v1/images/generations */}
-    <text x="44" y="196" fill="#3b82f6" fontFamily="monospace" fontSize="11" fontWeight="600">POST</text>
-    <text x="120" y="196" fill="#1e293b" fontFamily="monospace" fontSize="11">/v1/images/generations</text>
-    <text x="400" y="196" fill="#64748b" fontFamily="sans-serif" fontSize="11">图片生成</text>
-    {/* /v1/embeddings */}
-    <text x="44" y="216" fill="#3b82f6" fontFamily="monospace" fontSize="11" fontWeight="600">POST</text>
-    <text x="120" y="216" fill="#1e293b" fontFamily="monospace" fontSize="11">/v1/embeddings</text>
-    <text x="400" y="216" fill="#64748b" fontFamily="sans-serif" fontSize="11">文本向量化</text>
-    {/* Auth note */}
-    <rect x="24" y="238" width="672" height="32" rx="6" fill="#fef2f2" stroke="#fecaca" />
-    <text x="44" y="258" fill="#dc2626" fontFamily="sans-serif" fontSize="12">⚠️ 所有 API 请求必须在 Header 中携带：Authorization: Bearer &lt;你的令牌密钥&gt;</text>
-  </svg>
+    <div style={{
+      background: '#fff',
+      padding: '14px 18px',
+      fontWeight: 700,
+      fontSize: 15,
+      borderBottom: '1px solid rgba(34,36,38,.1)',
+      color: 'rgba(0,0,0,.87)'
+    }}>
+      🌐 Base URL 与端点
+    </div>
+    <div style={{ padding: '16px 18px' }}>
+      {/* Base URL info block — like Semantic UI Message info */}
+      <div style={{
+        padding: '12px 18px',
+        background: '#f8ffff',
+        border: '1px solid #a9d5de',
+        borderRadius: 5,
+        color: '#276f86',
+        fontSize: 13,
+        lineHeight: 1.6,
+        marginBottom: 16
+      }}>
+        <div style={{ fontWeight: 700, marginBottom: 4, fontSize: 12 }}>ℹ️ Base URL</div>
+        <code style={{
+          background: 'rgba(0,0,0,.03)',
+          padding: '4px 10px',
+          borderRadius: 3,
+          fontFamily: 'Menlo, Monaco, monospace',
+          fontSize: 13,
+          color: '#1e40af',
+          fontWeight: 700
+        }}>https://api.example.com</code>
+      </div>
+      {/* Endpoints table — Semantic UI Table style */}
+      <table style={{
+        width: '100%',
+        borderCollapse: 'separate',
+        borderSpacing: 0,
+        border: '1px solid rgba(34,36,38,.15)',
+        borderRadius: 4,
+        fontSize: 12
+      }}>
+        <thead>
+          <tr>
+            <th style={{ padding: '9px 14px', textAlign: 'left', fontWeight: 700, color: 'rgba(0,0,0,.87)', background: '#f9fafb', borderBottom: '2px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>方法</th>
+            <th style={{ padding: '9px 14px', textAlign: 'left', fontWeight: 700, color: 'rgba(0,0,0,.87)', background: '#f9fafb', borderBottom: '2px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>端点</th>
+            <th style={{ padding: '9px 14px', textAlign: 'left', fontWeight: 700, color: 'rgba(0,0,0,.87)', background: '#f9fafb', borderBottom: '2px solid rgba(34,36,38,.1)' }}>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style={{ padding: '9px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: 3, background: '#21ba45', color: '#fff', fontSize: 11, fontWeight: 700 }}>GET</span>
+            </td>
+            <td style={{ padding: '9px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)', fontFamily: 'Menlo, Monaco, monospace', fontSize: 12 }}>
+              /v1/models
+            </td>
+            <td style={{ padding: '9px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', color: 'rgba(0,0,0,.6)' }}>
+              列出可用模型
+            </td>
+          </tr>
+          <tr>
+            <td style={{ padding: '9px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: 3, background: '#2185d0', color: '#fff', fontSize: 11, fontWeight: 700 }}>POST</span>
+            </td>
+            <td style={{ padding: '9px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)', fontFamily: 'Menlo, Monaco, monospace', fontSize: 12 }}>
+              /v1/chat/completions
+            </td>
+            <td style={{ padding: '9px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', color: 'rgba(0,0,0,.6)' }}>
+              Chat 对话补全 (兼容 OpenAI)
+            </td>
+          </tr>
+          <tr>
+            <td style={{ padding: '9px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: 3, background: '#2185d0', color: '#fff', fontSize: 11, fontWeight: 700 }}>POST</span>
+            </td>
+            <td style={{ padding: '9px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)', fontFamily: 'Menlo, Monaco, monospace', fontSize: 12 }}>
+              /v1/completions
+            </td>
+            <td style={{ padding: '9px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', color: 'rgba(0,0,0,.6)' }}>
+              文本补全
+            </td>
+          </tr>
+          <tr>
+            <td style={{ padding: '9px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: 3, background: '#2185d0', color: '#fff', fontSize: 11, fontWeight: 700 }}>POST</span>
+            </td>
+            <td style={{ padding: '9px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', borderRight: '1px solid rgba(34,36,38,.1)', fontFamily: 'Menlo, Monaco, monospace', fontSize: 12 }}>
+              /v1/images/generations
+            </td>
+            <td style={{ padding: '9px 14px', borderBottom: '1px solid rgba(34,36,38,.1)', color: 'rgba(0,0,0,.6)' }}>
+              图片生成
+            </td>
+          </tr>
+          <tr>
+            <td style={{ padding: '9px 14px', borderRight: '1px solid rgba(34,36,38,.1)' }}>
+              <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: 3, background: '#2185d0', color: '#fff', fontSize: 11, fontWeight: 700 }}>POST</span>
+            </td>
+            <td style={{ padding: '9px 14px', borderRight: '1px solid rgba(34,36,38,.1)', fontFamily: 'Menlo, Monaco, monospace', fontSize: 12 }}>
+              /v1/embeddings
+            </td>
+            <td style={{ padding: '9px 14px', color: 'rgba(0,0,0,.6)' }}>
+              文本向量化
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      {/* Auth warning — like Semantic UI Message error */}
+      <div style={{
+        marginTop: 14,
+        padding: '12px 18px',
+        background: '#fff6f6',
+        border: '1px solid #e0b4b4',
+        borderRadius: 5,
+        color: '#9f3a38',
+        fontSize: 12,
+        lineHeight: 1.5
+      }}>
+        ⚠️ <strong>重要提醒：</strong>所有 API 请求必须在 Header 中携带 <code style={{ background: 'rgba(0,0,0,.05)', padding: '2px 6px', borderRadius: 3, fontFamily: 'monospace' }}>Authorization: Bearer sk-ab****-cd12</code>
+      </div>
+    </div>
+  </div>
 );
 
 /* ── Section component ── */
@@ -192,12 +429,12 @@ const Section = ({ icon, title, children, svg }) => (
   </Card>
 );
 
-/* ── SVG key-to-component map for modal ── */
-const SVG_MODAL_MAP = {
-  mytoken: MyTokenSvg,
-  apiusage: ApiUsageSvg,
-  requestquota: RequestQuotaSvg,
-  endpoints: EndpointsSvg,
+/* ── Component key-to-component map for modal ── */
+const MOCK_COMPONENT_MAP = {
+  mytoken: MyTokenMock,
+  apiusage: ApiUsageMock,
+  requestquota: RequestQuotaMock,
+  endpoints: EndpointsMock,
 };
 
 /* ── Help Page ── */
@@ -215,7 +452,7 @@ const Help = () => {
     setSelectedSvg(null);
   };
 
-  const SvgModalContent = selectedSvg ? SVG_MODAL_MAP[selectedSvg] : null;
+  const SvgModalContent = selectedSvg ? MOCK_COMPONENT_MAP[selectedSvg] : null;
 
   return (
     <div className="dashboard-container">
@@ -235,7 +472,7 @@ const Help = () => {
       <Section
         icon="🔑"
         title="1. 如何获取令牌"
-        svg={<div onClick={() => openModal('mytoken')} style={{ cursor: 'pointer' }} title="点击放大"><MyTokenSvg /></div>}
+        svg={<div onClick={() => openModal('mytoken')} style={{ cursor: 'pointer' }} title="点击放大"><MyTokenMock /></div>}
       >
         <p><strong>步骤 1：登录系统</strong></p>
         <p>打开 ATR 控制台并登录。如无账号，请联系管理员创建。</p>
@@ -259,7 +496,7 @@ const Help = () => {
       <Section
         icon="🚀"
         title="2. 如何使用 API"
-        svg={<div onClick={() => openModal('apiusage')} style={{ cursor: 'pointer' }} title="点击放大"><ApiUsageSvg /></div>}
+        svg={<div onClick={() => openModal('apiusage')} style={{ cursor: 'pointer' }} title="点击放大"><ApiUsageMock /></div>}
       >
         <p>
           ATR 提供与 OpenAI API 完全兼容的接口，你只需将 Base URL 替换为 ATR 的地址即可。
@@ -305,7 +542,7 @@ print(response.choices[0].message.content)`}
       <Section
         icon="💰"
         title="3. 如何申请额度"
-        svg={<div onClick={() => openModal('requestquota')} style={{ cursor: 'pointer' }} title="点击放大"><RequestQuotaSvg /></div>}
+        svg={<div onClick={() => openModal('requestquota')} style={{ cursor: 'pointer' }} title="点击放大"><RequestQuotaMock /></div>}
       >
         <p><strong>步骤 1：进入申请页面</strong></p>
         <p>登录后，在导航菜单中找到「申请额度」入口，点击进入。</p>
@@ -328,7 +565,7 @@ print(response.choices[0].message.content)`}
       <Section
         icon="🌐"
         title="4. Base URL 与端点说明"
-        svg={<div onClick={() => openModal('endpoints')} style={{ cursor: 'pointer' }} title="点击放大"><EndpointsSvg /></div>}
+        svg={<div onClick={() => openModal('endpoints')} style={{ cursor: 'pointer' }} title="点击放大"><EndpointsMock /></div>}
       >
         <p>
           ATR 以 <strong>OpenAI 兼容模式</strong>运行，支持标准 OpenAI 客户端直接接入。
