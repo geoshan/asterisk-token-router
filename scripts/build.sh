@@ -18,6 +18,10 @@ echo "Building ${FULL_VERSION} for ${TARGET}..."
 if [ -d "web/default" ]; then
   echo "Building frontend..."
   cd web/default && npm run build 2>&1 | tail -1 && cd ../..
+  rm -rf web/build
+  mkdir -p web
+  cp -r web/default/build web/build
+  echo "Frontend build copied to web/build/"
 fi
 
 if [ "$TARGET" = "linux" ]; then
