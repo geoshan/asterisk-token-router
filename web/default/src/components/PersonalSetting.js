@@ -13,6 +13,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   API,
   copy,
+  isAdmin,
   showError,
   showInfo,
   showNotice,
