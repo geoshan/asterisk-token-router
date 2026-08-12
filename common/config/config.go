@@ -18,7 +18,7 @@ var Footer = ""
 var Logo = ""
 var TopUpLink = ""
 var ChatLink = ""
-var QuotaPerUnit = 500 * 1000.0 // $0.002 / 1K tokens
+var QuotaPerUnit = 1.0 // 1 quota = ¥1 (金额制)
 var DisplayInCurrencyEnabled = true
 var DisplayTokenStatEnabled = true
 
