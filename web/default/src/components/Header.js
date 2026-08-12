@@ -76,6 +76,12 @@ let headerButtons = [
     icon: 'setting',
   },
   {
+    name: '帮助',
+    to: '/help',
+    icon: 'help circle',
+    both: true,
+  },
+  {
     name: 'header.about',
     to: '/about',
     icon: 'info circle',
