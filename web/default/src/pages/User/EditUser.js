@@ -152,22 +152,22 @@ const EditUser = () => {
                     options={groupOptions}
                   />
                 </Form.Field>
+                </>
+                )}
                 <Form.Field>
-                  <Form.Input
-                    label={`${t('user.edit.quota')}${renderQuotaWithPrompt(
-                      quota,
-                      t
-                    )}`}
-                    name='quota'
-                    placeholder={t('user.edit.quota_placeholder')}
-                    onChange={handleInputChange}
-                    value={quota}
-                    type={'number'}
-                    autoComplete='new-password'
-                  />
+                <Form.Input
+                  label={`${t('user.edit.quota')}${renderQuotaWithPrompt(
+                    quota,
+                    t
+                  )}`}
+                  name='quota'
+                  placeholder={t('user.edit.quota_placeholder')}
+                  onChange={handleInputChange}
+                  value={quota}
+                  type={'number'}
+                  autoComplete='new-password'
+                />
                 </Form.Field>
-              </>
-            )}
             <Form.Field>
               <Form.Input
                 label={t('user.edit.github_id')}
