@@ -33,10 +33,14 @@ const PersonalSetting = () => {
     email_verification_code: '',
     email: '',
     self_account_deletion_confirmation: '',
+    old_password: '',
+    new_password: '',
+    confirm_password: '',
   });
   const [status, setStatus] = useState({});
   const [showWeChatBindModal, setShowWeChatBindModal] = useState(false);
   const [showEmailBindModal, setShowEmailBindModal] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
   const [showAccountDeleteModal, setShowAccountDeleteModal] = useState(false);
   const [turnstileEnabled, setTurnstileEnabled] = useState(false);
   const [turnstileSiteKey, setTurnstileSiteKey] = useState('');
@@ -185,6 +189,44 @@ const PersonalSetting = () => {
     setLoading(false);
   };
 
+  const changePassword = async () => {
+    if (inputs.old_password === '') {
+      showError('请输入当前密码');
+      return;
+    }
+    if (inputs.new_password === '') {
+      showError('请输入新密码');
+      return;
+    }
+    if (inputs.new_password.length < 8) {
+      showError('新密码长度不能少于 8 位');
+      return;
+    }
+    if (inputs.new_password !== inputs.confirm_password) {
+      showError('两次输入的新密码不一致');
+      return;
+    }
+    setLoading(true);
+    const res = await API.post('/api/user/password', {
+      old_password: inputs.old_password,
+      new_password: inputs.new_password,
+    });
+    const { success, message } = res.data;
+    if (success) {
+      showSuccess('密码修改成功');
+      setShowChangePasswordModal(false);
+      setInputs((inputs) => ({
+        ...inputs,
+        old_password: '',
+        new_password: '',
+        confirm_password: '',
+      }));
+    } else {
+      showError(message);
+    }
+    setLoading(false);
+  };
+
   return (
     <div style={{ lineHeight: '40px' }}>
       <Header as='h3'>{t('setting.personal.general.title')}</Header>
@@ -199,6 +241,9 @@ const PersonalSetting = () => {
       </Button>
       <Button onClick={getAffLink}>
         {t('setting.personal.general.buttons.copy_invite')}
+      </Button>
+      <Button onClick={() => setShowChangePasswordModal(true)}>
+        {t('setting.personal.general.buttons.change_password')}
       </Button>
       <Button
         onClick={() => {
@@ -347,6 +392,78 @@ const PersonalSetting = () => {
                   onClick={() => setShowEmailBindModal(false)}
                 >
                   {t('setting.personal.binding.email.cancel')}
+                </Button>
+              </div>
+            </Form>
+          </Modal.Description>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        onClose={() => setShowChangePasswordModal(false)}
+        onOpen={() => setShowChangePasswordModal(true)}
+        open={showChangePasswordModal}
+        size={'tiny'}
+        style={{ maxWidth: '450px' }}
+      >
+        <Modal.Header>
+          {t('setting.personal.change_password.title')}
+        </Modal.Header>
+        <Modal.Content>
+          <Modal.Description>
+            <Form size='large'>
+              <Form.Input
+                fluid
+                type='password'
+                placeholder={t(
+                  'setting.personal.change_password.old_password_placeholder'
+                )}
+                name='old_password'
+                value={inputs.old_password}
+                onChange={handleInputChange}
+              />
+              <Form.Input
+                fluid
+                type='password'
+                placeholder={t(
+                  'setting.personal.change_password.new_password_placeholder'
+                )}
+                name='new_password'
+                value={inputs.new_password}
+                onChange={handleInputChange}
+              />
+              <Form.Input
+                fluid
+                type='password'
+                placeholder={t(
+                  'setting.personal.change_password.confirm_password_placeholder'
+                )}
+                name='confirm_password'
+                value={inputs.confirm_password}
+                onChange={handleInputChange}
+              />
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginTop: '1rem',
+                }}
+              >
+                <Button
+                  color='green'
+                  fluid
+                  size='large'
+                  onClick={changePassword}
+                  loading={loading}
+                >
+                  {t('setting.personal.change_password.buttons.confirm')}
+                </Button>
+                <div style={{ width: '1rem' }}></div>
+                <Button
+                  fluid
+                  size='large'
+                  onClick={() => setShowChangePasswordModal(false)}
+                >
+                  {t('setting.personal.change_password.buttons.cancel')}
                 </Button>
               </div>
             </Form>

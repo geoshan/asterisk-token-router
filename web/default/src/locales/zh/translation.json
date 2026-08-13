@@ -482,6 +482,7 @@
           "update_profile": "更新个人信息",
           "generate_token": "生成系统访问令牌",
           "copy_invite": "复制邀请链接",
+          "change_password": "修改密码",
           "delete_account": "删除个人账户"
         }
       },
@@ -506,6 +507,16 @@
           "get_code": "获取验证码",
           "get_code_retry": "重新发送({{countdown}})",
           "bind": "确认绑定",
+          "cancel": "取消"
+        }
+      },
+      "change_password": {
+        "title": "修改密码",
+        "old_password_placeholder": "输入当前密码",
+        "new_password_placeholder": "输入新密码（至少 8 位）",
+        "confirm_password_placeholder": "再次输入新密码",
+        "buttons": {
+          "confirm": "确认修改",
           "cancel": "取消"
         }
       },

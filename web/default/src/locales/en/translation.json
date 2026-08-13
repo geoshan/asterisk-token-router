@@ -482,6 +482,7 @@
           "update_profile": "Update Profile",
           "generate_token": "Generate System Token",
           "copy_invite": "Copy Invite Link",
+          "change_password": "Change Password",
           "delete_account": "Delete Account"
         }
       },
@@ -506,6 +507,16 @@
           "get_code": "Get Code",
           "get_code_retry": "Resend({{countdown}})",
           "bind": "Confirm Binding",
+          "cancel": "Cancel"
+        }
+      },
+      "change_password": {
+        "title": "Change Password",
+        "old_password_placeholder": "Enter current password",
+        "new_password_placeholder": "Enter new password (at least 8 characters)",
+        "confirm_password_placeholder": "Re-enter new password",
+        "buttons": {
+          "confirm": "Confirm Change",
           "cancel": "Cancel"
         }
       },

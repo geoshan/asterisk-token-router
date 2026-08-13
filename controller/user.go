@@ -561,6 +561,77 @@ func UpdateSelf(c *gin.Context) {
 	return
 }
 
+type ChangePasswordRequest struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+}
+
+func ChangePassword(c *gin.Context) {
+	id := c.GetInt(ctxkey.Id)
+	var req ChangePasswordRequest
+	err := json.NewDecoder(c.Request.Body).Decode(&req)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": i18n.Translate(c, "invalid_parameter"),
+		})
+		return
+	}
+	if req.OldPassword == "" || req.NewPassword == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "旧密码或新密码不能为空",
+		})
+		return
+	}
+	if len(req.NewPassword) < 8 {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "新密码长度不能少于 8 位",
+		})
+		return
+	}
+	user, err := model.GetUserById(id, true)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+	if !common.ValidatePasswordAndHash(req.OldPassword, user.Password) {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "旧密码错误",
+		})
+		return
+	}
+	hashedPassword, err := common.Password2Hash(req.NewPassword)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+	cleanUser := model.User{
+		Id:       id,
+		Password: hashedPassword,
+	}
+	if err := cleanUser.Update(false); err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "",
+	})
+	return
+}
+
 func DeleteUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
