@@ -360,9 +360,6 @@ func GetUserDashboard(c *gin.Context) {
 
 func GenerateAccessToken(c *gin.Context) {
 	id := c.GetInt(ctxkey.Id)
-	if c.GetInt(ctxkey.Role) >= 10 {
-		id = 0 // admin sees all users
-	}
 	user, err := model.GetUserById(id, true)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{

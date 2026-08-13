@@ -86,14 +86,8 @@ const EditUser = () => {
     let res = undefined;
     if (userId) {
       let data = { ...inputs, id: parseInt(userId) };
-      if (typeof data.quota === 'string') {
-        data.quota = parseInt(data.quota);
-      }
-      data.quota = data.quota * 1000000;
-      if (typeof data.monthly_quota === 'string') {
-        data.monthly_quota = parseInt(data.monthly_quota);
-      }
-      data.monthly_quota = data.monthly_quota * 1000000;
+      data.quota = Math.round(parseFloat(data.quota) * 1000000);
+      data.monthly_quota = Math.round(parseFloat(data.monthly_quota) * 1000000);
       res = await API.put(`/api/user/`, data);
     } else {
       res = await API.put(`/api/user/self`, inputs);

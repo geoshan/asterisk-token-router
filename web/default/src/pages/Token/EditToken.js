@@ -175,8 +175,8 @@ const EditToken = () => {
   const submit = async () => {
     if (!isEdit && inputs.name === '') return;
     let localInputs = inputs;
-    localInputs.remain_quota = parseInt(localInputs.remain_quota) * 1000000;
-    if (localInputs.monthly_quota) localInputs.monthly_quota = parseInt(localInputs.monthly_quota) * 1000000;
+    localInputs.remain_quota = Math.round(parseFloat(localInputs.remain_quota) * 1000000);
+    if (localInputs.monthly_quota) localInputs.monthly_quota = Math.round(parseFloat(localInputs.monthly_quota) * 1000000);
     if (localInputs.user_id) localInputs.user_id = parseInt(localInputs.user_id);
     if (localInputs.expired_time !== -1) {
       let time = Date.parse(localInputs.expired_time);
