@@ -8,6 +8,19 @@ const About = () => {
   const { t } = useTranslation();
   const [about, setAbout] = useState('');
   const [aboutLoaded, setAboutLoaded] = useState(false);
+  const [version, setVersion] = useState('');
+
+  const loadVersion = async () => {
+    try {
+      const res = await API.get('/api/status');
+      const { success, data } = res.data;
+      if (success && data && data.version) {
+        setVersion(data.version);
+      }
+    } catch (e) {
+      // ignore
+    }
+  };
 
   const displayAbout = async () => {
     setAbout(localStorage.getItem('about') || '');
@@ -29,6 +42,7 @@ const About = () => {
 
   useEffect(() => {
     displayAbout().then();
+    loadVersion();
   }, []);
 
   return (
@@ -43,6 +57,11 @@ const About = () => {
               <a href='https://github.com/geoshan/asterisk-token-router'>
                 https://github.com/geoshan/asterisk-token-router
               </a>
+              {version && (
+                <p style={{ marginTop: '12px', color: '#999', fontSize: 'small' }}>
+                  当前版本：{version}
+                </p>
+              )}
             </Card.Content>
           </Card>
         </div>

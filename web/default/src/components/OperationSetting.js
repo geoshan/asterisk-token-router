@@ -75,7 +75,7 @@ const OperationSetting = () => {
     }
     const res = await API.put('/api/option/', {
       key,
-      value,
+      value: String(value),
     });
     const { success, message } = res.data;
     if (success) {
