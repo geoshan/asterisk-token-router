@@ -270,6 +270,7 @@ func UpdateToken(c *gin.Context) {
 			cleanToken.ExpiredTime = token.ExpiredTime
 		}
 		cleanToken.RemainQuota = token.RemainQuota
+		cleanToken.MonthlyQuota = token.MonthlyQuota
 		cleanToken.UnlimitedQuota = token.UnlimitedQuota
 		if token.Models != nil {
 			cleanToken.Models = token.Models
