@@ -47,7 +47,13 @@ func GetAllTokens(c *gin.Context) {
 func SearchTokens(c *gin.Context) {
 	userId := c.GetInt(ctxkey.Id)
 	keyword := c.Query("keyword")
-	tokens, err := model.SearchUserTokens(userId, keyword)
+	var tokens []*model.Token
+	var err error
+	if c.GetInt(ctxkey.Role) >= 10 {
+		tokens, err = model.SearchAllTokens(keyword)
+	} else {
+		tokens, err = model.SearchUserTokens(userId, keyword)
+	}
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
