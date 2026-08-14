@@ -2,6 +2,7 @@ package image_test
 
 import (
 	"encoding/base64"
+	"fmt"
 	"github.com/songquanpeng/one-api/common/client"
 	"image"
 	_ "image/gif"
@@ -9,9 +10,11 @@ import (
 	_ "image/png"
 	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	img "github.com/songquanpeng/one-api/common/image"
 
@@ -47,6 +50,14 @@ var (
 
 func TestMain(m *testing.M) {
 	client.Init()
+	// asterisk-token-router: 图片测试依赖 Wikimedia 外部图片，网络不可达时跳过（避免 CI 因外网不可达而失败）
+	probe := &http.Client{Timeout: 5 * time.Second}
+	if resp, err := probe.Get(cases[0].url); err != nil {
+		fmt.Printf("图片源不可达，跳过 image 测试: %v\n", err)
+		os.Exit(0)
+	} else {
+		_ = resp.Body.Close()
+	}
 	m.Run()
 }
 
