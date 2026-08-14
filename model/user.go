@@ -136,9 +136,8 @@ func (user *User) Insert(ctx context.Context, inviterId int) error {
 	if result.Error != nil {
 		return result.Error
 	}
-	if config.QuotaForNewUser > 0 {
-		RecordLog(ctx, user.Id, LogTypeSystem, fmt.Sprintf("新用户注册赠送 %s", common.LogQuota(config.QuotaForNewUser)))
-	}
+	// asterisk-token-router: 内部使用无赠送业务，仅记录新增用户
+	RecordLog(ctx, user.Id, LogTypeSystem, "新增用户")
 	if inviterId != 0 {
 		if config.QuotaForInvitee > 0 {
 			_ = IncreaseUserQuota(user.Id, config.QuotaForInvitee)
