@@ -27,6 +27,7 @@ const EditToken = () => {
   const [userOptions, setUserOptions] = useState([]);
   const [modelOptions, setModelOptions] = useState([]);
   const [groupOptions, setGroupOptions] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState('');
   const originInputs = {
     user_id: '',
     name: '',
@@ -174,6 +175,18 @@ const EditToken = () => {
 
   const submit = async () => {
     if (!isEdit && inputs.name === '') return;
+    if (!isEdit && selectedGroup === '' && (!inputs.models || inputs.models.length === 0)) {
+      showError('请选择模型分组');
+      return;
+    }
+    if (!isEdit && !inputs.unlimited_quota) {
+      const rq = parseFloat(inputs.remain_quota) || 0;
+      const mq = parseFloat(inputs.monthly_quota) || 0;
+      if (rq <= 0 && mq <= 0) {
+        showError('额度不能为0，请设置额度或勾选不限额度');
+        return;
+      }
+    }
     let localInputs = inputs;
     localInputs.remain_quota = Math.round(parseFloat(localInputs.remain_quota) * 1000000);
     if (localInputs.monthly_quota) localInputs.monthly_quota = Math.round(parseFloat(localInputs.monthly_quota) * 1000000);
@@ -256,7 +269,8 @@ const EditToken = () => {
                   fluid
                   selection
                   options={groupOptions}
-                  onChange={(e, { value }) => handleGroupChange(value)}
+                  value={selectedGroup}
+                  onChange={(e, { value }) => { setSelectedGroup(value); handleGroupChange(value); }}
                 />
               </Form.Field>
             )}

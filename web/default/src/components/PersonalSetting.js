@@ -41,14 +41,12 @@ const PersonalSetting = () => {
   const [showWeChatBindModal, setShowWeChatBindModal] = useState(false);
   const [showEmailBindModal, setShowEmailBindModal] = useState(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
-  const [showAccountDeleteModal, setShowAccountDeleteModal] = useState(false);
   const [turnstileEnabled, setTurnstileEnabled] = useState(false);
   const [turnstileSiteKey, setTurnstileSiteKey] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
   const [countdown, setCountdown] = useState(30);
-  const [affLink, setAffLink] = useState('');
   const [systemToken, setSystemToken] = useState('');
 
   useEffect(() => {
@@ -85,7 +83,6 @@ const PersonalSetting = () => {
     const { success, message, data } = res.data;
     if (success) {
       setSystemToken(data);
-      setAffLink('');
       await copy(data);
       showSuccess(`令牌已重置并已复制到剪贴板`);
     } else {
@@ -93,50 +90,10 @@ const PersonalSetting = () => {
     }
   };
 
-  const getAffLink = async () => {
-    const res = await API.get('/api/user/aff');
-    const { success, message, data } = res.data;
-    if (success) {
-      let link = `${window.location.origin}/register?aff=${data}`;
-      setAffLink(link);
-      setSystemToken('');
-      await copy(link);
-      showSuccess(`邀请链接已复制到剪切板`);
-    } else {
-      showError(message);
-    }
-  };
-
-  const handleAffLinkClick = async (e) => {
-    e.target.select();
-    await copy(e.target.value);
-    showSuccess(`邀请链接已复制到剪切板`);
-  };
-
   const handleSystemTokenClick = async (e) => {
     e.target.select();
     await copy(e.target.value);
     showSuccess(`系统令牌已复制到剪切板`);
-  };
-
-  const deleteAccount = async () => {
-    if (inputs.self_account_deletion_confirmation !== userState.user.username) {
-      showError('请输入你的账户名以确认删除！');
-      return;
-    }
-
-    const res = await API.delete('/api/user/self');
-    const { success, message } = res.data;
-
-    if (success) {
-      showSuccess('账户已删除！');
-      await API.get('/api/user/logout');
-      userDispatch({ type: 'logout' });
-      localStorage.removeItem('user');
-      navigate('/login');
-    } else {
-      showError(message);
-    }
   };
 
   const bindWeChat = async () => {
@@ -239,18 +196,8 @@ const PersonalSetting = () => {
       <Button onClick={generateAccessToken}>
         {t('setting.personal.general.buttons.generate_token')}
       </Button>
-      <Button onClick={getAffLink}>
-        {t('setting.personal.general.buttons.copy_invite')}
-      </Button>
       <Button onClick={() => setShowChangePasswordModal(true)}>
         {t('setting.personal.general.buttons.change_password')}
-      </Button>
-      <Button
-        onClick={() => {
-          setShowAccountDeleteModal(true);
-        }}
-      >
-        {t('setting.personal.general.buttons.delete_account')}
       </Button>
 
       {systemToken && (
@@ -259,15 +206,6 @@ const PersonalSetting = () => {
           readOnly
           value={systemToken}
           onClick={handleSystemTokenClick}
-          style={{ marginTop: '10px' }}
-        />
-      )}
-      {affLink && (
-        <Form.Input
-          fluid
-          readOnly
-          value={affLink}
-          onClick={handleAffLinkClick}
           style={{ marginTop: '10px' }}
         />
       )}
@@ -464,69 +402,6 @@ const PersonalSetting = () => {
                   onClick={() => setShowChangePasswordModal(false)}
                 >
                   {t('setting.personal.change_password.buttons.cancel')}
-                </Button>
-              </div>
-            </Form>
-          </Modal.Description>
-        </Modal.Content>
-      </Modal>
-      <Modal
-        onClose={() => setShowAccountDeleteModal(false)}
-        onOpen={() => setShowAccountDeleteModal(true)}
-        open={showAccountDeleteModal}
-        size={'tiny'}
-        style={{ maxWidth: '450px' }}
-      >
-        <Modal.Header>
-          {t('setting.personal.delete_account.title')}
-        </Modal.Header>
-        <Modal.Content>
-          <Message>{t('setting.personal.delete_account.warning')}</Message>
-          <Modal.Description>
-            <Form size='large'>
-              <Form.Input
-                fluid
-                placeholder={t(
-                  'setting.personal.delete_account.confirm_placeholder',
-                  {
-                    username: userState?.user?.username,
-                  }
-                )}
-                name='self_account_deletion_confirmation'
-                value={inputs.self_account_deletion_confirmation}
-                onChange={handleInputChange}
-              />
-              {turnstileEnabled && (
-                <Turnstile
-                  sitekey={turnstileSiteKey}
-                  onVerify={(token) => {
-                    setTurnstileToken(token);
-                  }}
-                />
-              )}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  marginTop: '1rem',
-                }}
-              >
-                <Button
-                  color='red'
-                  fluid
-                  size='large'
-                  onClick={deleteAccount}
-                  loading={loading}
-                >
-                  {t('setting.personal.delete_account.buttons.confirm')}
-                </Button>
-                <div style={{ width: '1rem' }}></div>
-                <Button
-                  fluid
-                  size='large'
-                  onClick={() => setShowAccountDeleteModal(false)}
-                >
-                  {t('setting.personal.delete_account.buttons.cancel')}
                 </Button>
               </div>
             </Form>

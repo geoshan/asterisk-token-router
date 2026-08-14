@@ -3,7 +3,9 @@ package model
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
+	"github.com/songquanpeng/one-api/common"
 	"github.com/songquanpeng/one-api/common/config"
 	"github.com/songquanpeng/one-api/common/helper"
 	"github.com/songquanpeng/one-api/common/logger"
@@ -220,6 +222,15 @@ func UpdateChannelStatusById(id int, status int) {
 	err = DB.Model(&Channel{}).Where("id = ?", id).Update("status", status).Error
 	if err != nil {
 		logger.SysError("failed to update channel status: " + err.Error())
+	}
+	// 清除 group_models 缓存，使 available_models 立即反映渠道启用/禁用状态
+	var channel Channel
+	if err := DB.Where("id = ?", id).First(&channel).Error; err == nil {
+		for _, g := range strings.Split(channel.Group, ",") {
+			if g != "" {
+				common.RedisDel("group_models:" + g)
+			}
+		}
 	}
 }
 

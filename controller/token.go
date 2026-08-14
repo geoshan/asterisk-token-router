@@ -2,6 +2,10 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/songquanpeng/one-api/common/config"
 	"github.com/songquanpeng/one-api/common/ctxkey"
@@ -9,8 +13,6 @@ import (
 	"github.com/songquanpeng/one-api/common/network"
 	"github.com/songquanpeng/one-api/common/random"
 	"github.com/songquanpeng/one-api/model"
-	"net/http"
-	"strconv"
 )
 
 func GetAllTokens(c *gin.Context) {
@@ -149,6 +151,22 @@ func AddToken(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"message": "令牌名称不能为空",
+		})
+		return
+	}
+	// asterisk-token-router: 创建令牌时模型范围不能为空（防止"全部模型"）
+	if token.Models == nil || strings.TrimSpace(*token.Models) == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "模型范围不能为空，请选择渠道组",
+		})
+		return
+	}
+	// asterisk-token-router: 创建令牌时额度不能全为0（除非不限额度）
+	if !token.UnlimitedQuota && token.RemainQuota <= 0 && token.MonthlyQuota <= 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "额度不能为0，请设置额度或勾选不限额度",
 		})
 		return
 	}

@@ -105,14 +105,18 @@ func UpdateAbilityStatus(channelId int, status bool) error {
 }
 
 func GetGroupModels(ctx context.Context, group string) ([]string, error) {
-	groupCol := "`group`"
+	groupCol := "`abilities`.`group`"
 	trueVal := "1"
 	if common.UsingPostgreSQL {
-		groupCol = `"group"`
+		groupCol = `"abilities"."group"`
 		trueVal = "true"
 	}
 	var models []string
-	err := DB.Model(&Ability{}).Distinct("model").Where(groupCol+" = ? and enabled = "+trueVal, group).Pluck("model", &models).Error
+	err := DB.Model(&Ability{}).
+		Joins("JOIN channels ON channels.id = abilities.channel_id").
+		Where(groupCol+" = ? and abilities.enabled = "+trueVal+" and channels.status = ?", group, ChannelStatusEnabled).
+		Distinct("abilities.model").
+		Pluck("model", &models).Error
 	if err != nil {
 		return nil, err
 	}
