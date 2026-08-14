@@ -100,10 +100,19 @@ func postConsumeQuota(ctx context.Context, usage *relaymodel.Usage, meta *meta.M
 		return
 	}
 	var quota int64
-	completionRatio := billingratio.GetCompletionRatio(textRequest.Model, meta.ChannelType)
 	promptTokens := usage.PromptTokens
 	completionTokens := usage.CompletionTokens
-	quota = int64(math.Ceil((float64(promptTokens) + float64(completionTokens)*completionRatio) * ratio))
+	// asterisk-token-router: 用渠道 price_in/price_out 计费（¥/百万token），替代 modelRatio 倍率
+	var logContent string
+	channel, chErr := model.GetChannelById(meta.ChannelId, false)
+	if chErr == nil && channel != nil && channel.BillingMode == model.BillingModePerToken {
+		quota = int64(math.Ceil(float64(promptTokens)*channel.PriceIn + float64(completionTokens)*channel.PriceOut))
+		logContent = fmt.Sprintf("价格：输入¥%.2f/M 输出¥%.2f/M", channel.PriceIn, channel.PriceOut)
+	} else {
+		completionRatio := billingratio.GetCompletionRatio(textRequest.Model, meta.ChannelType)
+		quota = int64(math.Ceil((float64(promptTokens) + float64(completionTokens)*completionRatio) * ratio))
+		logContent = fmt.Sprintf("倍率：%.2f × %.2f × %.2f", modelRatio, groupRatio, completionRatio)
+	}
 	if ratio != 0 && quota <= 0 {
 		quota = 1
 	}
@@ -122,7 +131,6 @@ func postConsumeQuota(ctx context.Context, usage *relaymodel.Usage, meta *meta.M
 	if err != nil {
 		logger.Error(ctx, "error update user quota cache: "+err.Error())
 	}
-	logContent := fmt.Sprintf("倍率：%.2f × %.2f × %.2f", modelRatio, groupRatio, completionRatio)
 	// asterisk-token-router: usage tracking for quota monitoring
 	go trackUsageForQuota(meta, usage, promptTokens, completionTokens)
 	model.RecordConsumeLog(ctx, &model.Log{
