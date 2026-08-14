@@ -12,7 +12,8 @@ cmd.md
 .env
 /one-api
 temp
-.DS_Storebin/
+.DS_Store
+**/.DS_Store
 .env
 /bin/
 asterisk-tr-linux
