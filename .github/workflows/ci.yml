@@ -22,12 +22,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
-          go-version: ^1.22
+          go-version: '1.22'
+
+      # web/build 前端产物被 gitignore，CI checkout 后不存在，需创建占位目录使 go:embed 编译通过
+      - name: Create web/build placeholder
+        run: mkdir -p web/build && echo '<!DOCTYPE html><html><body>placeholder</body></html>' > web/build/index.html
 
       # When you execute your unit tests, make sure to use the "-coverprofile" flag to write a
       # coverage profile to a file. You will need the name of the file (e.g. "coverage.txt")
@@ -42,5 +46,5 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: wagoid/commitlint-github-action@v6
