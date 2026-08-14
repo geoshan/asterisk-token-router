@@ -2,9 +2,9 @@
 
 > **基于项目**: One API (songquanpeng/one-api, MIT)  
 > **目标许可**: Apache 2.0（便于后续出商业版）  
-> **版本**: v2.2  
-> **日期**: 2026-08-12  
-> **状态**: v1.1.19 迭代完成，文档已补充 v1.1.x 全部功能变更  
+> **版本**: v2.3  
+> **日期**: 2026-08-14  
+> **状态**: v1.1.29 迭代完成；智能路由完整实现列为下一大版本目标（见第 10 章）  
 > **说明**: 本文档忽略用户原始 PRD 的第 6 章（数据结构）和第 7 章（API 设计），采用 One API 原生数据模型和 API 规范。
 
 ---
@@ -836,4 +836,33 @@ gantt
 | **前端组件** | 三个独立令牌组件（`TokensTable.js`/`MyToken.js`/`EditToken.js`）；按角色 Dashboard |
 | **计费** | `QuotaPerUnit=1,000,000` + `PreConsumedQuota=0` 金额制；`model_ratio` 直接 ¥/M tokens |
 | **会话** | `SESSION_SECRET` 环境变量固定，防止重启掉线 |
-| **部署** | `build.sh` 三步 temp 复制 + `go:embed` 递归；版本号 `A.B.C build MMDD.HHMM`
+| **部署** | `build.sh` 三步 temp 复制 + `go:embed` 递归；版本号 `A.B.C build MMDD.HHMM` |
+
+---
+
+## 10. 下一大版本规划（v1.2+）
+
+> 记录已确认但暂未实现的下一大版本目标，作为后续迭代的实现依据。
+
+### 10.1 智能路由完整实现（F1.2）🔨
+
+**现状（v1.1.x 简化实现）**：
+
+- 内容分类器已实现（`middleware/content_classifier.go`）：规则引擎（关键词 + 代码块 + 长度阈值）可识别代码/推理/办公场景
+- `model="auto"` 或不传时触发分类（`distributor.go`），但 `DefaultAutoModels` 中 `basic` 与 `advanced` 均映射到同一默认模型 `qwen-max`
+- 因此分类结果暂不影响最终路由，`auto` 实际退化为「一律路由到 qwen-max」
+
+**下一大版本目标**：
+
+1. **分组差异化路由**：`basic` 组与 `advanced` 组映射到不同模型（办公/日常 → 低成本模型，代码/推理 → 顶级模型）
+2. **可配置路由映射**：管理员后台可配置各组对应的模型/渠道（当前 `DefaultAutoModels` 为硬编码 map，不可配置）
+3. **分类器升级**：预留接口，后续可升级为轻量分类模型（当前为关键词规则引擎）
+
+```mermaid
+flowchart LR
+    A["model=auto / 空"] --> B[内容分类器]
+    B -->|代码/推理| C[advanced 组 → 顶级模型]
+    B -->|办公/日常| D[basic 组 → 基础模型]
+```
+
+> 关联章节：§4.1 智能内容路由器、UC-02、§8 需求确认结果第 2 项（内容分类升级）。
