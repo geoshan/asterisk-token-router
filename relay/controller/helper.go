@@ -105,9 +105,13 @@ func postConsumeQuota(ctx context.Context, usage *relaymodel.Usage, meta *meta.M
 	// asterisk-token-router: 用渠道 price_in/price_out 计费（¥/百万token），替代 modelRatio 倍率
 	var logContent string
 	channel, chErr := model.GetChannelById(meta.ChannelId, false)
+	inputPrice, outputPrice := 0.0, 0.0
 	if chErr == nil && channel != nil && channel.BillingMode == model.BillingModePerToken {
-		quota = int64(math.Ceil(float64(promptTokens)*channel.PriceIn + float64(completionTokens)*channel.PriceOut))
-		logContent = fmt.Sprintf("价格：输入¥%.2f/M 输出¥%.2f/M", channel.PriceIn, channel.PriceOut)
+		inputPrice, outputPrice, _ = channel.GetModelPrice(textRequest.Model)
+	}
+	if inputPrice > 0 || outputPrice > 0 {
+		quota = int64(math.Ceil(float64(promptTokens)*inputPrice + float64(completionTokens)*outputPrice))
+		logContent = fmt.Sprintf("价格：输入¥%.2f/M 输出¥%.2f/M", inputPrice, outputPrice)
 	} else {
 		completionRatio := billingratio.GetCompletionRatio(textRequest.Model, meta.ChannelType)
 		quota = int64(math.Ceil((float64(promptTokens) + float64(completionTokens)*completionRatio) * ratio))
