@@ -17,3 +17,4 @@ temp
 .env
 /bin/
 asterisk-tr-linux
+asterisk-tr-darwin

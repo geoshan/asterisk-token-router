@@ -64,6 +64,13 @@ let headerButtons = [
     login: true,
   },
   {
+    name: '用量审计',
+    to: '/usage-summary',
+    icon: 'chart pie',
+    admin: true,
+    login: true,
+  },
+  {
     name: 'header.log',
     login: true,
     to: '/log',

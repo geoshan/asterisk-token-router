@@ -43,7 +43,7 @@ func SetApiRouter(router *gin.Engine) {
 				selfRoute.GET("/dashboard", controller.GetUserDashboard)
 				selfRoute.GET("/self", controller.GetSelf)
 				selfRoute.PUT("/self", controller.UpdateSelf)
-			selfRoute.POST("/password", controller.ChangePassword)
+				selfRoute.POST("/password", controller.ChangePassword)
 				selfRoute.DELETE("/self", controller.DeleteSelf)
 				selfRoute.GET("/token", controller.GenerateAccessToken)
 				selfRoute.GET("/aff", controller.GetAffCode)
@@ -125,6 +125,12 @@ func SetApiRouter(router *gin.Engine) {
 		groupRoute.Use(middleware.AdminAuth())
 		{
 			groupRoute.GET("/", controller.GetGroups)
+		}
+		// asterisk-token-router V1.2 §10.4: user token usage summary (audit)
+		usageSummaryRoute := apiRouter.Group("/usage-summary")
+		usageSummaryRoute.Use(middleware.AdminAuth())
+		{
+			usageSummaryRoute.GET("/", controller.GetUsageSummary)
 		}
 	}
 }

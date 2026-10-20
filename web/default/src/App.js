@@ -30,6 +30,7 @@ import Chat from './pages/Chat';
 import LarkOAuth from './components/LarkOAuth';
 import Dashboard from './pages/Dashboard';
 import Help from './pages/Help';
+import UsageSummary from './components/UsageSummary';
 
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
@@ -153,6 +154,14 @@ function App() {
         element={
           <AdminRoute>
             <QuotaApproval />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/usage-summary"
+        element={
+          <AdminRoute>
+            <UsageSummary />
           </AdminRoute>
         }
       />
