@@ -14,11 +14,9 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/songquanpeng/one-api/common"
-	"github.com/songquanpeng/one-api/common/config"
 	"github.com/songquanpeng/one-api/common/logger"
 	"github.com/songquanpeng/one-api/model"
 	"github.com/songquanpeng/one-api/relay/adaptor/openai"
-	billingratio "github.com/songquanpeng/one-api/relay/billing/ratio"
 	"github.com/songquanpeng/one-api/relay/channeltype"
 	"github.com/songquanpeng/one-api/relay/controller/validator"
 	"github.com/songquanpeng/one-api/relay/meta"
@@ -57,33 +55,29 @@ func getPromptTokens(textRequest *relaymodel.GeneralOpenAIRequest, relayMode int
 	return 0
 }
 
-func getPreConsumedQuota(textRequest *relaymodel.GeneralOpenAIRequest, promptTokens int, ratio float64) int64 {
-	preConsumedTokens := config.PreConsumedQuota + int64(promptTokens)
-	if textRequest.MaxTokens != 0 {
-		preConsumedTokens += int64(textRequest.MaxTokens)
-	}
-	return int64(float64(preConsumedTokens) * ratio)
+// getPreConsumedQuota 返回预扣额度。
+// asterisk-token-router V1.2 阶段2：金额制（¥/M token）下预扣固定为 0，
+// 不再按倍率乘算（倍率体系已移除）。
+func getPreConsumedQuota() int64 {
+	return 0
 }
 
-func preConsumeQuota(ctx context.Context, textRequest *relaymodel.GeneralOpenAIRequest, promptTokens int, ratio float64, meta *meta.Meta) (int64, *relaymodel.ErrorWithStatusCode) {
-	preConsumedQuota := getPreConsumedQuota(textRequest, promptTokens, ratio)
-
+func preConsumeQuota(ctx context.Context, meta *meta.Meta) (int64, *relaymodel.ErrorWithStatusCode) {
+	preConsumedQuota := getPreConsumedQuota()
 	userQuota, err := model.CacheGetUserQuota(ctx, meta.UserId)
 	if err != nil {
 		return preConsumedQuota, openai.ErrorWrapper(err, "get_user_quota_failed", http.StatusInternalServerError)
 	}
-	if userQuota-preConsumedQuota < 0 {
+	if userQuota <= 0 {
 		return preConsumedQuota, openai.ErrorWrapper(errors.New("user quota is not enough"), "insufficient_user_quota", http.StatusForbidden)
+	}
+	if preConsumedQuota == 0 {
+		// 金额制下预扣为 0，仅校验余额
+		return 0, nil
 	}
 	err = model.CacheDecreaseUserQuota(meta.UserId, preConsumedQuota)
 	if err != nil {
 		return preConsumedQuota, openai.ErrorWrapper(err, "decrease_user_quota_failed", http.StatusInternalServerError)
-	}
-	if userQuota > 100*preConsumedQuota {
-		// in this case, we do not pre-consume quota
-		// because the user has enough quota
-		preConsumedQuota = 0
-		logger.Info(ctx, fmt.Sprintf("user %d has enough quota %d, trusted and no need to pre-consume", meta.UserId, userQuota))
 	}
 	if preConsumedQuota > 0 {
 		err := model.PreConsumeTokenQuota(meta.TokenId, preConsumedQuota)
@@ -94,7 +88,7 @@ func preConsumeQuota(ctx context.Context, textRequest *relaymodel.GeneralOpenAIR
 	return preConsumedQuota, nil
 }
 
-func postConsumeQuota(ctx context.Context, usage *relaymodel.Usage, meta *meta.Meta, textRequest *relaymodel.GeneralOpenAIRequest, ratio float64, preConsumedQuota int64, modelRatio float64, groupRatio float64, systemPromptReset bool) {
+func postConsumeQuota(ctx context.Context, usage *relaymodel.Usage, meta *meta.Meta, textRequest *relaymodel.GeneralOpenAIRequest, preConsumedQuota int64, systemPromptReset bool) {
 	if usage == nil {
 		logger.Error(ctx, "usage is nil, which is unexpected")
 		return
@@ -102,23 +96,36 @@ func postConsumeQuota(ctx context.Context, usage *relaymodel.Usage, meta *meta.M
 	var quota int64
 	promptTokens := usage.PromptTokens
 	completionTokens := usage.CompletionTokens
-	// asterisk-token-router: 用渠道 price_in/price_out 计费（¥/百万token），替代 modelRatio 倍率
+	// asterisk-token-router V1.2 阶段2：计费统一 ¥/M token 口径，价格来源 model_prices（fallback price_in/price_out），倍率体系移除
 	var logContent string
 	channel, chErr := model.GetChannelById(meta.ChannelId, false)
-	inputPrice, outputPrice := 0.0, 0.0
-	if chErr == nil && channel != nil && channel.BillingMode == model.BillingModePerToken {
-		inputPrice, outputPrice, _ = channel.GetModelPrice(textRequest.Model)
-	}
-	if inputPrice > 0 || outputPrice > 0 {
-		quota = int64(math.Ceil(float64(promptTokens)*inputPrice + float64(completionTokens)*outputPrice))
-		logContent = fmt.Sprintf("价格：输入¥%.2f/M 输出¥%.2f/M", inputPrice, outputPrice)
+	if chErr != nil || channel == nil {
+		quota = 0
+		logContent = "渠道查询失败，按免费处理"
+		logger.SysError(fmt.Sprintf("结算时查询渠道 %d 失败，按免费处理", meta.ChannelId))
 	} else {
-		completionRatio := billingratio.GetCompletionRatio(textRequest.Model, meta.ChannelType)
-		quota = int64(math.Ceil((float64(promptTokens) + float64(completionTokens)*completionRatio) * ratio))
-		logContent = fmt.Sprintf("倍率：%.2f × %.2f × %.2f", modelRatio, groupRatio, completionRatio)
-	}
-	if ratio != 0 && quota <= 0 {
-		quota = 1
+		switch channel.BillingMode {
+		case model.BillingModePerToken:
+			inputPrice, outputPrice, _ := channel.GetModelPrice(textRequest.Model)
+			if inputPrice > 0 || outputPrice > 0 {
+				// quota 单位换算：1e6 quota = ¥1，故 quota = tokens × (¥/M 价格)
+				quota = int64(math.Ceil(float64(promptTokens)*inputPrice + float64(completionTokens)*outputPrice))
+				logContent = fmt.Sprintf("价格：输入¥%.2f/M 输出¥%.2f/M", inputPrice, outputPrice)
+			} else {
+				// TC-BILL-06：未知/未配置价格的模型不再回落倍率静默高估，按免费处理并告警
+				quota = 0
+				logContent = "未配置价格，按免费处理"
+				logger.SysError(fmt.Sprintf("渠道 %d 模型 %s 未配置价格，按免费处理", meta.ChannelId, textRequest.Model))
+			}
+		case model.BillingModeFree:
+			// 免费渠道不计费
+			quota = 0
+			logContent = "免费渠道"
+		default:
+			// 包月渠道：不计费到用户额度
+			quota = 0
+			logContent = "包月渠道"
+		}
 	}
 	totalTokens := promptTokens + completionTokens
 	if totalTokens == 0 {
@@ -226,10 +233,11 @@ func trackUsageForQuota(meta *meta.Meta, usage *relaymodel.Usage, promptTokens i
 		return
 	}
 	
-	// Calculate cost
+	// Calculate cost（价格来源与主计费同源：channel.GetModelPrice，¥/M token）
 	var cost float64
 	if channel.BillingMode == model.BillingModePerToken {
-		cost = (float64(promptTokens)/1000000)*channel.PriceIn + (float64(completionTokens)/1000000)*channel.PriceOut
+		inputPrice, outputPrice, _ := channel.GetModelPrice(meta.ActualModelName)
+		cost = (float64(promptTokens)/1000000)*inputPrice + (float64(completionTokens)/1000000)*outputPrice
 	} else {
 		cost = 0 // subscription/free models don't count toward quota
 	}

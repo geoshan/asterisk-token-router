@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -168,18 +169,42 @@ func RelayImageHelper(c *gin.Context, relayMode int) *relaymodel.ErrorWithStatus
 		requestBody = bytes.NewBuffer(jsonStr)
 	}
 
-	modelRatio := billingratio.GetModelRatio(imageModel, meta.ChannelType)
-	groupRatio := billingratio.GetGroupRatio(meta.Group)
-	ratio := modelRatio * groupRatio
+	// asterisk-token-router V1.2 阶段2：图片计费统一走渠道 model_prices（¥/M token），倍率体系移除
+	// ImageSizeRatios 仅用于尺寸→token 估算（每张图基础 1000 tokens × 尺寸/质量系数）
+	channel, chErr := model.GetChannelById(meta.ChannelId, false)
 	userQuota, err := model.CacheGetUserQuota(ctx, meta.UserId)
 
 	var quota int64
-	switch meta.ChannelType {
-	case channeltype.Replicate:
-		// replicate always return 1 image
-		quota = int64(ratio * imageCostRatio * 1000)
+	var logContent string
+	baseImageTokens := 1000 * imageCostRatio
+	switch {
+	case chErr != nil || channel == nil:
+		quota = 0
+		logContent = "渠道查询失败，按免费处理"
+		logger.SysError(fmt.Sprintf("图片请求查询渠道 %d 失败，按免费处理", meta.ChannelId))
+	case channel.BillingMode == model.BillingModePerToken:
+		inputPrice, _, _ := channel.GetModelPrice(imageModel)
+		if inputPrice > 0 {
+			imageTokens := math.Ceil(baseImageTokens)
+			// quota 单位换算：1e6 quota = ¥1，故 quota = imageTokens × (¥/M 输入价)
+			quotaPerImage := int64(math.Ceil(imageTokens * inputPrice))
+			switch meta.ChannelType {
+			case channeltype.Replicate:
+				// replicate always return 1 image
+				quota = quotaPerImage
+			default:
+				quota = quotaPerImage * int64(imageRequest.N)
+			}
+			logContent = fmt.Sprintf("价格：输入¥%.2f/M（%d tokens/张 × %d 张）", inputPrice, int64(imageTokens), imageRequest.N)
+		} else {
+			quota = 0
+			logContent = "未配置价格，按免费处理"
+			logger.SysError(fmt.Sprintf("渠道 %d 模型 %s 未配置价格，图片请求按免费处理", meta.ChannelId, imageModel))
+		}
 	default:
-		quota = int64(ratio*imageCostRatio*1000) * int64(imageRequest.N)
+		// 免费/包月渠道不计费
+		quota = 0
+		logContent = "免费/包月渠道"
 	}
 
 	if userQuota-quota < 0 {
@@ -210,7 +235,6 @@ func RelayImageHelper(c *gin.Context, relayMode int) *relaymodel.ErrorWithStatus
 		}
 		if quota != 0 {
 			tokenName := c.GetString(ctxkey.TokenName)
-			logContent := fmt.Sprintf("倍率：%.2f × %.2f", modelRatio, groupRatio)
 			model.RecordConsumeLog(ctx, &model.Log{
 				UserId:           meta.UserId,
 				ChannelId:        meta.ChannelId,

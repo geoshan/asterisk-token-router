@@ -20,7 +20,9 @@ func ReturnPreConsumedQuota(ctx context.Context, preConsumedQuota int64, tokenId
 	}
 }
 
-func PostConsumeQuota(ctx context.Context, tokenId int, quotaDelta int64, totalQuota int64, userId int, channelId int, modelRatio float64, groupRatio float64, modelName string, tokenName string) {
+// asterisk-token-router V1.2 阶段2：签名去掉 modelRatio/groupRatio，
+// 改传已算好的 quota 与输入单价（¥/M token），日志文案由「倍率」改为「价格」。
+func PostConsumeQuota(ctx context.Context, tokenId int, quotaDelta int64, totalQuota int64, userId int, channelId int, inputPrice float64, modelName string, tokenName string) {
 	// quotaDelta is remaining quota to be consumed
 	err := model.PostConsumeTokenQuota(tokenId, quotaDelta)
 	if err != nil {
@@ -32,7 +34,7 @@ func PostConsumeQuota(ctx context.Context, tokenId int, quotaDelta int64, totalQ
 	}
 	// totalQuota is total quota consumed
 	if totalQuota != 0 {
-		logContent := fmt.Sprintf("倍率：%.2f × %.2f", modelRatio, groupRatio)
+		logContent := fmt.Sprintf("价格：输入¥%.2f/M", inputPrice)
 		model.RecordConsumeLog(ctx, &model.Log{
 			UserId:           userId,
 			ChannelId:        channelId,
@@ -46,7 +48,8 @@ func PostConsumeQuota(ctx context.Context, tokenId int, quotaDelta int64, totalQ
 		model.UpdateUserUsedQuotaAndRequestCount(userId, totalQuota)
 		model.UpdateChannelUsedQuota(channelId, totalQuota)
 	}
-	if totalQuota <= 0 {
+	if totalQuota < 0 {
+		// 免费渠道/未配置价格时 totalQuota 为 0 属正常，仅负值异常
 		logger.Error(ctx, fmt.Sprintf("totalQuota consumed is %d, something is wrong", totalQuota))
 	}
 }

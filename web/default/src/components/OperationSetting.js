@@ -6,7 +6,6 @@ import {
   showError,
   showSuccess,
   timestamp2string,
-  verifyJSON,
 } from '../helpers';
 
 const OperationSetting = () => {
@@ -14,13 +13,8 @@ const OperationSetting = () => {
   let now = new Date();
   let [inputs, setInputs] = useState({
     QuotaForNewUser: 0,
-    QuotaForInviter: 0,
-    QuotaForInvitee: 0,
     QuotaRemindThreshold: 0,
     PreConsumedQuota: 0,
-    ModelRatio: '',
-    CompletionRatio: '',
-    GroupRatio: '',
     TopUpLink: '',
     ChatLink: '',
     QuotaPerUnit: 0,
@@ -45,13 +39,6 @@ const OperationSetting = () => {
     if (success) {
       let newInputs = {};
       data.forEach((item) => {
-        if (
-          item.key === 'ModelRatio' ||
-          item.key === 'GroupRatio' ||
-          item.key === 'CompletionRatio'
-        ) {
-          item.value = JSON.stringify(JSON.parse(item.value), null, 2);
-        }
         if (item.value === '{}') {
           item.value = '';
         }
@@ -115,38 +102,9 @@ const OperationSetting = () => {
           );
         }
         break;
-      case 'ratio':
-        if (originInputs['ModelRatio'] !== inputs.ModelRatio) {
-          if (!verifyJSON(inputs.ModelRatio)) {
-            showError('模型倍率不是合法的 JSON 字符串');
-            return;
-          }
-          await updateOption('ModelRatio', inputs.ModelRatio);
-        }
-        if (originInputs['GroupRatio'] !== inputs.GroupRatio) {
-          if (!verifyJSON(inputs.GroupRatio)) {
-            showError('分组倍率不是合法的 JSON 字符串');
-            return;
-          }
-          await updateOption('GroupRatio', inputs.GroupRatio);
-        }
-        if (originInputs['CompletionRatio'] !== inputs.CompletionRatio) {
-          if (!verifyJSON(inputs.CompletionRatio)) {
-            showError('补全倍率不是合法的 JSON 字符串');
-            return;
-          }
-          await updateOption('CompletionRatio', inputs.CompletionRatio);
-        }
-        break;
       case 'quota':
         if (originInputs['QuotaForNewUser'] !== inputs.QuotaForNewUser) {
           await updateOption('QuotaForNewUser', inputs.QuotaForNewUser);
-        }
-        if (originInputs['QuotaForInvitee'] !== inputs.QuotaForInvitee) {
-          await updateOption('QuotaForInvitee', inputs.QuotaForInvitee);
-        }
-        if (originInputs['QuotaForInviter'] !== inputs.QuotaForInviter) {
-          await updateOption('QuotaForInviter', inputs.QuotaForInviter);
         }
         if (originInputs['PreConsumedQuota'] !== inputs.PreConsumedQuota) {
           await updateOption('PreConsumedQuota', inputs.PreConsumedQuota);
@@ -208,30 +166,6 @@ const OperationSetting = () => {
               min='0'
               placeholder={t('setting.operation.quota.pre_consume_placeholder')}
             />
-            <Form.Input
-              label={t('setting.operation.quota.inviter_reward')}
-              name='QuotaForInviter'
-              onChange={handleInputChange}
-              autoComplete='new-password'
-              value={inputs.QuotaForInviter}
-              type='number'
-              min='0'
-              placeholder={t(
-                'setting.operation.quota.inviter_reward_placeholder'
-              )}
-            />
-            <Form.Input
-              label={t('setting.operation.quota.invitee_reward')}
-              name='QuotaForInvitee'
-              onChange={handleInputChange}
-              autoComplete='new-password'
-              value={inputs.QuotaForInvitee}
-              type='number'
-              min='0'
-              placeholder={t(
-                'setting.operation.quota.invitee_reward_placeholder'
-              )}
-            />
           </Form.Group>
           <Form.Button
             onClick={() => {
@@ -239,48 +173,6 @@ const OperationSetting = () => {
             }}
           >
             {t('setting.operation.quota.buttons.save')}
-          </Form.Button>
-          <Divider />
-          <Header as='h3'>{t('setting.operation.ratio.title')}</Header>
-          <Form.Group widths='equal'>
-            <Form.TextArea
-              label={t('setting.operation.ratio.model.title')}
-              name='ModelRatio'
-              onChange={handleInputChange}
-              style={{ minHeight: 250, fontFamily: 'JetBrains Mono, Consolas' }}
-              autoComplete='new-password'
-              value={inputs.ModelRatio}
-              placeholder={t('setting.operation.ratio.model.placeholder')}
-            />
-          </Form.Group>
-          <Form.Group widths='equal'>
-            <Form.TextArea
-              label={t('setting.operation.ratio.completion.title')}
-              name='CompletionRatio'
-              onChange={handleInputChange}
-              style={{ minHeight: 250, fontFamily: 'JetBrains Mono, Consolas' }}
-              autoComplete='new-password'
-              value={inputs.CompletionRatio}
-              placeholder={t('setting.operation.ratio.completion.placeholder')}
-            />
-          </Form.Group>
-          <Form.Group widths='equal'>
-            <Form.TextArea
-              label={t('setting.operation.ratio.group.title')}
-              name='GroupRatio'
-              onChange={handleInputChange}
-              style={{ minHeight: 250, fontFamily: 'JetBrains Mono, Consolas' }}
-              autoComplete='new-password'
-              value={inputs.GroupRatio}
-              placeholder={t('setting.operation.ratio.group.placeholder')}
-            />
-          </Form.Group>
-          <Form.Button
-            onClick={() => {
-              submitConfig('ratio').then();
-            }}
-          >
-            {t('setting.operation.ratio.buttons.save')}
           </Form.Button>
           <Divider />
           <Header as='h3'>{t('setting.operation.log.title')}</Header>

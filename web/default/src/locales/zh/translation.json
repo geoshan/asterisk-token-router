@@ -651,30 +651,8 @@
         "new_user_placeholder": "例如：100",
         "pre_consume": "请求预扣费额度",
         "pre_consume_placeholder": "请求结束后多退少补",
-        "inviter_reward": "邀请新用户奖励额度",
-        "inviter_reward_placeholder": "例如：2000",
-        "invitee_reward": "新用户使用邀请码奖励额度",
-        "invitee_reward_placeholder": "例如：1000",
         "buttons": {
           "save": "保存额度设置"
-        }
-      },
-      "ratio": {
-        "title": "倍率设置",
-        "model": {
-          "title": "模型倍率",
-          "placeholder": "为一个 JSON 文本，键为模型名称，值为倍率"
-        },
-        "completion": {
-          "title": "补全倍率",
-          "placeholder": "为一个 JSON 文本，键为模型名称，值为倍率，此处的倍率设置是模型补全倍率相较于提示倍率的比例，使用该设置可强制覆盖 系统内部比例"
-        },
-        "group": {
-          "title": "分组倍率",
-          "placeholder": "为一个 JSON 文本，键为分组名称，值为倍率"
-        },
-        "buttons": {
-          "save": "保存倍率设置"
         }
       },
       "log": {

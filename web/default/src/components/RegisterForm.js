@@ -32,10 +32,6 @@ const RegisterForm = () => {
   const [disableButton, setDisableButton] = useState(false);
   const [countdown, setCountdown] = useState(30);
   const logo = getLogo();
-  let affCode = new URLSearchParams(window.location.search).get('aff');
-  if (affCode) {
-    localStorage.setItem('aff', affCode);
-  }
 
   useEffect(() => {
     let status = localStorage.getItem('status');
@@ -85,10 +81,6 @@ const RegisterForm = () => {
         return;
       }
       setLoading(true);
-      if (!affCode) {
-        affCode = localStorage.getItem('aff');
-      }
-      inputs.aff_code = affCode;
       const res = await API.post(
         `/api/user/register?turnstile=${turnstileToken}`,
         inputs

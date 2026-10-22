@@ -11,7 +11,6 @@ import (
 	"github.com/songquanpeng/one-api/common/config"
 	"github.com/songquanpeng/one-api/common/image"
 	"github.com/songquanpeng/one-api/common/logger"
-	billingratio "github.com/songquanpeng/one-api/relay/billing/ratio"
 	"github.com/songquanpeng/one-api/relay/model"
 )
 
@@ -35,15 +34,22 @@ func InitTokenEncoders() {
 	if err != nil {
 		logger.FatalLog(fmt.Sprintf("failed to get gpt-4 token encoder: %s", err.Error()))
 	}
-	for model := range billingratio.ModelRatio {
-		if strings.HasPrefix(model, "gpt-3.5") {
+	// asterisk-token-router V1.2 阶段2：不再遍历 ModelRatio 表（倍率体系已删除），
+	// 按写死的小名单注册 tiktoken encoder，其余模型走 defaultTokenEncoder
+	openAIModels := []string{
+		"gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-3.5-turbo-instruct",
+		"gpt-4", "gpt-4-32k", "gpt-4-turbo",
+		"gpt-4o", "gpt-4o-mini", "gpt-4o-audio-preview",
+		"o1", "o1-mini", "o1-preview",
+	}
+	for _, model := range openAIModels {
+		switch {
+		case strings.HasPrefix(model, "gpt-3.5"):
 			tokenEncoderMap[model] = gpt35TokenEncoder
-		} else if strings.HasPrefix(model, "gpt-4o") {
+		case strings.HasPrefix(model, "gpt-4o"), strings.HasPrefix(model, "o1"):
 			tokenEncoderMap[model] = gpt4oTokenEncoder
-		} else if strings.HasPrefix(model, "gpt-4") {
+		case strings.HasPrefix(model, "gpt-4"):
 			tokenEncoderMap[model] = gpt4TokenEncoder
-		} else {
-			tokenEncoderMap[model] = nil
 		}
 	}
 	logger.SysLog("token encoders initialized")

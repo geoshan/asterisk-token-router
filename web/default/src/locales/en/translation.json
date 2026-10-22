@@ -653,30 +653,8 @@
         "new_user_placeholder": "e.g.: 100",
         "pre_consume": "Pre-consumed Quota per Request",
         "pre_consume_placeholder": "Refund or charge difference after request",
-        "inviter_reward": "Reward Quota for Inviter",
-        "inviter_reward_placeholder": "e.g.: 2000",
-        "invitee_reward": "Reward Quota for Using Invite Code",
-        "invitee_reward_placeholder": "e.g.: 1000",
         "buttons": {
           "save": "Save Quota Settings"
-        }
-      },
-      "ratio": {
-        "title": "Ratio Settings",
-        "model": {
-          "title": "Model Ratio",
-          "placeholder": "A JSON text where keys are model names and values are ratios"
-        },
-        "completion": {
-          "title": "Completion Ratio",
-          "placeholder": "A JSON text where keys are model names and values are ratios. These ratios are the proportion of completion to prompt ratio, which can override internal ratios"
-        },
-        "group": {
-          "title": "Group Ratio",
-          "placeholder": "A JSON text where keys are group names and values are ratios"
-        },
-        "buttons": {
-          "save": "Save Ratio Settings"
         }
       },
       "log": {

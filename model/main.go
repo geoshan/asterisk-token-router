@@ -151,9 +151,8 @@ func migrateDB() error {
 	if err = DB.AutoMigrate(&Option{}); err != nil {
 		return err
 	}
-	if err = DB.AutoMigrate(&Redemption{}); err != nil {
-		return err
-	}
+	// asterisk-token-router V1.2 阶段2：Redemption 模型已删除（兑换码业务下线），
+	// 已存在的 redemptions 表保留不动，不再 AutoMigrate
 	if err = DB.AutoMigrate(&Ability{}); err != nil {
 		return err
 	}

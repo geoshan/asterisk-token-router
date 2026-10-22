@@ -145,7 +145,7 @@ func OidcAuth(c *gin.Context) {
 			} else {
 				user.DisplayName = "OIDC User"
 			}
-			err := user.Insert(ctx, 0)
+			err := user.Insert(ctx)
 			if err != nil {
 				c.JSON(http.StatusOK, gin.H{
 					"success": false,

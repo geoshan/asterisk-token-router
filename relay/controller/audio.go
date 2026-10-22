@@ -8,19 +8,18 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/songquanpeng/one-api/common"
 	"github.com/songquanpeng/one-api/common/client"
-	"github.com/songquanpeng/one-api/common/config"
 	"github.com/songquanpeng/one-api/common/ctxkey"
 	"github.com/songquanpeng/one-api/common/logger"
 	"github.com/songquanpeng/one-api/model"
 	"github.com/songquanpeng/one-api/relay/adaptor/openai"
 	"github.com/songquanpeng/one-api/relay/billing"
-	billingratio "github.com/songquanpeng/one-api/relay/billing/ratio"
 	"github.com/songquanpeng/one-api/relay/channeltype"
 	"github.com/songquanpeng/one-api/relay/meta"
 	relaymodel "github.com/songquanpeng/one-api/relay/model"
@@ -36,7 +35,6 @@ func RelayAudioHelper(c *gin.Context, relayMode int) *relaymodel.ErrorWithStatus
 	channelType := c.GetInt(ctxkey.Channel)
 	channelId := c.GetInt(ctxkey.ChannelId)
 	userId := c.GetInt(ctxkey.Id)
-	group := c.GetString(ctxkey.Group)
 	tokenName := c.GetString(ctxkey.TokenName)
 
 	var ttsRequest openai.TextToSpeechRequest
@@ -54,17 +52,26 @@ func RelayAudioHelper(c *gin.Context, relayMode int) *relaymodel.ErrorWithStatus
 		}
 	}
 
-	modelRatio := billingratio.GetModelRatio(audioModel, channelType)
-	groupRatio := billingratio.GetGroupRatio(group)
-	ratio := modelRatio * groupRatio
+	// asterisk-token-router V1.2 阶段2：音频计费统一走渠道 model_prices（¥/M token），倍率体系移除
+	channel, chErr := model.GetChannelById(channelId, false)
+	var inputPrice float64
+	if chErr == nil && channel != nil {
+		if channel.BillingMode == model.BillingModePerToken {
+			inputPrice, _, _ = channel.GetModelPrice(audioModel)
+		}
+	} else {
+		logger.SysError(fmt.Sprintf("音频请求查询渠道 %d 失败，按免费处理", channelId))
+	}
 	var quota int64
 	var preConsumedQuota int64
 	switch relayMode {
 	case relaymode.AudioSpeech:
-		preConsumedQuota = int64(float64(len(ttsRequest.Input)) * ratio)
+		// TTS：用 len(input) 近似 token 数（quota 单位换算：1e6 quota = ¥1，故 quota = tokens × ¥/M 价格）
+		preConsumedQuota = int64(math.Ceil(float64(len(ttsRequest.Input)) * inputPrice))
 		quota = preConsumedQuota
 	default:
-		preConsumedQuota = int64(float64(config.PreConsumedQuota) * ratio)
+		// Whisper 等：预扣为 0，结算时按识别出的 token 数计费
+		preConsumedQuota = 0
 	}
 	userQuota, err := model.CacheGetUserQuota(ctx, userId)
 	if err != nil {
@@ -207,7 +214,8 @@ func RelayAudioHelper(c *gin.Context, relayMode int) *relaymodel.ErrorWithStatus
 		if err != nil {
 			return openai.ErrorWrapper(err, "get_text_from_body_err", http.StatusInternalServerError)
 		}
-		quota = int64(openai.CountTokenText(text, audioModel))
+		// asterisk-token-router V1.2 阶段2：按识别 token 数 × 输入价（¥/M）结算
+		quota = int64(math.Ceil(float64(openai.CountTokenText(text, audioModel)) * inputPrice))
 		resp.Body = io.NopCloser(bytes.NewBuffer(responseBody))
 	}
 	if resp.StatusCode != http.StatusOK {
@@ -216,7 +224,7 @@ func RelayAudioHelper(c *gin.Context, relayMode int) *relaymodel.ErrorWithStatus
 	succeed = true
 	quotaDelta := quota - preConsumedQuota
 	defer func(ctx context.Context) {
-		go billing.PostConsumeQuota(ctx, tokenId, quotaDelta, quota, userId, channelId, modelRatio, groupRatio, audioModel, tokenName)
+		go billing.PostConsumeQuota(ctx, tokenId, quotaDelta, quota, userId, channelId, inputPrice, audioModel, tokenName)
 	}(c.Request.Context())
 
 	for k, v := range resp.Header {

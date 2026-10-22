@@ -100,15 +100,6 @@ func GetUserById(id int, selectAll bool) (*User, error) {
 	return &user, err
 }
 
-func GetUserIdByAffCode(affCode string) (int, error) {
-	if affCode == "" {
-		return 0, errors.New("affCode 为空！")
-	}
-	var user User
-	err := DB.Select("id").First(&user, "aff_code = ?", affCode).Error
-	return user.Id, err
-}
-
 func DeleteUserById(id int) (err error) {
 	if id == 0 {
 		return errors.New("id 为空！")
@@ -117,7 +108,7 @@ func DeleteUserById(id int) (err error) {
 	return user.Delete()
 }
 
-func (user *User) Insert(ctx context.Context, inviterId int) error {
+func (user *User) Insert(ctx context.Context) error {
 	var err error
 	if user.Password != "" {
 		user.Password, err = common.Password2Hash(user.Password)
@@ -136,20 +127,9 @@ func (user *User) Insert(ctx context.Context, inviterId int) error {
 	if result.Error != nil {
 		return result.Error
 	}
-	// asterisk-token-router: 内部使用无赠送业务，仅记录新增用户
+	// asterisk-token-router V1.2 阶段2：邀请赠送业务已删除（InviterId 字段保留兼容），仅记录新增用户
 	RecordLog(ctx, user.Id, LogTypeSystem, "新增用户")
-	if inviterId != 0 {
-		if config.QuotaForInvitee > 0 {
-			_ = IncreaseUserQuota(user.Id, config.QuotaForInvitee)
-			RecordLog(ctx, user.Id, LogTypeSystem, fmt.Sprintf("使用邀请码赠送 %s", common.LogQuota(config.QuotaForInvitee)))
-		}
-		if config.QuotaForInviter > 0 {
-			_ = IncreaseUserQuota(inviterId, config.QuotaForInviter)
-			RecordLog(ctx, inviterId, LogTypeSystem, fmt.Sprintf("邀请用户赠送 %s", common.LogQuota(config.QuotaForInviter)))
-		}
-	}
 	// asterisk-token-router: 不再自动创建 default 令牌，改为管理员手动创建
-	return nil
 	return nil
 }
 

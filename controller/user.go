@@ -158,18 +158,16 @@ func Register(c *gin.Context) {
 			return
 		}
 	}
-	affCode := user.AffCode // this code is the inviter's code, not the user's own code
-	inviterId, _ := model.GetUserIdByAffCode(affCode)
+	// asterisk-token-router V1.2 阶段2：邀请 aff 业务已删除，不再解析邀请码
 	cleanUser := model.User{
 		Username:    user.Username,
 		Password:    user.Password,
 		DisplayName: user.Username,
-		InviterId:   inviterId,
 	}
 	if config.EmailVerificationEnabled {
 		cleanUser.Email = user.Email
 	}
-	if err := cleanUser.Insert(ctx, inviterId); err != nil {
+	if err := cleanUser.Insert(ctx); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"message": err.Error(),
@@ -390,37 +388,6 @@ func GenerateAccessToken(c *gin.Context) {
 		"success": true,
 		"message": "",
 		"data":    user.AccessToken,
-	})
-	return
-}
-
-func GetAffCode(c *gin.Context) {
-	id := c.GetInt(ctxkey.Id)
-	if c.GetInt(ctxkey.Role) >= 10 {
-		id = 0 // admin sees all users
-	}
-	user, err := model.GetUserById(id, true)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"message": err.Error(),
-		})
-		return
-	}
-	if user.AffCode == "" {
-		user.AffCode = random.GetRandomString(4)
-		if err := user.Update(false); err != nil {
-			c.JSON(http.StatusOK, gin.H{
-				"success": false,
-				"message": err.Error(),
-			})
-			return
-		}
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "",
-		"data":    user.AffCode,
 	})
 	return
 }
@@ -731,7 +698,7 @@ func CreateUser(c *gin.Context) {
 		Quota:        user.Quota,
 		MonthlyQuota: user.MonthlyQuota,
 	}
-	if err := cleanUser.Insert(ctx, 0); err != nil {
+	if err := cleanUser.Insert(ctx); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"message": err.Error(),
@@ -901,38 +868,6 @@ func EmailBind(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "",
-	})
-	return
-}
-
-type topUpRequest struct {
-	Key string `json:"key"`
-}
-
-func TopUp(c *gin.Context) {
-	ctx := c.Request.Context()
-	req := topUpRequest{}
-	err := c.ShouldBindJSON(&req)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"message": err.Error(),
-		})
-		return
-	}
-	id := c.GetInt("id")
-	quota, err := model.Redeem(ctx, req.Key, id)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"message": err.Error(),
-		})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "",
-		"data":    quota,
 	})
 	return
 }

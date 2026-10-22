@@ -128,7 +128,7 @@ func LarkOAuth(c *gin.Context) {
 			user.Role = model.RoleCommonUser
 			user.Status = model.UserStatusEnabled
 
-			if err := user.Insert(ctx, 0); err != nil {
+			if err := user.Insert(ctx); err != nil {
 				c.JSON(http.StatusOK, gin.H{
 					"success": false,
 					"message": err.Error(),

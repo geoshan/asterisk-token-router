@@ -46,8 +46,7 @@ func SetApiRouter(router *gin.Engine) {
 				selfRoute.POST("/password", controller.ChangePassword)
 				selfRoute.DELETE("/self", controller.DeleteSelf)
 				selfRoute.GET("/token", controller.GenerateAccessToken)
-				selfRoute.GET("/aff", controller.GetAffCode)
-				selfRoute.POST("/topup", controller.TopUp)
+				// asterisk-token-router V1.2 阶段2：/aff、/topup（兑换码充值）已删除，遗留业务下线
 				selfRoute.GET("/available_models", controller.GetUserAvailableModels)
 			}
 
@@ -103,16 +102,7 @@ func SetApiRouter(router *gin.Engine) {
 			quotaRequestRoute.GET("/", controller.GetQuotaRequests)
 			quotaRequestRoute.PUT("/:id", controller.HandleQuotaRequest)
 		}
-		redemptionRoute := apiRouter.Group("/redemption")
-		redemptionRoute.Use(middleware.AdminAuth())
-		{
-			redemptionRoute.GET("/", controller.GetAllRedemptions)
-			redemptionRoute.GET("/search", controller.SearchRedemptions)
-			redemptionRoute.GET("/:id", controller.GetRedemption)
-			redemptionRoute.POST("/", controller.AddRedemption)
-			redemptionRoute.PUT("/", controller.UpdateRedemption)
-			redemptionRoute.DELETE("/:id", controller.DeleteRedemption)
-		}
+		// asterisk-token-router V1.2 阶段2：兑换码（redemption）业务已删除，6 个接口下线
 		logRoute := apiRouter.Group("/log")
 		logRoute.GET("/", middleware.AdminAuth(), controller.GetAllLogs)
 		logRoute.DELETE("/", middleware.AdminAuth(), controller.DeleteHistoryLogs)

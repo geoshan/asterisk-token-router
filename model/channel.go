@@ -49,8 +49,8 @@ type Channel struct {
 	SystemPrompt       *string `json:"system_prompt" gorm:"type:text"`
 	// asterisk-token-router: 计费相关字段
 	BillingMode        int     `json:"billing_mode" gorm:"default:1"`   // 0=包月, 1=按量, 2=免费
-	PriceIn            float64 `json:"price_in" gorm:"default:0"`       // 输入单价 元/千token
-	PriceOut           float64 `json:"price_out" gorm:"default:0"`      // 输出单价 元/千token
+	PriceIn            float64 `json:"price_in" gorm:"default:0"`       // 输入单价 元/百万token (¥/M token)
+	PriceOut           float64 `json:"price_out" gorm:"default:0"`      // 输出单价 元/百万token (¥/M token)
 	CallLimit          int64   `json:"call_limit" gorm:"default:0"`     // 包月调用上限 0=不限
 	CallCount          int64   `json:"call_count" gorm:"default:0"`     // 当月已调用次数
 	// asterisk-token-router: 预算与自动禁用
@@ -260,6 +260,7 @@ func DeleteDisabledChannel() (int64, error) {
 }
 
 // GetModelPrice returns per-model pricing from ModelPrices JSON, falling back to channel-level price_in/price_out.
+// 返回值单位为 ¥/M token（元/百万 token）。
 // ModelPrices format: {"gpt-4":{"input":0.03,"output":0.06,"cache":0.015}, ...}
 func (channel *Channel) GetModelPrice(modelName string) (inputPrice, outputPrice, cachePrice float64) {
 	if channel.ModelPrices != "" {
