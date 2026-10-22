@@ -782,16 +782,17 @@ gantt
 ### 9.5 v1.1.5 ~ v1.1.7 — 配额计费链重构
 
 **v1.1.5 金额制改革**：
-- `QuotaPerUnit = 1,000,000`：每百万 token = ¥1
+- `QuotaPerUnit = 1`：金额制，1 配额 = ¥1（自 v1.1.6 `b8467f8` 起即为此值）
+- 内部计费单位：`1,000,000 配额 = ¥1`（由 `model_prices` 的 ¥/M 单位换算决定，与 QuotaPerUnit 无关）
 - `PreConsumedQuota = 0`：金额制下不预扣
 - 前端输入换算：用户输入 ¥ 金额 `× 1,000,000` 提交，显示时 `÷ 1,000,000`
 
-**v1.1.6 QuotaPerUnit 陷阱**：
-- 严禁将 `QuotaPerUnit` 改为 1 — 会导致预消费/定价/显示三处崩塌
+**v1.1.6 QuotaPerUnit 陷阱（已澄清）**：
+- 金额显示由 `renderQuota`（前端）与 `LogQuota`（后端）**硬编码 `÷1e6`** 承担，`QuotaPerUnit` 在 ATR 中已退化为占位常量（值 1.0），修改它不影响金额换算
 - `model_ratio` 直接对应 ¥/M tokens
 
 **v1.1.7 计费链清洗**：
-- 放弃 One API 默认值，统一使用 `QuotaPerUnit=1,000,000 + PreConsumedQuota=0`
+- 放弃 One API 默认值，统一使用 `QuotaPerUnit=1（金额制）+ PreConsumedQuota=0`
 - `model_ratio` 基准：deepseek-chat = 1.0（¥1/M 输入 token）
 
 ### 9.6 v1.1.8 ~ v1.1.9 — 前端渲染统一
@@ -834,7 +835,7 @@ gantt
 | **数据模型** | Channel 新增 billing_type/warning_pct/breaker_pct/recharge_*/current_balance；User 新增 monthly_quota，quota→remain_quota；新增 quota_requests 表 |
 | **中间件** | `ctxkey.Role` 注入（`UserAuth` 查 DB 后 `c.Set`）；`AdminRoute` React 路由守卫 |
 | **前端组件** | 三个独立令牌组件（`TokensTable.js`/`MyToken.js`/`EditToken.js`）；按角色 Dashboard |
-| **计费** | `QuotaPerUnit=1,000,000` + `PreConsumedQuota=0` 金额制；`model_ratio` 直接 ¥/M tokens |
+| **计费** | `QuotaPerUnit=1`（金额制 1配额=¥1）+ `PreConsumedQuota=0`；内部单位 1e6=¥1；`model_prices` 直接 ¥/M tokens |
 | **会话** | `SESSION_SECRET` 环境变量固定，防止重启掉线 |
 | **部署** | `build.sh` 三步 temp 复制 + `go:embed` 递归；版本号 `A.B.C build MMDD.HHMM` |
 

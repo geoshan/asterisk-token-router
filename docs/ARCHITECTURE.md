@@ -104,7 +104,8 @@ type User struct {
 
 | 参数 | 值 | 说明 |
 |------|:--:|------|
-| QuotaPerUnit | 1,000,000 | 每百万 token = ¥1 |
+| QuotaPerUnit | 1 | 金额制 1 配额=¥1（占位常量，不参与换算） |
+| 内部计费单位 | 1,000,000 | 1e6 配额 = ¥1（由 model_prices ¥/M 换算决定，硬编码于 LogQuota/renderQuota） |
 | PreConsumedQuota | 0 | 金额制下不预扣 |
 | USD (modelRatio基准) | 36 | ¥/M token 计价 |
 
@@ -192,7 +193,7 @@ function AdminRoute({ children }) {
 
 | 选项 | 值 | 说明 |
 |------|:--:|------|
-| `QuotaPerUnit` | 1,000,000 | 配额单位（严禁修改） |
+| `QuotaPerUnit` | 1 | 金额制占位常量（实际换算硬编码 ÷1e6，见 5.1） |
 | `PreConsumedQuota` | 0 | 预消费配额 |
 | `QuotaForNewUser` | 10,000,000 | 新用户默认额度(¥10) |
 
